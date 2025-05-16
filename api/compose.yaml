@@ -1,0 +1,17 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_local_test
+    ports:
+      - "${DATABASE_PORT}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      TZ: Asia/Seoul
+    volumes:
+      - mysql-test-volume:/var/lib/mysql
+      - ./pools_data.csv:/var/lib/mysql-files/pools_data.csv
+      - ./test_data.csv:/var/lib/mysql-files/test_data.csv
+
+volumes:
+  mysql-test-volume:
