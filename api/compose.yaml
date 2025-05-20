@@ -10,8 +10,6 @@ services:
       TZ: Asia/Seoul
     volumes:
       - mysql-test-volume:/var/lib/mysql
-      - ./pools_data.csv:/var/lib/mysql-files/pools_data.csv
-      - ./test_data.csv:/var/lib/mysql-files/test_data.csv
 
 volumes:
   mysql-test-volume:
