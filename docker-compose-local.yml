@@ -4,10 +4,13 @@ services:
     image: mysql:8.0
     volumes:
       - db-volume:/var/lib/mysql
+      - ./basedata:/var/lib/mysql-files/basedata
     env_file:
       - .env.local
     networks:
       - db-network
+    ports:
+      - "${LOCAL_DATABASE_PORT}:3306"
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
@@ -25,6 +28,8 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+    ports:
+      - "8080:8080"
 
 volumes:
   db-volume:
