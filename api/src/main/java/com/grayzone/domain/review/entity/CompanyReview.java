@@ -2,6 +2,7 @@ package com.grayzone.domain.review.entity;
 
 import com.grayzone.common.BaseTimeEntity;
 import com.grayzone.domain.company.entity.Company;
+import com.grayzone.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -35,9 +36,13 @@ public class CompanyReview extends BaseTimeEntity {
   @JoinColumn(name = "company_id")
   private Company company;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id")
+  private User user;
+
   @OneToMany(mappedBy = "companyReview", fetch = FetchType.LAZY)
   private List<ReviewComment> comments = new ArrayList<>();
 
-  @OneToMany(mappedBy = "companyLike", fetch = FetchType.LAZY)
-  private List<ReviewComment> likes = new ArrayList<>();
+  @OneToMany(mappedBy = "companyReview", fetch = FetchType.LAZY)
+  private List<ReviewLike> likes = new ArrayList<>();
 }

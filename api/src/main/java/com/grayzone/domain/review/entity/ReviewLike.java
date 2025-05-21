@@ -1,5 +1,6 @@
 package com.grayzone.domain.review.entity;
 
+import com.grayzone.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -15,4 +16,8 @@ public class ReviewLike {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "company_review_id")
   private CompanyReview companyReview;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id")
+  private User user;
 }
