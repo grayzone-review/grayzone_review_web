@@ -31,10 +31,13 @@ public class CompanyReview extends BaseTimeEntity {
   @Column(nullable = false)
   private String employmentPeriod;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "company_id")
   private Company company;
 
-  @OneToMany(mappedBy = "companyReview")
+  @OneToMany(mappedBy = "companyReview", fetch = FetchType.LAZY)
   private List<ReviewComment> comments = new ArrayList<>();
+
+  @OneToMany(mappedBy = "companyLike", fetch = FetchType.LAZY)
+  private List<ReviewComment> likes = new ArrayList<>();
 }

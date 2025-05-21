@@ -32,6 +32,6 @@ public class Company {
   private Double xCoordinate;
   private Double yCoordinate;
 
-  @OneToMany(mappedBy = "company")
+  @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
   private List<CompanyReview> companyReviews = new ArrayList<>();
 }

@@ -21,11 +21,11 @@ public class ReviewComment extends BaseTimeEntity {
   @Column(nullable = false)
   private String contents;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "company_review_id")
   private CompanyReview companyReview;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "parent_id")
   private ReviewComment parent;
 
