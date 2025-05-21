@@ -2,10 +2,11 @@ package com.grayzone.domain.review.entity;
 
 import com.grayzone.common.BaseTimeEntity;
 import com.grayzone.domain.company.entity.Company;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "company_reviews")
@@ -33,4 +34,7 @@ public class CompanyReview extends BaseTimeEntity {
   @ManyToOne
   @JoinColumn(name = "company_id")
   private Company company;
+
+  @OneToMany(mappedBy = "companyReview")
+  private List<ReviewComment> comments = new ArrayList<>();
 }
