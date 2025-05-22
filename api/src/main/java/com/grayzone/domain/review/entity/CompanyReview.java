@@ -4,7 +4,9 @@ import com.grayzone.common.BaseTimeEntity;
 import com.grayzone.domain.company.entity.Company;
 import com.grayzone.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;

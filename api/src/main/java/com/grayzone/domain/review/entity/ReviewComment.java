@@ -4,11 +4,7 @@ import com.grayzone.common.BaseTimeEntity;
 import com.grayzone.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "review_comments")
