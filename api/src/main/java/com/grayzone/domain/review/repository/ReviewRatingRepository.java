@@ -11,5 +11,5 @@ public interface ReviewRatingRepository extends JpaRepository<ReviewRating, Long
     FROM ReviewRating rr
     WHERE rr.companyReview.company.id = :companyId
     """)
-  public Double getAverageScoreByCompanyId(@Param("companyId") Long companyId);
+  Double getAverageScoreByCompanyId(@Param("companyId") Long companyId);
 }

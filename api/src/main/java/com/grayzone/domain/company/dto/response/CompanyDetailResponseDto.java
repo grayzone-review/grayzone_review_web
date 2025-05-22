@@ -1,5 +1,6 @@
 package com.grayzone.domain.company.dto.response;
 
+import com.grayzone.domain.company.entity.Company;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -17,5 +18,19 @@ public class CompanyDetailResponseDto {
   private Double xCoordinate;
   private Double yCoordinate;
   private Double totalRating;
-  private Boolean isFollowing;
+  private boolean isFollowing;
+
+  public static CompanyDetailResponseDto from(Company company, Double totalRating, boolean isFollowing) {
+    return CompanyDetailResponseDto.builder()
+      .id(company.getId())
+      .companyName(company.getBusinessName())
+      .permissionDate(company.getPermissionDate())
+      .siteFullAddress(company.getSiteFullAddress())
+      .roadNameAddress(company.getRoadNameAddress())
+      .xCoordinate(company.getXCoordinate())
+      .yCoordinate(company.getYCoordinate())
+      .totalRating(totalRating)
+      .isFollowing(isFollowing)
+      .build();
+  }
 }
