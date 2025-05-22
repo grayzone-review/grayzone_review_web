@@ -16,4 +16,8 @@ public class ReviewRating {
 
   @Column(nullable = false)
   private Double rating;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "company_review_id")
+  private CompanyReview companyReview;
 }
