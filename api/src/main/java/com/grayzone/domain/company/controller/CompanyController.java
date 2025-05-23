@@ -18,7 +18,7 @@ public class CompanyController {
   private final CompanyService companyService;
 
   @GetMapping("/{companyId}")
-  public ResponseEntity<ResponseDataDto<CompanyDetailResponseDto>> getCompanyById(
+  public ResponseEntity<ResponseDataDto<CompanyDetailResponseDto>> getCompany(
     @PathVariable Long companyId
   ) {
     return ResponseEntity.ok(

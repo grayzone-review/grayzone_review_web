@@ -2,9 +2,11 @@ package com.grayzone.domain.review.entity;
 
 import com.grayzone.domain.review.RatingCategory;
 import jakarta.persistence.*;
+import lombok.Getter;
 
 @Entity
 @Table(name = "review_ratings")
+@Getter
 public class ReviewRating {
 
   @Id

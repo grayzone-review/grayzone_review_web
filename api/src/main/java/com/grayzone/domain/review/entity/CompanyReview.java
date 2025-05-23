@@ -5,8 +5,8 @@ import com.grayzone.domain.company.entity.Company;
 import com.grayzone.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
 @Entity
 @Table(name = "company_reviews")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Setter
+@Getter
 public class CompanyReview extends BaseTimeEntity {
 
   @Id
@@ -47,4 +47,15 @@ public class CompanyReview extends BaseTimeEntity {
 
   @OneToMany(mappedBy = "companyReview", fetch = FetchType.LAZY)
   private List<ReviewLike> likes = new ArrayList<>();
+
+  @OneToMany(mappedBy = "companyReview", fetch = FetchType.LAZY)
+  private List<ReviewRating> ratings = new ArrayList<>();
+
+  public int getLikeCount() {
+    return likes.size();
+  }
+
+  public int getCommentCount() {
+    return comments.size();
+  }
 }
