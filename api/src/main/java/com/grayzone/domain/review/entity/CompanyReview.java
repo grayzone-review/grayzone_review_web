@@ -58,4 +58,8 @@ public class CompanyReview extends BaseTimeEntity {
   public int getCommentCount() {
     return comments.size();
   }
+
+  public Long getAuthorId() {
+    return user.getId();
+  }
 }

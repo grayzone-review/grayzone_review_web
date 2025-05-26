@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,7 +18,8 @@ import java.util.stream.Collectors;
 public class CompanyReviewListResponseDto {
 
   private List<CompanyReviewResponseDto> reviews;
-  private Boolean hasNext;
+  private boolean hasNext;
+  private int currentPage;
 
   public static CompanyReviewListResponseDto from(Page<CompanyReview> reviewPage, Set<Long> userLikedReviewIds) {
 
@@ -34,6 +36,7 @@ public class CompanyReviewListResponseDto {
       .builder()
       .reviews(companyReviewResponseDtos)
       .hasNext(reviewPage.hasNext())
+      .currentPage(reviewPage.getNumber())
       .build();
   }
 
@@ -48,6 +51,7 @@ public class CompanyReviewListResponseDto {
     private String managementFeedback;
     private String jobRole;
     private String employmentPeriod;
+    private LocalDateTime createdAt;
     private int likeCount;
     private boolean isLiked;
     private int commentCount;
@@ -56,7 +60,6 @@ public class CompanyReviewListResponseDto {
       CompanyReview companyReview,
       boolean isLiked
     ) {
-
       Map<RatingCategory, Double> ratings = companyReview.getRatings().stream()
         .collect(Collectors.toMap(
           ReviewRating::getCategory,
@@ -71,6 +74,7 @@ public class CompanyReviewListResponseDto {
         .managementFeedback(companyReview.getManagementFeedback())
         .jobRole(companyReview.getJobRole())
         .employmentPeriod(companyReview.getEmploymentPeriod())
+        .createdAt(companyReview.getCreatedAt())
         .likeCount(companyReview.getLikeCount())
         .isLiked(isLiked)
         .ratings(ratings)

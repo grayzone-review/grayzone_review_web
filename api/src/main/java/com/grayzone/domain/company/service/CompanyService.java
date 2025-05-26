@@ -22,14 +22,14 @@ public class CompanyService {
   private final ReviewRatingRepository reviewRatingRepository;
   private final FollowCompanyRepository followCompanyRepository;
 
-  public CompanyDetailResponseDto getCompanyById(Long companyId) {
+  public CompanyDetailResponseDto getCompanyById(Long companyId, Long userId) {
     Double companyRating = Optional.ofNullable(reviewRatingRepository.getAverageScoreByCompanyId(companyId))
       .orElse(0.0);
 
     Company company = companyRepository.findById(companyId)
       .orElseThrow(() -> new IllegalArgumentException("Company not found"));
 
-    boolean isFollowing = followCompanyRepository.existsByUserIdAndCompanyId(1L, companyId);
+    boolean isFollowing = followCompanyRepository.existsByUserIdAndCompanyId(userId, companyId);
 
     return CompanyDetailResponseDto.from(company, companyRating, isFollowing);
   }

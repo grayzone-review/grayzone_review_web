@@ -1,0 +1,45 @@
+package com.grayzone.domain.review.controller;
+
+import com.grayzone.common.ResponseDataDto;
+import com.grayzone.domain.review.dto.ReplyListResponseDto;
+import com.grayzone.domain.review.dto.ReviewCommentListResponseDto;
+import com.grayzone.domain.review.service.ReviewCommentService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("/api")
+@RequiredArgsConstructor
+public class ReviewCommentController {
+
+  private final ReviewCommentService reviewCommentService;
+
+  @GetMapping("/reviews/{reviewId}/comments")
+  public ResponseEntity<ResponseDataDto<ReviewCommentListResponseDto>> getReviewComments(
+    @PathVariable Long reviewId,
+    Pageable pageable
+  ) {
+    return ResponseEntity.ok(
+      ResponseDataDto.from(
+        reviewCommentService.getCommentsByReviewId(reviewId, 2L, pageable)
+      )
+    );
+  }
+
+  @GetMapping("/comments/{commentId}/replies")
+  public ResponseEntity<ResponseDataDto<ReplyListResponseDto>> getReviewReplies(
+    @PathVariable Long commentId,
+    Pageable pageable
+  ) {
+    return ResponseEntity.ok(
+      ResponseDataDto.from(
+        reviewCommentService.getReplyByParentId(commentId, 1L, pageable)
+      )
+    );
+  }
+}
