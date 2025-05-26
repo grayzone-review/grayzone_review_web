@@ -1,5 +1,6 @@
 package com.grayzone.domain.review.service;
 
+import com.grayzone.domain.review.dto.ReplyListResponseDto;
 import com.grayzone.domain.review.dto.ReviewCommentListResponseDto;
 import com.grayzone.domain.review.entity.ReviewComment;
 import com.grayzone.domain.review.repository.CompanyReviewRepository;
@@ -51,5 +52,19 @@ public class ReviewCommentService {
       userId,
       replyCounts
     );
+  }
+
+  public ReplyListResponseDto getReplyByParentId(
+    Long parentId,
+    Long userId,
+    Pageable pageable
+  ) {
+    if (!companyReviewRepository.existsById(parentId)) {
+      throw new EntityNotFoundException("Review not found");
+    }
+
+    Page<ReviewComment> replies = reviewCommentRepository.findByParentId(parentId, pageable);
+
+    return ReplyListResponseDto.from(replies, userId);
   }
 }
