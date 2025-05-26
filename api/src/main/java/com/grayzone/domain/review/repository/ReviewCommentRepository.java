@@ -13,6 +13,8 @@ public interface ReviewCommentRepository extends JpaRepository<ReviewComment, Lo
 
   Page<ReviewComment> findByCompanyReviewIdAndParentIsNull(Long reviewId, Pageable pageable);
 
+  Page<ReviewComment> findByParentId(Long parentId, Pageable pageable);
+
   @Query("""
     SELECT rc.id AS reviewId, COALESCE(COUNT(rcr), 0) AS count
     FROM ReviewComment rc
