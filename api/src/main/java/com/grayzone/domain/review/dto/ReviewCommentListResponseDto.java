@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Builder
@@ -16,9 +17,19 @@ public class ReviewCommentListResponseDto {
   private final boolean hasNext;
   private final int currentPage;
 
-  public static ReviewCommentListResponseDto from(Page<ReviewComment> commentsPage, Long viewerId) {
+  public static ReviewCommentListResponseDto from(
+    Page<ReviewComment> commentsPage,
+    Long viewerId,
+    Map<Long, Integer> replyCounts
+  ) {
     List<ReviewCommentResponseDto> reviewCommentResponseDtos = commentsPage.getContent().stream()
-      .map((reviewComment) -> ReviewCommentResponseDto.from(reviewComment, viewerId))
+      .map(
+        (reviewComment) -> ReviewCommentResponseDto.from(
+          reviewComment,
+          viewerId,
+          replyCounts.get(reviewComment.getId())
+        )
+      )
       .toList();
 
     return ReviewCommentListResponseDto.builder()
@@ -37,8 +48,9 @@ public class ReviewCommentListResponseDto {
     private LocalDateTime createdAt;
     private boolean isSecret;
     private boolean isVisible;
+    private int replyCount;
 
-    public static ReviewCommentResponseDto from(ReviewComment reviewComment, Long viewerId) {
+    public static ReviewCommentResponseDto from(ReviewComment reviewComment, Long viewerId, int replyCount) {
       boolean isVisible = reviewComment.isVisibleTo(viewerId);
 
       return ReviewCommentResponseDto.builder()
@@ -48,6 +60,7 @@ public class ReviewCommentListResponseDto {
         .createdAt(isVisible ? reviewComment.getCreatedAt() : null)
         .isSecret(reviewComment.isSecret())
         .isVisible(isVisible)
+        .replyCount(replyCount)
         .build();
     }
   }

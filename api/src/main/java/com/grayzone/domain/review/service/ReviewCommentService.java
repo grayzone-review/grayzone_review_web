@@ -1,14 +1,22 @@
 package com.grayzone.domain.review.service;
 
 import com.grayzone.domain.review.dto.ReviewCommentListResponseDto;
+import com.grayzone.domain.review.entity.ReviewComment;
 import com.grayzone.domain.review.repository.CompanyReviewRepository;
+import com.grayzone.domain.review.repository.ReplyCountOnly;
 import com.grayzone.domain.review.repository.ReviewCommentRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
+import java.util.stream.Collectors;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -27,9 +35,21 @@ public class ReviewCommentService {
       throw new EntityNotFoundException("Review not found");
     }
 
+    Page<ReviewComment> commentsPage = reviewCommentRepository.findByCompanyReviewIdAndParentIsNull(
+      reviewId,
+      pageable
+    );
+
+    Map<Long, Integer> replyCounts = reviewCommentRepository.countRepliesByParentIds(
+      commentsPage.getContent().stream()
+        .map(ReviewComment::getId)
+        .toList()
+    ).stream().collect(Collectors.toMap(ReplyCountOnly::getReviewId, ReplyCountOnly::getCount));
+
     return ReviewCommentListResponseDto.from(
-      reviewCommentRepository.findByCompanyReviewId(reviewId, pageable),
-      userId
+      commentsPage,
+      userId,
+      replyCounts
     );
   }
 }

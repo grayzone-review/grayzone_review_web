@@ -23,7 +23,7 @@ public class CompanyController {
   ) {
     return ResponseEntity.ok(
       ResponseDataDto.from(
-        companyService.getCompanyById(companyId))
+        companyService.getCompanyById(companyId, 1L))
     );
   }
 }

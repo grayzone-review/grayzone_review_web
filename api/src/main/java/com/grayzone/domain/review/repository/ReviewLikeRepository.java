@@ -10,9 +10,9 @@ import java.util.Set;
 
 public interface ReviewLikeRepository extends JpaRepository<ReviewLike, Long> {
   @Query("""
-      SELECT l.companyReview.id
-      FROM ReviewLike l
-      WHERE l.user.id = :userId AND l.companyReview.id IN :reviewIds
+    SELECT l.companyReview.id
+    FROM ReviewLike l
+    WHERE l.user.id = :userId AND l.companyReview.id IN :reviewIds
     """)
   Set<Long> findReviewIdsLikedByUser(
     @Param("userId") Long userId,
