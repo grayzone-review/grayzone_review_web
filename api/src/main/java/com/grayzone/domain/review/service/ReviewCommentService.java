@@ -59,7 +59,7 @@ public class ReviewCommentService {
     Long userId,
     Pageable pageable
   ) {
-    if (!companyReviewRepository.existsById(parentId)) {
+    if (!reviewCommentRepository.existsById(parentId)) {
       throw new EntityNotFoundException("Review not found");
     }
 

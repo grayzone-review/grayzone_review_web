@@ -28,23 +28,34 @@ public class ReviewComment extends BaseTimeEntity {
   @JoinColumn(name = "user_id")
   private User user;
 
+
+  @Column(nullable = false)
+  private boolean isSecret;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "parent_id")
   private ReviewComment parent;
 
-  @Column(nullable = false)
-  private boolean isSecret;
-
   public String getAuthorName() {
     return user.getUsername();
+  }
+
+  private boolean isAuthor(Long userId) {
+    return getUser().getId().equals(userId);
+  }
+
+  private boolean isReviewAuthor(Long userId) {
+    return companyReview.getAuthorId().equals(userId);
   }
 
   public boolean isVisibleTo(Long userId) {
     if (!isSecret) {
       return true;
     }
-    Long reviewId = this.companyReview.getId();
 
-    return reviewId.equals(userId) || id.equals(userId);
+    boolean isReviewAuthor = isReviewAuthor(userId);
+    boolean isCommentAuthor = isAuthor(userId);
+    boolean isParentAuthor = parent != null && parent.isAuthor(userId);
+
+    return isReviewAuthor || isCommentAuthor || isParentAuthor;
   }
 }

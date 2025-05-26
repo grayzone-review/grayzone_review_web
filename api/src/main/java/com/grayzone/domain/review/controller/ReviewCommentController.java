@@ -1,6 +1,7 @@
 package com.grayzone.domain.review.controller;
 
 import com.grayzone.common.ResponseDataDto;
+import com.grayzone.domain.review.dto.ReplyListResponseDto;
 import com.grayzone.domain.review.dto.ReviewCommentListResponseDto;
 import com.grayzone.domain.review.service.ReviewCommentService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,18 @@ public class ReviewCommentController {
     return ResponseEntity.ok(
       ResponseDataDto.from(
         reviewCommentService.getCommentsByReviewId(reviewId, 2L, pageable)
+      )
+    );
+  }
+
+  @GetMapping("/comments/{commentId}/replies")
+  public ResponseEntity<ResponseDataDto<ReplyListResponseDto>> getReviewReplies(
+    @PathVariable Long commentId,
+    Pageable pageable
+  ) {
+    return ResponseEntity.ok(
+      ResponseDataDto.from(
+        reviewCommentService.getReplyByParentId(commentId, 1L, pageable)
       )
     );
   }
