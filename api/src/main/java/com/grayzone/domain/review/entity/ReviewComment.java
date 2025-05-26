@@ -39,7 +39,7 @@ public class ReviewComment extends BaseTimeEntity {
     return user.getUsername();
   }
 
-  public boolean isVisibility(Long userId) {
+  public boolean isVisibleTo(Long userId) {
     if (!isSecret) {
       return true;
     }
