@@ -1,7 +1,7 @@
 package com.grayzone.domain.review.service;
 
 import com.grayzone.domain.company.repository.CompanyRepository;
-import com.grayzone.domain.review.dto.CompanyReviewListResponseDto;
+import com.grayzone.domain.review.dto.response.CompanyReviewListResponseDto;
 import com.grayzone.domain.review.entity.CompanyReview;
 import com.grayzone.domain.review.repository.CompanyReviewRepository;
 import com.grayzone.domain.review.repository.ReviewLikeRepository;
@@ -30,7 +30,7 @@ public class CompanyReviewService {
     }
 
     Page<CompanyReview> reviewPage = companyReviewRepository.findByCompanyId(companyId, pageable);
-    
+
     List<Long> reviewIds = reviewPage.getContent()
       .stream()
       .map(CompanyReview::getId)

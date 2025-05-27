@@ -1,7 +1,7 @@
 package com.grayzone.domain.review.service;
 
-import com.grayzone.domain.review.dto.ReplyListResponseDto;
-import com.grayzone.domain.review.dto.ReviewCommentListResponseDto;
+import com.grayzone.domain.review.dto.response.ReplyListResponseDto;
+import com.grayzone.domain.review.dto.response.ReviewCommentListResponseDto;
 import com.grayzone.domain.review.entity.ReviewComment;
 import com.grayzone.domain.review.repository.CompanyReviewRepository;
 import com.grayzone.domain.review.repository.ReplyCountOnly;

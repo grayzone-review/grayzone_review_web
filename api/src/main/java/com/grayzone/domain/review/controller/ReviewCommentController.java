@@ -1,8 +1,8 @@
 package com.grayzone.domain.review.controller;
 
 import com.grayzone.common.ResponseDataDto;
-import com.grayzone.domain.review.dto.ReplyListResponseDto;
-import com.grayzone.domain.review.dto.ReviewCommentListResponseDto;
+import com.grayzone.domain.review.dto.response.ReplyListResponseDto;
+import com.grayzone.domain.review.dto.response.ReviewCommentListResponseDto;
 import com.grayzone.domain.review.service.ReviewCommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
