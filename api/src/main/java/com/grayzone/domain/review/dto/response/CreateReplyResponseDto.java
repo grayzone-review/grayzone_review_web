@@ -16,7 +16,7 @@ public class CreateReplyResponseDto {
   private boolean isSecret;
   private boolean isVisible;
 
-  public static CreateReplyResponseDto from(ReviewComment comment, Long viewerId) {
+  public static CreateReplyResponseDto from(ReviewComment comment) {
     return CreateReplyResponseDto.builder()
       .id(comment.getId())
       .comment(comment.getComment())

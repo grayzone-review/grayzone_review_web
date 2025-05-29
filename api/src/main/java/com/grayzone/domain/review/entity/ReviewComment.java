@@ -75,4 +75,13 @@ public class ReviewComment extends BaseTimeEntity {
 
     return isReviewAuthor || isCommentAuthor || isParentAuthor;
   }
+
+  public boolean canReply(Long userId) {
+    if (!isVisibleTo(userId)) {
+      return false;
+    }
+
+    return parent == null;
+  }
+
 }
