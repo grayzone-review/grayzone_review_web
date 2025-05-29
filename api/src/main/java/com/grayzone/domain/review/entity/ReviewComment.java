@@ -4,6 +4,7 @@ import com.grayzone.common.BaseTimeEntity;
 import com.grayzone.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -35,6 +36,22 @@ public class ReviewComment extends BaseTimeEntity {
   @JoinColumn(name = "parent_id")
   private ReviewComment parent;
 
+  @Builder
+  public ReviewComment(
+    String comment,
+    CompanyReview companyReview,
+    User user,
+    boolean isSecret,
+    ReviewComment parent
+  ) {
+    this.comment = comment;
+    this.companyReview = companyReview;
+    this.user = user;
+    this.isSecret = isSecret;
+    this.parent = parent;
+  }
+
+
   public String getAuthorName() {
     return user.getUsername();
   }
@@ -58,4 +75,13 @@ public class ReviewComment extends BaseTimeEntity {
 
     return isReviewAuthor || isCommentAuthor || isParentAuthor;
   }
+
+  public boolean canReply(Long userId) {
+    if (!isVisibleTo(userId)) {
+      return false;
+    }
+
+    return parent == null;
+  }
+
 }

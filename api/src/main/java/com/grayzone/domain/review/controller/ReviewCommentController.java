@@ -1,16 +1,19 @@
 package com.grayzone.domain.review.controller;
 
 import com.grayzone.common.ResponseDataDto;
-import com.grayzone.domain.review.dto.ReplyListResponseDto;
-import com.grayzone.domain.review.dto.ReviewCommentListResponseDto;
+import com.grayzone.domain.review.dto.request.CreateReplyRequestDto;
+import com.grayzone.domain.review.dto.request.CreateReviewCommentRequestDto;
+import com.grayzone.domain.review.dto.response.CreateReplyResponseDto;
+import com.grayzone.domain.review.dto.response.CreateReviewCommentResponseDto;
+import com.grayzone.domain.review.dto.response.ReplyListResponseDto;
+import com.grayzone.domain.review.dto.response.ReviewCommentListResponseDto;
 import com.grayzone.domain.review.service.ReviewCommentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/api")
@@ -39,6 +42,30 @@ public class ReviewCommentController {
     return ResponseEntity.ok(
       ResponseDataDto.from(
         reviewCommentService.getReplyByParentId(commentId, 1L, pageable)
+      )
+    );
+  }
+
+  @PostMapping("/reviews/{reviewId}/comments")
+  public ResponseEntity<ResponseDataDto<CreateReviewCommentResponseDto>> createReviewComment(
+    @PathVariable Long reviewId,
+    @Valid @RequestBody CreateReviewCommentRequestDto requestDto
+  ) {
+    return ResponseEntity.ok(
+      ResponseDataDto.from(
+        reviewCommentService.createReviewComment(reviewId, 1L, requestDto)
+      )
+    );
+  }
+
+  @PostMapping("/comments/{commentId}/replies")
+  public ResponseEntity<ResponseDataDto<CreateReplyResponseDto>> createReviewReplies(
+    @PathVariable Long commentId,
+    @Valid @RequestBody CreateReplyRequestDto requestDto
+  ) {
+    return ResponseEntity.ok(
+      ResponseDataDto.from(
+        reviewCommentService.createReply(commentId, 2L, requestDto)
       )
     );
   }

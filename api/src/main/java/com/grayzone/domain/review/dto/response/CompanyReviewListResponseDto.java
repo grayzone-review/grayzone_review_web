@@ -1,4 +1,4 @@
-package com.grayzone.domain.review.dto;
+package com.grayzone.domain.review.dto.response;
 
 import com.grayzone.domain.review.RatingCategory;
 import com.grayzone.domain.review.entity.CompanyReview;
