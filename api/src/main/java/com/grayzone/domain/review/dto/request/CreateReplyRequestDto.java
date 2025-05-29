@@ -10,8 +10,7 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
 @Setter
-public class CreateReviewCommentRequestDto {
-
+public class CreateReplyRequestDto {
   @NotBlank
   @Length(max = 200)
   private String comment;
@@ -20,12 +19,12 @@ public class CreateReviewCommentRequestDto {
   @JsonProperty("isSecret")
   private boolean isSecret;
 
-  public ReviewComment toEntity(CompanyReview companyReview, User user) {
-    System.out.println(isSecret);
+  public ReviewComment toEntity(CompanyReview companyReview, User user, ReviewComment parentComment) {
     return ReviewComment.builder()
       .comment(comment)
       .isSecret(isSecret)
       .companyReview(companyReview)
+      .parent(parentComment)
       .user(user)
       .build();
   }
