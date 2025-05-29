@@ -84,7 +84,7 @@ public class ReviewCommentService {
       .orElseThrow(() -> new EntityNotFoundException("Review not found"));
 
     User user = userRepository.findById(userId)
-      .orElseThrow(() -> new EntityNotFoundException("로그인 기능 구현 시 User 타입을 메서드 파라미터로 추가할 예쩡"));
+      .orElseThrow(() -> new EntityNotFoundException("로그인 기능 구현 시 User 타입을 메서드 파라미터로 추가할 예정"));
 
     ReviewComment comment = requestDto.toEntity(companyReview, user);
 
