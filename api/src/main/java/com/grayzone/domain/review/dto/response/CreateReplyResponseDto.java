@@ -16,12 +16,13 @@ public class CreateReplyResponseDto {
   private boolean isSecret;
   private boolean isVisible;
 
-  public static CreateReplyResponseDto from(ReviewComment comment) {
+  public static CreateReplyResponseDto from(ReviewComment reviewComment) {
     return CreateReplyResponseDto.builder()
-      .id(comment.getId())
-      .comment(comment.getComment())
-      .authorName(comment.getAuthorName())
-      .isSecret(comment.isSecret())
+      .id(reviewComment.getId())
+      .comment(reviewComment.getComment())
+      .authorName(reviewComment.getAuthorName())
+      .createdAt(reviewComment.getCreatedAt())
+      .isSecret(reviewComment.isSecret())
       .isVisible(true)
       .build();
   }

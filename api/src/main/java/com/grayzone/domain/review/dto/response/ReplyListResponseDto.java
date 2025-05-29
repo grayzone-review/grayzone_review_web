@@ -37,14 +37,15 @@ public class ReplyListResponseDto {
     private boolean isSecret;
     private boolean isVisible;
 
-    public static ReplyResponseDto from(ReviewComment comment, Long viewerId) {
-      boolean isVisible = comment.isVisibleTo(viewerId);
+    public static ReplyResponseDto from(ReviewComment reviewComment, Long viewerId) {
+      boolean isVisible = reviewComment.isVisibleTo(viewerId);
 
       return ReplyResponseDto.builder()
-        .id(comment.getId())
-        .comment(isVisible ? comment.getComment() : null)
-        .authorName(isVisible ? comment.getAuthorName() : null)
-        .isSecret(comment.isSecret())
+        .id(reviewComment.getId())
+        .comment(isVisible ? reviewComment.getComment() : null)
+        .authorName(isVisible ? reviewComment.getAuthorName() : null)
+        .createdAt(isVisible ? reviewComment.getCreatedAt() : null)
+        .isSecret(reviewComment.isSecret())
         .isVisible(isVisible)
         .build();
     }

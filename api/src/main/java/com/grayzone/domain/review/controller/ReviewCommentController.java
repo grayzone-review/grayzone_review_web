@@ -1,7 +1,9 @@
 package com.grayzone.domain.review.controller;
 
 import com.grayzone.common.ResponseDataDto;
+import com.grayzone.domain.review.dto.request.CreateReplyRequestDto;
 import com.grayzone.domain.review.dto.request.CreateReviewCommentRequestDto;
+import com.grayzone.domain.review.dto.response.CreateReplyResponseDto;
 import com.grayzone.domain.review.dto.response.CreateReviewCommentResponseDto;
 import com.grayzone.domain.review.dto.response.ReplyListResponseDto;
 import com.grayzone.domain.review.dto.response.ReviewCommentListResponseDto;
@@ -52,6 +54,18 @@ public class ReviewCommentController {
     return ResponseEntity.ok(
       ResponseDataDto.from(
         reviewCommentService.createReviewComment(reviewId, 1L, requestDto)
+      )
+    );
+  }
+
+  @PostMapping("/comments/{commentId}/replies")
+  public ResponseEntity<ResponseDataDto<CreateReplyResponseDto>> createReviewReplies(
+    @PathVariable Long commentId,
+    @Valid @RequestBody CreateReplyRequestDto requestDto
+  ) {
+    return ResponseEntity.ok(
+      ResponseDataDto.from(
+        reviewCommentService.createReply(commentId, 2L, requestDto)
       )
     );
   }

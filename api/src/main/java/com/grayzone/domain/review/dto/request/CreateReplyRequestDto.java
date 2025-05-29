@@ -1,6 +1,5 @@
 package com.grayzone.domain.review.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.grayzone.domain.review.entity.CompanyReview;
 import com.grayzone.domain.review.entity.ReviewComment;
 import com.grayzone.domain.user.entity.User;
@@ -16,7 +15,6 @@ public class CreateReplyRequestDto {
   private String comment;
 
   @NotNull
-  @JsonProperty("isSecret")
   private boolean isSecret;
 
   public ReviewComment toEntity(CompanyReview companyReview, User user, ReviewComment parentComment) {
