@@ -17,15 +17,15 @@ public class CreateReviewCommentResponseDto {
   private boolean isVisible;
   private int replyCount;
 
-  public static CreateReviewCommentResponseDto from(ReviewComment reviewComment, boolean isVisible, int replyCount) {
+  public static CreateReviewCommentResponseDto from(ReviewComment reviewComment) {
     return CreateReviewCommentResponseDto.builder()
       .id(reviewComment.getId())
       .comment(reviewComment.getComment())
       .authorName(reviewComment.getAuthorName())
       .createdAt(reviewComment.getCreatedAt())
       .isSecret(reviewComment.isSecret())
-      .isVisible(isVisible)
-      .replyCount(replyCount)
+      .isVisible(true)
+      .replyCount(0)
       .build();
   }
 }
