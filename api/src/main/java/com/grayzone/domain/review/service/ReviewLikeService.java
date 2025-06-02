@@ -23,7 +23,7 @@ public class ReviewLikeService {
     CompanyReview companyReview = companyReviewRepository.findById(companyReviewId)
       .orElseThrow(() -> new EntityNotFoundException("Company Review Not Found"));
 
-    if (reviewLikeRepository.existsReviewLikesByUser((user))) {
+    if (reviewLikeRepository.existsReviewLikesByCompanyReviewAndUser(companyReview, user)) {
       throw new IllegalArgumentException("Review Like Already Exists");
     }
 
@@ -33,5 +33,16 @@ public class ReviewLikeService {
       .build();
 
     reviewLikeRepository.save(reviewLike);
+  }
+
+  @Transactional
+  public void deleteReviewLike(Long companyReviewId, User user) {
+    CompanyReview companyReview = companyReviewRepository.findById(companyReviewId)
+      .orElseThrow(() -> new EntityNotFoundException("Company Review Not Found"));
+
+    ReviewLike reviewLike = reviewLikeRepository.findByCompanyReviewAndUser(companyReview, user)
+      .orElseThrow(() -> new EntityNotFoundException("Review Like Not Found"));
+
+    reviewLikeRepository.delete(reviewLike);
   }
 }
