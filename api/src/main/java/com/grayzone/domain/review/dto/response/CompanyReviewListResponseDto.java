@@ -45,6 +45,7 @@ public class CompanyReviewListResponseDto {
   public static class CompanyReviewResponseDto {
     private Long id;
     private Map<RatingCategory, Double> ratings;
+    private String author;
     private String title;
     private String advantagePoint;
     private String disadvantagePoint;
@@ -68,6 +69,7 @@ public class CompanyReviewListResponseDto {
 
       return CompanyReviewResponseDto.builder()
         .id(companyReview.getId())
+        .author(companyReview.getUser().getUsername())
         .title(companyReview.getTitle())
         .advantagePoint(companyReview.getAdvantagePoint())
         .disadvantagePoint(companyReview.getDisadvantagePoint())
