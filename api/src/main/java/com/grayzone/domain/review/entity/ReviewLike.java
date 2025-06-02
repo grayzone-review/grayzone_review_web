@@ -3,6 +3,7 @@ package com.grayzone.domain.review.entity;
 import com.grayzone.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -20,4 +21,10 @@ public class ReviewLike {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id")
   private User user;
+
+  @Builder
+  public ReviewLike(CompanyReview companyReview, User user) {
+    this.companyReview = companyReview;
+    this.user = user;
+  }
 }
