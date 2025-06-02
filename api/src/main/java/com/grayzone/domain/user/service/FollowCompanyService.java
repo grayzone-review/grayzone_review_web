@@ -34,4 +34,15 @@ public class FollowCompanyService {
 
     followCompanyRepository.save(followCompany);
   }
+
+  @Transactional
+  public void deleteFollowCompany(Long companyId, User user) {
+    Company company = companyRepository.findById(companyId)
+      .orElseThrow(() -> new EntityNotFoundException("Company not found"));
+
+    FollowCompany followCompany = followCompanyRepository.findByCompanyAndUser(company, user)
+      .orElseThrow(() -> new EntityNotFoundException("User request to not followed company"));
+
+    followCompanyRepository.delete(followCompany);
+  }
 }

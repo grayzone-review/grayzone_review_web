@@ -7,10 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/companies")
@@ -25,6 +22,15 @@ public class FollowCompanyController {
     @AuthenticationPrincipal User user
   ) {
     followCompanyService.createFollowCompany(companyId, user);
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+  }
+
+  @DeleteMapping("/{companyId}/follows")
+  public ResponseEntity<ResponseDataDto<Void>> deleteFollowCompany(
+    @PathVariable Long companyId,
+    @AuthenticationPrincipal User user
+  ) {
+    followCompanyService.deleteFollowCompany(companyId, user);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
   }
 }
