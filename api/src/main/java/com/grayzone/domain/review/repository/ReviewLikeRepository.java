@@ -1,6 +1,7 @@
 package com.grayzone.domain.review.repository;
 
 import com.grayzone.domain.review.entity.ReviewLike;
+import com.grayzone.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,4 +19,6 @@ public interface ReviewLikeRepository extends JpaRepository<ReviewLike, Long> {
     @Param("userId") Long userId,
     @Param("reviewIds") List<Long> reviewIds
   );
+
+  boolean existsReviewLikesByUser(User user);
 }
