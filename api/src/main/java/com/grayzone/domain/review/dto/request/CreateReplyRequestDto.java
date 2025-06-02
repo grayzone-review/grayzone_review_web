@@ -20,7 +20,7 @@ public class CreateReplyRequestDto {
   public ReviewComment toEntity(CompanyReview companyReview, User user, ReviewComment parentComment) {
     return ReviewComment.builder()
       .comment(comment)
-      .isSecret(isSecret)
+      .isSecret(parentComment.isSecret() || isSecret)
       .companyReview(companyReview)
       .parent(parentComment)
       .user(user)

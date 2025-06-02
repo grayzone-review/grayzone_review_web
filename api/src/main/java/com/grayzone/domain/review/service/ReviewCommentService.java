@@ -103,7 +103,8 @@ public class ReviewCommentService {
       throw new EntityNotFoundException("답글을 작성할 수 없습니다.");
     }
 
-    ReviewComment comment = requestDto.toEntity(parentComment.getCompanyReview(), user, parentComment);
+    ReviewComment comment = requestDto
+      .toEntity(parentComment.getCompanyReview(), user, parentComment);
 
     return CreateReplyResponseDto.from(reviewCommentRepository.save(comment));
   }
