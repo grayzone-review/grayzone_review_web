@@ -58,7 +58,7 @@ public class ReviewCommentController {
   ) {
     return ResponseEntity.ok(
       ResponseDataDto.from(
-        reviewCommentService.createReviewComment(reviewId, user.getId(), requestDto)
+        reviewCommentService.createReviewComment(reviewId, user, requestDto)
       )
     );
   }
@@ -71,7 +71,7 @@ public class ReviewCommentController {
   ) {
     return ResponseEntity.ok(
       ResponseDataDto.from(
-        reviewCommentService.createReply(commentId, user.getId(), requestDto)
+        reviewCommentService.createReply(commentId, user, requestDto)
       )
     );
   }

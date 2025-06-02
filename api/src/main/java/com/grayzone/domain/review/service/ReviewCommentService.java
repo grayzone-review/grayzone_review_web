@@ -79,15 +79,11 @@ public class ReviewCommentService {
   @Transactional
   public CreateReviewCommentResponseDto createReviewComment(
     Long reviewId,
-    Long userId,
+    User user,
     CreateReviewCommentRequestDto requestDto
   ) {
     CompanyReview companyReview = companyReviewRepository.findById(reviewId)
       .orElseThrow(() -> new EntityNotFoundException("Review not found"));
-
-    // TODO: 로그인 기능 구현 시 User 타입을 메서드 파라미터로 추가할 예정
-    User user = userRepository.findById(userId)
-      .orElseThrow(() -> new EntityNotFoundException("로그인 기능 구현 시 User 타입을 메서드 파라미터로 추가할 예정"));
 
     ReviewComment comment = requestDto.toEntity(companyReview, user);
 
@@ -97,19 +93,15 @@ public class ReviewCommentService {
   @Transactional
   public CreateReplyResponseDto createReply(
     Long parentCommentId,
-    Long userId,
+    User user,
     CreateReplyRequestDto requestDto
   ) {
     ReviewComment parentComment = reviewCommentRepository.findById(parentCommentId)
       .orElseThrow(() -> new EntityNotFoundException("Comment not found"));
 
-    if (!parentComment.canReply(userId)) {
+    if (!parentComment.canReply(user.getId())) {
       throw new EntityNotFoundException("답글을 작성할 수 없습니다.");
     }
-
-    // TODO: 로그인 기능 구현 시 User 타입을 메서드 파라미터로 추가할 예정
-    User user = userRepository.findById(userId)
-      .orElseThrow(() -> new EntityNotFoundException("로그인 기능 구현 시 User 타입을 메서드 파라미터로 추가할 예정"));
 
     ReviewComment comment = requestDto.toEntity(parentComment.getCompanyReview(), user, parentComment);
 
