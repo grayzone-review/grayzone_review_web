@@ -5,8 +5,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,6 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class DevelopAuthenticationFilter extends OncePerRequestFilter {
@@ -28,7 +31,8 @@ public class DevelopAuthenticationFilter extends OncePerRequestFilter {
   ) throws ServletException, IOException {
 
     String id = request.getHeader("Authorization");
-
+    log.info(id);
+  
     UserDetails userDetails = userDetailsService.loadUserByUsername(id);
 
     Authentication authentication =
@@ -38,7 +42,9 @@ public class DevelopAuthenticationFilter extends OncePerRequestFilter {
         userDetails.getAuthorities()
       );
 
-    SecurityContextHolder.getContext().setAuthentication(authentication);
+    SecurityContext context = SecurityContextHolder.createEmptyContext();
+    context.setAuthentication(authentication);
+    SecurityContextHolder.setContext(context);
 
     filterChain.doFilter(request, response);
   }
