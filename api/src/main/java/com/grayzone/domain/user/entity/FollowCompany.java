@@ -3,6 +3,7 @@ package com.grayzone.domain.user.entity;
 import com.grayzone.domain.company.entity.Company;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -20,4 +21,10 @@ public class FollowCompany {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id")
   private User user;
+
+  @Builder
+  public FollowCompany(Company company, User user) {
+    this.company = company;
+    this.user = user;
+  }
 }
