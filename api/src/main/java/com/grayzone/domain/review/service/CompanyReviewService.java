@@ -24,7 +24,7 @@ public class CompanyReviewService {
   private final CompanyRepository companyRepository;
   private final ReviewLikeRepository reviewLikeRepository;
 
-  public CompanyReviewListResponseDto getReviewsByCompanyId(Long companyId, Pageable pageable) {
+  public CompanyReviewListResponseDto getReviewsByCompanyId(Long companyId, Long userId, Pageable pageable) {
     if (!companyRepository.existsById(companyId)) {
       throw new EntityNotFoundException("Company not found");
     }
@@ -38,7 +38,7 @@ public class CompanyReviewService {
 
     Set<Long> userLikedReviewIds = reviewIds.isEmpty()
       ? Set.of()
-      : reviewLikeRepository.findReviewIdsLikedByUser(1L, reviewIds);
+      : reviewLikeRepository.findReviewIdsLikedByUser(userId, reviewIds);
 
     return CompanyReviewListResponseDto.from(
       reviewPage,
