@@ -36,6 +36,9 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation "me.paulschwarz:spring-dotenv:4.0.0"
     developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
+
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
 tasks.named('test') {
