@@ -15,8 +15,8 @@ public class CompanyDetailResponseDto {
   private LocalDateTime permissionDate;
   private String siteFullAddress;
   private String roadNameAddress;
-  private Double xCoordinate;
-  private Double yCoordinate;
+  private Double latitude;
+  private Double longitude;
   private Double totalRating;
   private boolean isFollowing;
 
@@ -27,8 +27,8 @@ public class CompanyDetailResponseDto {
       .permissionDate(company.getPermissionDate())
       .siteFullAddress(company.getSiteFullAddress())
       .roadNameAddress(company.getRoadNameAddress())
-      .xCoordinate(company.getXCoordinate())
-      .yCoordinate(company.getYCoordinate())
+      .latitude(company.getLatitude())
+      .longitude(company.getLongitude())
       .totalRating(totalRating)
       .isFollowing(isFollowing)
       .build();
