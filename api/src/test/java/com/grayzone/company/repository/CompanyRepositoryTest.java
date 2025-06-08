@@ -23,14 +23,22 @@ public class CompanyRepositoryTest {
 
   @Test
   void testFindByKeywordWithPaging() {
-    String keyword = "삼겹살";
+    String keyword = "스타벅스";
     double lat = 37.5665;
     double lng = 126.9780;
     Pageable pageable = PageRequest.of(0, 10);
 
+    long startTime = System.nanoTime();
+
     Page<Company> results = companyRepository.findByKeywordOrderByDistance(
       keyword, lat, lng, pageable
     );
+
+    long endTime = System.nanoTime();
+
+    long durationInNano = endTime - startTime;
+    double durationInMillis = durationInNano / 1_000_000.0;
+    log.info("duration: {}", durationInMillis);
 
     log.info("couts {}", results.getTotalElements());
     for (Company result : results) {

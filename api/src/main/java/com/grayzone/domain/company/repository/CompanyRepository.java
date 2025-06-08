@@ -18,7 +18,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
             )) AS distance
         FROM companies c
         WHERE c.business_name LIKE %:keyword%
-        ORDER BY distance ASC
+        ORDER BY distance IS NULL, distance ASC
     """, nativeQuery = true)
   Page<Company> findByKeywordOrderByDistance(
     @Param("keyword") String keyword,
