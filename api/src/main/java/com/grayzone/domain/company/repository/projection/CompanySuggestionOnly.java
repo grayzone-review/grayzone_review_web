@@ -1,7 +1,7 @@
 package com.grayzone.domain.company.repository.projection;
 
-public interface CompanySearchOnly {
-
+public interface CompanySuggestionOnly {
+  
   Long getId();
 
   String getCompanyName();
@@ -9,6 +9,4 @@ public interface CompanySearchOnly {
   String getSiteFullAddress();
 
   String getRoadNameAddress();
-
-  double getDistance();
 }
