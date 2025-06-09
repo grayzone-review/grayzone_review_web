@@ -39,7 +39,7 @@ public class CompanyController {
     @AuthenticationPrincipal User user,
     Pageable pageable
   ) {
-    CompaniesSearchResponseDto companiesByKeyword = companyService.getCompaniesByKeyword(keyword, latitude, longitude, user, pageable);
+    CompaniesSearchResponseDto companiesByKeyword = companyService.getSearchedCompaniesByKeyword(keyword, latitude, longitude, user, pageable);
     log.info(companiesByKeyword.getCompanies().toString());
     return ResponseEntity.ok(
       ResponseDataDto.from(
@@ -56,7 +56,7 @@ public class CompanyController {
     @AuthenticationPrincipal User user,
     Pageable pageable
   ) {
-    CompaniesSearchResponseDto companiesByKeyword = companyService.getCompaniesByKeyword(keyword, latitude, longitude, user, pageable);
+    CompaniesSearchResponseDto companiesByKeyword = companyService.getSearchedCompaniesByKeyword(keyword, latitude, longitude, user, pageable);
     log.info(companiesByKeyword.getCompanies().toString());
     return ResponseEntity.ok(
       ResponseDataDto.from(

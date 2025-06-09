@@ -1,10 +1,12 @@
 package com.grayzone.domain.company.service;
 
 import com.grayzone.domain.company.dto.response.CompaniesSearchResponseDto;
+import com.grayzone.domain.company.dto.response.CompaniesSuggestResponseDto;
 import com.grayzone.domain.company.dto.response.CompanyDetailResponseDto;
 import com.grayzone.domain.company.entity.Company;
 import com.grayzone.domain.company.repository.CompanyRepository;
 import com.grayzone.domain.company.repository.projection.CompanySearchOnly;
+import com.grayzone.domain.company.repository.projection.CompanySuggestionOnly;
 import com.grayzone.domain.review.repository.CompanyReviewRepository;
 import com.grayzone.domain.review.repository.ReviewRatingRepository;
 import com.grayzone.domain.review.repository.projection.CompanyTotalRatingOnly;
@@ -15,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,14 +47,14 @@ public class CompanyService {
     return CompanyDetailResponseDto.from(company, companyRating, isFollowing);
   }
 
-  public CompaniesSearchResponseDto getCompaniesByKeyword(
+  public CompaniesSearchResponseDto getSearchedCompaniesByKeyword(
     String keyword,
     Double latitude,
     Double longitude,
     User user,
     Pageable pageable
   ) {
-    Page<CompanySearchOnly> companies = companyRepository.findByKeywordOrderByDistance(
+    Page<CompanySearchOnly> companies = companyRepository.searchByKeywordOrderByDistance(
       keyword,
       latitude,
       longitude,
@@ -60,8 +63,7 @@ public class CompanyService {
 
     List<Long> companyIds = companies.getContent().stream().map(CompanySearchOnly::getId).toList();
 
-    List<CompanyTotalRatingOnly> averageScoresByCompanyIds = reviewRatingRepository.getAverageScoresByCompanyIds(companyIds);
-    Map<Long, Double> totalRatings = averageScoresByCompanyIds
+    Map<Long, Double> totalRatings = reviewRatingRepository.getAverageScoresByCompanyIds(companyIds)
       .stream()
       .collect(
         Collectors.toMap(
@@ -82,5 +84,35 @@ public class CompanyService {
       ));
 
     return CompaniesSearchResponseDto.from(companies, totalRatings, followedCompanyIds, topReviews);
+  }
+
+  public CompaniesSuggestResponseDto getSuggestedCompanies(
+    String keyword,
+    Double latitude,
+    Double longitude,
+    Pageable pageable
+  ) {
+    Slice<CompanySuggestionOnly> companies = companyRepository.suggestByKeywordOrderByDistance(
+      keyword,
+      latitude,
+      longitude,
+      pageable
+    );
+
+    List<Long> companyIds = companies.getContent().stream().map(CompanySuggestionOnly::getId).toList();
+
+    Map<Long, Double> totalRatings = reviewRatingRepository.getAverageScoresByCompanyIds(companyIds)
+      .stream()
+      .collect(
+        Collectors.toMap(
+          CompanyTotalRatingOnly::getCompanyId,
+          CompanyTotalRatingOnly::getTotalRating
+        )
+      );
+
+    return CompaniesSuggestResponseDto.from(
+      companies,
+      totalRatings
+    );
   }
 }
