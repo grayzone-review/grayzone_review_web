@@ -1,4 +1,4 @@
-package com.grayzone.domain.review.repository;
+package com.grayzone.domain.review.repository.projection;
 
 public interface ReplyCountOnly {
   Long getReviewId();

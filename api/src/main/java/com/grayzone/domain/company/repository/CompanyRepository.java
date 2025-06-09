@@ -1,6 +1,7 @@
 package com.grayzone.domain.company.repository;
 
 import com.grayzone.domain.company.entity.Company;
+import com.grayzone.domain.company.repository.projection.CompanySearchOnly;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,10 +18,10 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
                 sin(radians(:latitude)) * sin(radians(c.latitude))
             )) AS distance
         FROM companies c
-        WHERE c.business_name LIKE %:keyword%
+        WHERE MATCH(c.business_name) AGAINST("스타벅스*" IN BOOLEAN MODE)
         ORDER BY distance IS NULL, distance ASC
     """, nativeQuery = true)
-  Page<CompanySearchResult> findByKeywordOrderByDistance(
+  Page<CompanySearchOnly> findByKeywordOrderByDistance(
     @Param("keyword") String keyword,
     @Param("latitude") Double latitude,
     @Param("longitude") Double longitude,

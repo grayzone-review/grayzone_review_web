@@ -1,6 +1,6 @@
-package com.grayzone.domain.company.repository;
+package com.grayzone.domain.company.repository.projection;
 
-public interface CompanySearchResult {
+public interface CompanySearchOnly {
   Long getId();
 
   String getCompanyName();
