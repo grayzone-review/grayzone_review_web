@@ -40,9 +40,10 @@ public class CompanyRepositoryTest {
     double durationInMillis = durationInNano / 1_000_000.0;
     log.info("duration: {}", durationInMillis);
 
-    log.info("couts {}", results.getTotalElements());
+    log.info("counts {}", results.getTotalElements());
     for (CompanySearchOnly result : results) {
       log.info("result {}", result.getCompanyName());
+      log.info("id {}", result.getId());
     }
   }
 }
