@@ -12,14 +12,14 @@ import java.util.Set;
 
 @Getter
 @Builder
-public class CompanyListResponseDto {
+public class CompaniesSearchResponseDto {
 
   private List<CompanyResponseDto> companies;
   private long totalCount;
   private boolean hasNext;
   private int currentPage;
 
-  public static CompanyListResponseDto from(
+  public static CompaniesSearchResponseDto from(
     Page<CompanySearchOnly> companies,
     Map<Long, Double> totalRatings,
     Set<Long> followedCompanyIds,
@@ -36,7 +36,7 @@ public class CompanyListResponseDto {
         )
       ).toList();
 
-    return CompanyListResponseDto.builder()
+    return CompaniesSearchResponseDto.builder()
       .companies(companyDtos)
       .totalCount(companies.getTotalElements())
       .hasNext(companies.hasNext())

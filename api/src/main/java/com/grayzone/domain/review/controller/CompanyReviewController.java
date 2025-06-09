@@ -1,7 +1,7 @@
 package com.grayzone.domain.review.controller;
 
 import com.grayzone.common.ResponseDataDto;
-import com.grayzone.domain.review.dto.response.CompanyReviewListResponseDto;
+import com.grayzone.domain.review.dto.response.CompanyReviewsResponseDto;
 import com.grayzone.domain.review.service.CompanyReviewService;
 import com.grayzone.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class CompanyReviewController {
   private final CompanyReviewService companyReviewService;
 
   @GetMapping("/{companyId}/reviews")
-  public ResponseEntity<ResponseDataDto<CompanyReviewListResponseDto>> getCompanyReviews(
+  public ResponseEntity<ResponseDataDto<CompanyReviewsResponseDto>> getCompanyReviews(
     @PathVariable Long companyId,
     @AuthenticationPrincipal User user,
     Pageable pageable

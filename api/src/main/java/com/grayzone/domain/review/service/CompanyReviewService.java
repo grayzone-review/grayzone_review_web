@@ -1,7 +1,7 @@
 package com.grayzone.domain.review.service;
 
 import com.grayzone.domain.company.repository.CompanyRepository;
-import com.grayzone.domain.review.dto.response.CompanyReviewListResponseDto;
+import com.grayzone.domain.review.dto.response.CompanyReviewsResponseDto;
 import com.grayzone.domain.review.entity.CompanyReview;
 import com.grayzone.domain.review.repository.CompanyReviewRepository;
 import com.grayzone.domain.review.repository.ReviewLikeRepository;
@@ -24,7 +24,7 @@ public class CompanyReviewService {
   private final CompanyRepository companyRepository;
   private final ReviewLikeRepository reviewLikeRepository;
 
-  public CompanyReviewListResponseDto getReviewsByCompanyId(Long companyId, Long userId, Pageable pageable) {
+  public CompanyReviewsResponseDto getReviewsByCompanyId(Long companyId, Long userId, Pageable pageable) {
     if (!companyRepository.existsById(companyId)) {
       throw new EntityNotFoundException("Company not found");
     }
@@ -40,7 +40,7 @@ public class CompanyReviewService {
       ? Set.of()
       : reviewLikeRepository.findReviewIdsLikedByUser(userId, reviewIds);
 
-    return CompanyReviewListResponseDto.from(
+    return CompanyReviewsResponseDto.from(
       reviewPage,
       userLikedReviewIds
     );

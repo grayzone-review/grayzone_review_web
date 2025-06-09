@@ -15,13 +15,13 @@ import java.util.stream.Collectors;
 
 @Getter
 @Builder
-public class CompanyReviewListResponseDto {
+public class CompanyReviewsResponseDto {
 
   private List<CompanyReviewResponseDto> reviews;
   private boolean hasNext;
   private int currentPage;
 
-  public static CompanyReviewListResponseDto from(Page<CompanyReview> reviewPage, Set<Long> userLikedReviewIds) {
+  public static CompanyReviewsResponseDto from(Page<CompanyReview> reviewPage, Set<Long> userLikedReviewIds) {
 
     List<CompanyReviewResponseDto> companyReviewResponseDtos = reviewPage.getContent().stream()
       .map(
@@ -32,7 +32,7 @@ public class CompanyReviewListResponseDto {
       )
       .toList();
 
-    return CompanyReviewListResponseDto
+    return CompanyReviewsResponseDto
       .builder()
       .reviews(companyReviewResponseDtos)
       .hasNext(reviewPage.hasNext())

@@ -1,8 +1,8 @@
 package com.grayzone.domain.company.controller;
 
 import com.grayzone.common.ResponseDataDto;
+import com.grayzone.domain.company.dto.response.CompaniesSearchResponseDto;
 import com.grayzone.domain.company.dto.response.CompanyDetailResponseDto;
-import com.grayzone.domain.company.dto.response.CompanyListResponseDto;
 import com.grayzone.domain.company.service.CompanyService;
 import com.grayzone.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -31,15 +31,32 @@ public class CompanyController {
     );
   }
 
-  @GetMapping("")
-  public ResponseEntity<ResponseDataDto<CompanyListResponseDto>> getCompanies(
+  @GetMapping("/search")
+  public ResponseEntity<ResponseDataDto<CompaniesSearchResponseDto>> searchCompanies(
     @RequestParam("keyword") String keyword,
     @RequestParam("latitude") Double latitude,
     @RequestParam("longitude") Double longitude,
     @AuthenticationPrincipal User user,
     Pageable pageable
   ) {
-    CompanyListResponseDto companiesByKeyword = companyService.getCompaniesByKeyword(keyword, latitude, longitude, user, pageable);
+    CompaniesSearchResponseDto companiesByKeyword = companyService.getCompaniesByKeyword(keyword, latitude, longitude, user, pageable);
+    log.info(companiesByKeyword.getCompanies().toString());
+    return ResponseEntity.ok(
+      ResponseDataDto.from(
+        companiesByKeyword
+      )
+    );
+  }
+
+  @GetMapping("/suggestions")
+  public ResponseEntity<ResponseDataDto<CompaniesSearchResponseDto>> suggestCompanies(
+    @RequestParam("keyword") String keyword,
+    @RequestParam("latitude") Double latitude,
+    @RequestParam("longitude") Double longitude,
+    @AuthenticationPrincipal User user,
+    Pageable pageable
+  ) {
+    CompaniesSearchResponseDto companiesByKeyword = companyService.getCompaniesByKeyword(keyword, latitude, longitude, user, pageable);
     log.info(companiesByKeyword.getCompanies().toString());
     return ResponseEntity.ok(
       ResponseDataDto.from(

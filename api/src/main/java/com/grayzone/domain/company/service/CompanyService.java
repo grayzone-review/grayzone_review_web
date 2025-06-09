@@ -1,7 +1,7 @@
 package com.grayzone.domain.company.service;
 
+import com.grayzone.domain.company.dto.response.CompaniesSearchResponseDto;
 import com.grayzone.domain.company.dto.response.CompanyDetailResponseDto;
-import com.grayzone.domain.company.dto.response.CompanyListResponseDto;
 import com.grayzone.domain.company.entity.Company;
 import com.grayzone.domain.company.repository.CompanyRepository;
 import com.grayzone.domain.company.repository.projection.CompanySearchOnly;
@@ -44,7 +44,7 @@ public class CompanyService {
     return CompanyDetailResponseDto.from(company, companyRating, isFollowing);
   }
 
-  public CompanyListResponseDto getCompaniesByKeyword(
+  public CompaniesSearchResponseDto getCompaniesByKeyword(
     String keyword,
     Double latitude,
     Double longitude,
@@ -81,6 +81,6 @@ public class CompanyService {
         ReviewTitleOnly::getTitle
       ));
 
-    return CompanyListResponseDto.from(companies, totalRatings, followedCompanyIds, topReviews);
+    return CompaniesSearchResponseDto.from(companies, totalRatings, followedCompanyIds, topReviews);
   }
 }

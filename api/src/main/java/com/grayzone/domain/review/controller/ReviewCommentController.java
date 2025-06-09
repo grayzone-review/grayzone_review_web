@@ -5,8 +5,8 @@ import com.grayzone.domain.review.dto.request.CreateReplyRequestDto;
 import com.grayzone.domain.review.dto.request.CreateReviewCommentRequestDto;
 import com.grayzone.domain.review.dto.response.CreateReplyResponseDto;
 import com.grayzone.domain.review.dto.response.CreateReviewCommentResponseDto;
-import com.grayzone.domain.review.dto.response.ReplyListResponseDto;
-import com.grayzone.domain.review.dto.response.ReviewCommentListResponseDto;
+import com.grayzone.domain.review.dto.response.RepliesResponseDto;
+import com.grayzone.domain.review.dto.response.ReviewCommentsResponseDto;
 import com.grayzone.domain.review.service.ReviewCommentService;
 import com.grayzone.domain.user.entity.User;
 import jakarta.validation.Valid;
@@ -25,7 +25,7 @@ public class ReviewCommentController {
   private final ReviewCommentService reviewCommentService;
 
   @GetMapping("/reviews/{reviewId}/comments")
-  public ResponseEntity<ResponseDataDto<ReviewCommentListResponseDto>> getReviewComments(
+  public ResponseEntity<ResponseDataDto<ReviewCommentsResponseDto>> getReviewComments(
     @PathVariable Long reviewId,
     @AuthenticationPrincipal User user,
     Pageable pageable
@@ -38,7 +38,7 @@ public class ReviewCommentController {
   }
 
   @GetMapping("/comments/{commentId}/replies")
-  public ResponseEntity<ResponseDataDto<ReplyListResponseDto>> getReviewReplies(
+  public ResponseEntity<ResponseDataDto<RepliesResponseDto>> getReviewReplies(
     @PathVariable Long commentId,
     @AuthenticationPrincipal User user,
     Pageable pageable
