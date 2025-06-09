@@ -17,7 +17,7 @@ public interface ReviewRatingRepository extends JpaRepository<ReviewRating, Long
   Double getAverageScoreByCompanyId(@Param("companyId") Long companyId);
 
   @Query("""
-    SELECT c.id, COALESCE(AVG(r.rating), 0)
+    SELECT c.id AS companyId, COALESCE(AVG(r.rating), 0) AS totalRating
     FROM Company c
     LEFT JOIN c.companyReviews cr
     LEFT JOIN cr.ratings r

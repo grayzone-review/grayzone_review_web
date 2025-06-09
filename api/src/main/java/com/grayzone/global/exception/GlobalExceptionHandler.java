@@ -15,6 +15,8 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ResponseErrorDto> handleGlobalException(Exception exception) {
     String errorMessage = exception.getMessage();
 
+    log.error(exception.getClass().getName());
+
     return ResponseEntity
       .status(HttpStatus.NOT_FOUND)
       .body(ResponseErrorDto.from(errorMessage));

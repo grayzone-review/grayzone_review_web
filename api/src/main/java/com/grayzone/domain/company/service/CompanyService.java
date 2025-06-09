@@ -60,7 +60,8 @@ public class CompanyService {
 
     List<Long> companyIds = companies.getContent().stream().map(CompanySearchOnly::getId).toList();
 
-    Map<Long, Double> totalRatings = reviewRatingRepository.getAverageScoresByCompanyIds(companyIds)
+    List<CompanyTotalRatingOnly> averageScoresByCompanyIds = reviewRatingRepository.getAverageScoresByCompanyIds(companyIds);
+    Map<Long, Double> totalRatings = averageScoresByCompanyIds
       .stream()
       .collect(
         Collectors.toMap(

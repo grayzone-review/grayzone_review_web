@@ -25,7 +25,7 @@ public interface CompanyReviewRepository extends JpaRepository<CompanyReview, Lo
                    ORDER BY COUNT(rl.id) DESC, cr.created_at DESC
                ) AS rn
         FROM company_reviews cr
-        LEFT JOIN review_like rl ON rl.company_review_id = cr.id
+        LEFT JOIN review_likes rl ON rl.company_review_id = cr.id
         WHERE cr.company_id IN (:companyIds)
         GROUP BY cr.id
     ) cr

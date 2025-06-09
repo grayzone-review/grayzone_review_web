@@ -18,7 +18,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
                 sin(radians(:latitude)) * sin(radians(c.latitude))
             )) AS distance
         FROM companies c
-        WHERE MATCH(c.business_name) AGAINST("스타벅스*" IN BOOLEAN MODE)
+        WHERE MATCH(c.business_name) AGAINST(:keyword IN BOOLEAN MODE)
         ORDER BY distance IS NULL, distance ASC
     """, nativeQuery = true)
   Page<CompanySearchOnly> findByKeywordOrderByDistance(
