@@ -1,7 +1,7 @@
 package com.grayzone.company.repository;
 
-import com.grayzone.domain.company.entity.Company;
 import com.grayzone.domain.company.repository.CompanyRepository;
+import com.grayzone.domain.company.repository.projection.CompanySearchOnly;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class CompanyRepositoryTest {
 
     long startTime = System.nanoTime();
 
-    Page<Company> results = companyRepository.findByKeywordOrderByDistance(
+    Page<CompanySearchOnly> results = companyRepository.findByKeywordOrderByDistance(
       keyword, lat, lng, pageable
     );
 
@@ -41,8 +41,8 @@ public class CompanyRepositoryTest {
     log.info("duration: {}", durationInMillis);
 
     log.info("couts {}", results.getTotalElements());
-    for (Company result : results) {
-      log.info("result {}", result.getBusinessName());
+    for (CompanySearchOnly result : results) {
+      log.info("result {}", result.getCompanyName());
     }
   }
 }

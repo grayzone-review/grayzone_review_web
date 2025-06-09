@@ -17,10 +17,12 @@ public interface ReviewRatingRepository extends JpaRepository<ReviewRating, Long
   Double getAverageScoreByCompanyId(@Param("companyId") Long companyId);
 
   @Query("""
-    SELECT AVG(rr.rating)
-    FROM ReviewRating rr
-    WHERE rr.companyReview.company.id IN :companyIds
-    GROUP BY rr.companyReview.company.id
+    SELECT c.id, COALESCE(AVG(r.rating), 0)
+    FROM Company c
+    LEFT JOIN c.companyReviews cr
+    LEFT JOIN cr.ratings r
+    WHERE c.id IN :companyIds
+    GROUP BY c.id
     """)
-  List<CompanyTotalRatingOnly> getCompaniesAverageScoreByCompanyIds(@Param("companyIds") List<Long> companyIds);
+  List<CompanyTotalRatingOnly> getAverageScoresByCompanyIds(@Param("companyIds") List<Long> companyIds);
 }
