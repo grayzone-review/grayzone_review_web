@@ -31,7 +31,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
   );
 
   @Query(value = """
-        SELECT c.id, c.business_name AS company_name, c.site_full_address, c.road_name_address,
+        SELECT c.id, c.business_name AS company_name, c.site_full_address, c.road_name_address
         FROM companies c
         WHERE MATCH(c.business_name) AGAINST(:keyword IN BOOLEAN MODE)
         ORDER BY (latitude IS NULL OR longitude IS NULL), (6371 * acos(

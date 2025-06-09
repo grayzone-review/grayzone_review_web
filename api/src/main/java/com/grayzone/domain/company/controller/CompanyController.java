@@ -2,6 +2,7 @@ package com.grayzone.domain.company.controller;
 
 import com.grayzone.common.ResponseDataDto;
 import com.grayzone.domain.company.dto.response.CompaniesSearchResponseDto;
+import com.grayzone.domain.company.dto.response.CompaniesSuggestResponseDto;
 import com.grayzone.domain.company.dto.response.CompanyDetailResponseDto;
 import com.grayzone.domain.company.service.CompanyService;
 import com.grayzone.domain.user.entity.User;
@@ -39,28 +40,25 @@ public class CompanyController {
     @AuthenticationPrincipal User user,
     Pageable pageable
   ) {
-    CompaniesSearchResponseDto companiesByKeyword = companyService.getSearchedCompaniesByKeyword(keyword, latitude, longitude, user, pageable);
-    log.info(companiesByKeyword.getCompanies().toString());
+
     return ResponseEntity.ok(
       ResponseDataDto.from(
-        companiesByKeyword
+        companyService.getSearchedCompaniesByKeyword(keyword, latitude, longitude, user, pageable)
       )
     );
   }
 
   @GetMapping("/suggestions")
-  public ResponseEntity<ResponseDataDto<CompaniesSearchResponseDto>> suggestCompanies(
+  public ResponseEntity<ResponseDataDto<CompaniesSuggestResponseDto>> suggestCompanies(
     @RequestParam("keyword") String keyword,
     @RequestParam("latitude") Double latitude,
     @RequestParam("longitude") Double longitude,
     @AuthenticationPrincipal User user,
     Pageable pageable
   ) {
-    CompaniesSearchResponseDto companiesByKeyword = companyService.getSearchedCompaniesByKeyword(keyword, latitude, longitude, user, pageable);
-    log.info(companiesByKeyword.getCompanies().toString());
     return ResponseEntity.ok(
       ResponseDataDto.from(
-        companiesByKeyword
+        companyService.getSuggestedCompanies(keyword, latitude, longitude, pageable)
       )
     );
   }
