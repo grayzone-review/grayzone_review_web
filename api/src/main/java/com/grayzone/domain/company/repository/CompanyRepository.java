@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 public interface CompanyRepository extends JpaRepository<Company, Long> {
 
   @Query(value = """
-        SELECT *,
+        SELECT c.id, c.business_name AS company_name, c.site_full_address, c.road_name_address,
             (6371 * acos(
                 cos(radians(:latitude)) * cos(radians(c.latitude)) *
                 cos(radians(c.longitude) - radians(:longitude)) +
@@ -20,7 +20,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
         WHERE c.business_name LIKE %:keyword%
         ORDER BY distance IS NULL, distance ASC
     """, nativeQuery = true)
-  Page<Company> findByKeywordOrderByDistance(
+  Page<CompanySearchResult> findByKeywordOrderByDistance(
     @Param("keyword") String keyword,
     @Param("latitude") Double latitude,
     @Param("longitude") Double longitude,
