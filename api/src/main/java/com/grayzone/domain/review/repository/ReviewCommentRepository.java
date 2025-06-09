@@ -1,6 +1,7 @@
 package com.grayzone.domain.review.repository;
 
 import com.grayzone.domain.review.entity.ReviewComment;
+import com.grayzone.domain.review.repository.projection.ReplyCountOnly;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

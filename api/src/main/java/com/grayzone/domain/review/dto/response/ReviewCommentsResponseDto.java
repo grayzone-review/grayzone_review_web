@@ -11,13 +11,13 @@ import java.util.Map;
 
 @Getter
 @Builder
-public class ReviewCommentListResponseDto {
+public class ReviewCommentsResponseDto {
 
   private final List<ReviewCommentResponseDto> comments;
   private final boolean hasNext;
   private final int currentPage;
 
-  public static ReviewCommentListResponseDto from(
+  public static ReviewCommentsResponseDto from(
     Page<ReviewComment> commentsPage,
     Long viewerId,
     Map<Long, Integer> replyCounts
@@ -32,7 +32,7 @@ public class ReviewCommentListResponseDto {
       )
       .toList();
 
-    return ReviewCommentListResponseDto.builder()
+    return ReviewCommentsResponseDto.builder()
       .comments(reviewCommentResponseDtos)
       .hasNext(commentsPage.hasNext())
       .currentPage(commentsPage.getNumber())

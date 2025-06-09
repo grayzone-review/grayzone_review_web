@@ -4,13 +4,13 @@ import com.grayzone.domain.review.dto.request.CreateReplyRequestDto;
 import com.grayzone.domain.review.dto.request.CreateReviewCommentRequestDto;
 import com.grayzone.domain.review.dto.response.CreateReplyResponseDto;
 import com.grayzone.domain.review.dto.response.CreateReviewCommentResponseDto;
-import com.grayzone.domain.review.dto.response.ReplyListResponseDto;
-import com.grayzone.domain.review.dto.response.ReviewCommentListResponseDto;
+import com.grayzone.domain.review.dto.response.RepliesResponseDto;
+import com.grayzone.domain.review.dto.response.ReviewCommentsResponseDto;
 import com.grayzone.domain.review.entity.CompanyReview;
 import com.grayzone.domain.review.entity.ReviewComment;
 import com.grayzone.domain.review.repository.CompanyReviewRepository;
-import com.grayzone.domain.review.repository.ReplyCountOnly;
 import com.grayzone.domain.review.repository.ReviewCommentRepository;
+import com.grayzone.domain.review.repository.projection.ReplyCountOnly;
 import com.grayzone.domain.user.entity.User;
 import com.grayzone.domain.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -34,7 +34,7 @@ public class ReviewCommentService {
   private final CompanyReviewRepository companyReviewRepository;
   private final UserRepository userRepository;
 
-  public ReviewCommentListResponseDto getCommentsByReviewId(
+  public ReviewCommentsResponseDto getCommentsByReviewId(
     Long reviewId,
     Long userId,
     Pageable pageable
@@ -55,14 +55,14 @@ public class ReviewCommentService {
         .toList()
     ).stream().collect(Collectors.toMap(ReplyCountOnly::getReviewId, ReplyCountOnly::getCount));
 
-    return ReviewCommentListResponseDto.from(
+    return ReviewCommentsResponseDto.from(
       commentsPage,
       userId,
       replyCounts
     );
   }
 
-  public ReplyListResponseDto getReplyByParentId(
+  public RepliesResponseDto getReplyByParentId(
     Long parentId,
     Long userId,
     Pageable pageable
@@ -73,7 +73,7 @@ public class ReviewCommentService {
 
     Page<ReviewComment> replies = reviewCommentRepository.findByParentId(parentId, pageable);
 
-    return ReplyListResponseDto.from(replies, userId);
+    return RepliesResponseDto.from(replies, userId);
   }
 
   @Transactional

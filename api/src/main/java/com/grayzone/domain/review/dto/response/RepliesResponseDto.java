@@ -10,17 +10,17 @@ import java.util.List;
 
 @Getter
 @Builder
-public class ReplyListResponseDto {
+public class RepliesResponseDto {
   private final List<ReplyResponseDto> replies;
   private final boolean hasNext;
   private final int currentPage;
 
-  public static ReplyListResponseDto from(Page<ReviewComment> commentPages, Long viewerId) {
+  public static RepliesResponseDto from(Page<ReviewComment> commentPages, Long viewerId) {
     List<ReplyResponseDto> replyResponseDtos = commentPages.getContent().stream()
-      .map((comment) -> ReplyResponseDto.from(comment, viewerId))
+      .map((comment) -> RepliesResponseDto.ReplyResponseDto.from(comment, viewerId))
       .toList();
 
-    return ReplyListResponseDto.builder()
+    return RepliesResponseDto.builder()
       .replies(replyResponseDtos)
       .hasNext(commentPages.hasNext())
       .currentPage(commentPages.getNumber())

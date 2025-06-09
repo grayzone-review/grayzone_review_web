@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name="companies")
+@Table(name = "companies")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Company {
@@ -29,8 +29,8 @@ public class Company {
   private String roadNameAddress;
   private String roadNameZipCode;
   private String businessName;
-  private Double xCoordinate;
-  private Double yCoordinate;
+  private Double latitude;
+  private Double longitude;
 
   @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
   private List<CompanyReview> companyReviews = new ArrayList<>();
