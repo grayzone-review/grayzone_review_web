@@ -54,8 +54,11 @@ public class CompanyService {
     User user,
     Pageable pageable
   ) {
+
+    String booleanKeyword = generateBooleanKeyword(keyword);
+
     Page<CompanySearchOnly> companies = companyRepository.searchByKeywordOrderByDistance(
-      keyword,
+      booleanKeyword,
       latitude,
       longitude,
       pageable
@@ -92,8 +95,11 @@ public class CompanyService {
     Double longitude,
     Pageable pageable
   ) {
+
+    String booleanKeyword = generateBooleanKeyword(keyword);
+
     Slice<CompanySuggestionOnly> companies = companyRepository.suggestByKeywordOrderByDistance(
-      keyword,
+      booleanKeyword,
       latitude,
       longitude,
       pageable
@@ -114,5 +120,11 @@ public class CompanyService {
       companies,
       totalRatings
     );
+  }
+
+  private String generateBooleanKeyword(String keyword) {
+    return Arrays.stream(keyword.split(" "))
+      .map(word -> "+" + word)
+      .collect(Collectors.joining(" "));
   }
 }
