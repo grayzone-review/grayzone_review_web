@@ -46,4 +46,21 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
     @Param("longitude") Double longitude,
     Pageable pageable
   );
+
+  @Query(value = """
+    SELECT c.id, c.business_name AS company_name, c.site_full_address, c.road_name_address,
+        (6371 * acos(
+            cos(radians(:latitude)) * cos(radians(c.latitude)) *
+            cos(radians(c.longitude) - radians(:longitude)) +
+            sin(radians(:latitude)) * sin(radians(c.latitude))
+        )) AS distance
+    FROM companies c
+    HAVING distance <= 3
+    ORDER BY distance ASC
+    """, nativeQuery = true)
+  Page<CompanySearchOnly> findCompaniesWithin3km(
+    @Param("latitude") Double latitude,
+    @Param("longitude") Double longitude,
+    Pageable pageable
+  );
 }
