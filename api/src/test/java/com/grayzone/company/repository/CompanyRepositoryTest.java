@@ -30,7 +30,7 @@ public class CompanyRepositoryTest {
 
     long startTime = System.nanoTime();
 
-    Page<CompanySearchOnly> results = companyRepository.searchByKeywordOrderByDistance(
+    Page<CompanySearchOnly> results = companyRepository.searchCompaniesByKeywordOrderByDistance(
       keyword, lat, lng, pageable
     );
 

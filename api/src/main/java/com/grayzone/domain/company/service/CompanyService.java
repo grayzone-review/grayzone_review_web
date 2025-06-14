@@ -57,7 +57,7 @@ public class CompanyService {
 
     String booleanKeyword = generateBooleanKeyword(keyword);
 
-    Page<CompanySearchOnly> companies = companyRepository.searchByKeywordOrderByDistance(
+    Page<CompanySearchOnly> companies = companyRepository.searchCompaniesByKeywordOrderByDistance(
       booleanKeyword,
       latitude,
       longitude,
@@ -98,7 +98,7 @@ public class CompanyService {
 
     String booleanKeyword = generateBooleanKeyword(keyword);
 
-    Slice<CompanySuggestionOnly> companies = companyRepository.suggestByKeywordOrderByDistance(
+    Slice<CompanySuggestionOnly> companies = companyRepository.suggestCompaniesByKeywordOrderByDistance(
       booleanKeyword,
       latitude,
       longitude,

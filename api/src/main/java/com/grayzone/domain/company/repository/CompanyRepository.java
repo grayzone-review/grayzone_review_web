@@ -23,7 +23,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
         WHERE MATCH(c.business_name) AGAINST(:keyword IN BOOLEAN MODE)
         ORDER BY distance IS NULL, distance ASC
     """, nativeQuery = true)
-  Page<CompanySearchOnly> searchByKeywordOrderByDistance(
+  Page<CompanySearchOnly> searchCompaniesByKeywordOrderByDistance(
     @Param("keyword") String keyword,
     @Param("latitude") Double latitude,
     @Param("longitude") Double longitude,
@@ -40,7 +40,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
                 sin(radians(:latitude)) * sin(radians(c.latitude))
             )) ASC
     """, nativeQuery = true)
-  Slice<CompanySuggestionOnly> suggestByKeywordOrderByDistance(
+  Slice<CompanySuggestionOnly> suggestCompaniesByKeywordOrderByDistance(
     @Param("keyword") String keyword,
     @Param("latitude") Double latitude,
     @Param("longitude") Double longitude,
