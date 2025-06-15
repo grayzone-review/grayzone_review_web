@@ -68,12 +68,19 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
     Pageable pageable
   );
 
-  @Query("""
-        SELECT c FROM Company c LEFT JOIN c.reviews r
-        WHERE c.siteFullAddress LIKE CONCAT(:region, '%')
-        GROUP BY c
-        ORDER BY COUNT(r) DESC
-    """)
+  @Query(value = """
+    SELECT c.id, c.business_name, c.site_full_address, c.road_name_address,
+        (6371 * acos(
+            cos(radians(:latitude)) * cos(radians(c.latitude)) *
+            cos(radians(c.longitude) - radians(:longitude)) +
+            sin(radians(:latitude)) * sin(radians(c.latitude))
+        )) AS distance
+    FROM companies c
+    LEFT JOIN company_reviews r ON r.company_id = c.id
+    WHERE c.site_full_address LIKE :region
+    GROUP BY c.id, c.business_name, c.site_full_address, c.road_name_address
+    ORDER BY COUNT(r.id) DESC, distance ASC
+    """, nativeQuery = true)
   Page<CompanySearchOnly> findCompaniesByRegion(
     @Param("latitude") Double latitude,
     @Param("longitude") Double longitude,

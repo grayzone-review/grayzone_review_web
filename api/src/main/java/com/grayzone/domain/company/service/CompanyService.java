@@ -13,6 +13,7 @@ import com.grayzone.domain.review.repository.projection.CompanyTotalRatingOnly;
 import com.grayzone.domain.review.repository.projection.ReviewTitleOnly;
 import com.grayzone.domain.user.entity.User;
 import com.grayzone.domain.user.repository.FollowCompanyRepository;
+import com.grayzone.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -34,6 +35,7 @@ public class CompanyService {
   private final ReviewRatingRepository reviewRatingRepository;
   private final FollowCompanyRepository followCompanyRepository;
   private final CompanyReviewRepository companyReviewRepository;
+  private final UserRepository userRepository;
 
   public CompanyDetailResponseDto getCompanyById(Long companyId, Long userId) {
     Double companyRating = Optional.ofNullable(reviewRatingRepository.getAverageScoreByCompanyId(companyId))
@@ -129,6 +131,41 @@ public class CompanyService {
     Pageable pageable
   ) {
     Page<CompanySearchOnly> companies = companyRepository.findCompaniesWithin3km(latitude, longitude, pageable);
+
+    List<Long> companyIds = companies.getContent().stream().map(CompanySearchOnly::getId).toList();
+
+    Map<Long, Double> totalRatings = reviewRatingRepository.getAverageScoresByCompanyIds(companyIds)
+      .stream()
+      .collect(
+        Collectors.toMap(
+          CompanyTotalRatingOnly::getCompanyId,
+          CompanyTotalRatingOnly::getTotalRating
+        )
+      );
+
+    Set<Long> followedCompanyIds = new HashSet<>(followCompanyRepository
+      .findFollowedCompanyIdsByUserIdAndCompanyIds(user.getId(), companyIds));
+
+    Map<Long, String> topReviews = companyReviewRepository
+      .findTopReviewPerCompany(companyIds)
+      .stream()
+      .collect(Collectors.toMap(
+        ReviewTitleOnly::getCompanyId,
+        ReviewTitleOnly::getTitle
+      ));
+
+    return CompaniesSearchResponseDto.from(companies, totalRatings, followedCompanyIds, topReviews);
+  }
+
+  public CompaniesSearchResponseDto getCompaniesByMainRegion(
+    Double latitude,
+    Double longitude,
+    User user,
+    Pageable pageable
+  ) {
+    String region = user.getMainRegion() + "%";
+
+    Page<CompanySearchOnly> companies = companyRepository.findCompaniesByRegion(latitude, longitude, region, pageable);
 
     List<Long> companyIds = companies.getContent().stream().map(CompanySearchOnly::getId).toList();
 
