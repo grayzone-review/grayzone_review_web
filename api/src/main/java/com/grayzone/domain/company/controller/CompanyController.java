@@ -62,4 +62,46 @@ public class CompanyController {
       )
     );
   }
+
+  @GetMapping("/nearby")
+  public ResponseEntity<ResponseDataDto<CompaniesSearchResponseDto>> getNearbyCompanies(
+    @RequestParam Double latitude,
+    @RequestParam Double longitude,
+    @AuthenticationPrincipal User user,
+    Pageable pageable
+  ) {
+    return ResponseEntity.ok(
+      ResponseDataDto.from(
+        companyService.getNearbyCompanies(latitude, longitude, user, pageable)
+      )
+    );
+  }
+
+  @GetMapping("/main-region")
+  public ResponseEntity<ResponseDataDto<CompaniesSearchResponseDto>> getMainRegionCompanies(
+    @RequestParam Double latitude,
+    @RequestParam Double longitude,
+    @AuthenticationPrincipal User user,
+    Pageable pageable
+  ) {
+    return ResponseEntity.ok(
+      ResponseDataDto.from(
+        companyService.getCompaniesByMainRegion(latitude, longitude, user, pageable)
+      )
+    );
+  }
+
+  @GetMapping("/interested-region")
+  public ResponseEntity<ResponseDataDto<CompaniesSearchResponseDto>> getInterestedRegionCompanies(
+    @RequestParam Double latitude,
+    @RequestParam Double longitude,
+    @AuthenticationPrincipal User user,
+    Pageable pageable
+  ) {
+    return ResponseEntity.ok(
+      ResponseDataDto.from(
+        companyService.getCompaniesByInterestedRegion(latitude, longitude, user, pageable)
+      )
+    );
+  }
 }
