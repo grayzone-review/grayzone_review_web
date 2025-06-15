@@ -76,4 +76,18 @@ public class CompanyController {
       )
     );
   }
+
+  @GetMapping("/main-region")
+  public ResponseEntity<ResponseDataDto<CompaniesSearchResponseDto>> getMainRegionCompanies(
+    @RequestParam Double latitude,
+    @RequestParam Double longitude,
+    @AuthenticationPrincipal User user,
+    Pageable pageable
+  ) {
+    return ResponseEntity.ok(
+      ResponseDataDto.from(
+        companyService.getCompaniesByMainRegion(latitude, longitude, user, pageable)
+      )
+    );
+  }
 }
