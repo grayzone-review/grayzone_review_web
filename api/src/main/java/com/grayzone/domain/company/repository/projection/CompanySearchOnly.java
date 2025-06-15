@@ -10,5 +10,5 @@ public interface CompanySearchOnly {
 
   String getRoadNameAddress();
 
-  double getDistance();
+  Double getDistance();
 }

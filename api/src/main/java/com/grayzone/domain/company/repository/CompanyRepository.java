@@ -69,7 +69,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
   );
 
   @Query(value = """
-    SELECT c.id, c.business_name, c.site_full_address, c.road_name_address,
+    SELECT c.id, c.business_name AS company_name, c.site_full_address, c.road_name_address,
         (6371 * acos(
             cos(radians(:latitude)) * cos(radians(c.latitude)) *
             cos(radians(c.longitude) - radians(:longitude)) +
