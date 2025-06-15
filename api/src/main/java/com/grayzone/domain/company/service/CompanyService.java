@@ -122,6 +122,39 @@ public class CompanyService {
     );
   }
 
+  public CompaniesSearchResponseDto getNearbyCompanies(
+    Double latitude,
+    Double longitude,
+    User user,
+    Pageable pageable
+  ) {
+    Page<CompanySearchOnly> companies = companyRepository.findCompaniesWithin3km(latitude, longitude, pageable);
+
+    List<Long> companyIds = companies.getContent().stream().map(CompanySearchOnly::getId).toList();
+
+    Map<Long, Double> totalRatings = reviewRatingRepository.getAverageScoresByCompanyIds(companyIds)
+      .stream()
+      .collect(
+        Collectors.toMap(
+          CompanyTotalRatingOnly::getCompanyId,
+          CompanyTotalRatingOnly::getTotalRating
+        )
+      );
+
+    Set<Long> followedCompanyIds = new HashSet<>(followCompanyRepository
+      .findFollowedCompanyIdsByUserIdAndCompanyIds(user.getId(), companyIds));
+
+    Map<Long, String> topReviews = companyReviewRepository
+      .findTopReviewPerCompany(companyIds)
+      .stream()
+      .collect(Collectors.toMap(
+        ReviewTitleOnly::getCompanyId,
+        ReviewTitleOnly::getTitle
+      ));
+
+    return CompaniesSearchResponseDto.from(companies, totalRatings, followedCompanyIds, topReviews);
+  }
+
   private String generateBooleanKeyword(String keyword) {
     return Arrays.stream(keyword.split(" "))
       .map(word -> "+" + word)
