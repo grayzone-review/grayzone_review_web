@@ -163,7 +163,7 @@ public class CompanyService {
     User user,
     Pageable pageable
   ) {
-    String region = user.getMainRegion() + "%";
+    String region = createRegionWildCard(user.getMainRegion());
 
     Page<CompanySearchOnly> companies = companyRepository.findCompaniesByRegion(latitude, longitude, region, pageable);
 
@@ -190,6 +190,45 @@ public class CompanyService {
       ));
 
     return CompaniesSearchResponseDto.from(companies, totalRatings, followedCompanyIds, topReviews);
+  }
+
+  public CompaniesSearchResponseDto getCompaniesByInterestedRegion(
+    Double latitude,
+    Double longitude,
+    User user,
+    Pageable pageable
+  ) {
+    String region = createRegionWildCard(user.getInterestedRegion());
+
+    Page<CompanySearchOnly> companies = companyRepository.findCompaniesByRegion(latitude, longitude, region, pageable);
+
+    List<Long> companyIds = companies.getContent().stream().map(CompanySearchOnly::getId).toList();
+
+    Map<Long, Double> totalRatings = reviewRatingRepository.getAverageScoresByCompanyIds(companyIds)
+      .stream()
+      .collect(
+        Collectors.toMap(
+          CompanyTotalRatingOnly::getCompanyId,
+          CompanyTotalRatingOnly::getTotalRating
+        )
+      );
+
+    Set<Long> followedCompanyIds = new HashSet<>(followCompanyRepository
+      .findFollowedCompanyIdsByUserIdAndCompanyIds(user.getId(), companyIds));
+
+    Map<Long, String> topReviews = companyReviewRepository
+      .findTopReviewPerCompany(companyIds)
+      .stream()
+      .collect(Collectors.toMap(
+        ReviewTitleOnly::getCompanyId,
+        ReviewTitleOnly::getTitle
+      ));
+
+    return CompaniesSearchResponseDto.from(companies, totalRatings, followedCompanyIds, topReviews);
+  }
+
+  private String createRegionWildCard(String region) {
+    return region + "%";
   }
 
   private String generateBooleanKeyword(String keyword) {
