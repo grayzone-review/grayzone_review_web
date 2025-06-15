@@ -67,4 +67,17 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
     @Param("longitude") Double longitude,
     Pageable pageable
   );
+
+  @Query("""
+        SELECT c FROM Company c LEFT JOIN c.reviews r
+        WHERE c.siteFullAddress LIKE CONCAT(:region, '%')
+        GROUP BY c
+        ORDER BY COUNT(r) DESC
+    """)
+  Page<CompanySearchOnly> findCompaniesByRegion(
+    @Param("latitude") Double latitude,
+    @Param("longitude") Double longitude,
+    @Param("region") String region,
+    Pageable pageable
+  );
 }
