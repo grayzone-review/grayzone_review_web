@@ -55,7 +55,11 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
             sin(radians(:latitude)) * sin(radians(c.latitude))
         )) AS distance
     FROM companies c
-    HAVING distance <= 3
+    WHERE (6371 * acos(
+            cos(radians(:latitude)) * cos(radians(c.latitude)) *
+            cos(radians(c.longitude) - radians(:longitude)) +
+            sin(radians(:latitude)) * sin(radians(c.latitude))
+        )) <= 3
     ORDER BY distance ASC
     """, nativeQuery = true)
   Page<CompanySearchOnly> findCompaniesWithin3km(

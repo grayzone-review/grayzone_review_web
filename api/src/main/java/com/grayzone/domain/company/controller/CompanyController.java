@@ -62,4 +62,18 @@ public class CompanyController {
       )
     );
   }
+
+  @GetMapping("/nearby")
+  public ResponseEntity<ResponseDataDto<CompaniesSearchResponseDto>> getNearbyCompanies(
+    @RequestParam Double latitude,
+    @RequestParam Double longitude,
+    @AuthenticationPrincipal User user,
+    Pageable pageable
+  ) {
+    return ResponseEntity.ok(
+      ResponseDataDto.from(
+        companyService.getNearbyCompanies(latitude, longitude, user, pageable)
+      )
+    );
+  }
 }
