@@ -49,48 +49,6 @@ public class CompanyService {
     return CompanyDetailResponseDto.from(company, companyRating, isFollowing);
   }
 
-  public CompaniesSearchResponseDto getSearchedCompaniesByKeyword(
-    String keyword,
-    Double latitude,
-    Double longitude,
-    User user,
-    Pageable pageable
-  ) {
-
-    String booleanKeyword = generateBooleanKeyword(keyword);
-
-    Page<CompanySearchOnly> companies = companyRepository.searchCompaniesByKeywordOrderByDistance(
-      booleanKeyword,
-      latitude,
-      longitude,
-      pageable
-    );
-
-    List<Long> companyIds = companies.getContent().stream().map(CompanySearchOnly::getId).toList();
-
-    Map<Long, Double> totalRatings = reviewRatingRepository.getAverageScoresByCompanyIds(companyIds)
-      .stream()
-      .collect(
-        Collectors.toMap(
-          CompanyTotalRatingOnly::getCompanyId,
-          CompanyTotalRatingOnly::getTotalRating
-        )
-      );
-
-    Set<Long> followedCompanyIds = new HashSet<>(followCompanyRepository
-      .findFollowedCompanyIdsByUserIdAndCompanyIds(user.getId(), companyIds));
-
-    Map<Long, String> topReviews = companyReviewRepository
-      .findTopReviewPerCompany(companyIds)
-      .stream()
-      .collect(Collectors.toMap(
-        ReviewTitleOnly::getCompanyId,
-        ReviewTitleOnly::getTitle
-      ));
-
-    return CompaniesSearchResponseDto.from(companies, totalRatings, followedCompanyIds, topReviews);
-  }
-
   public CompaniesSuggestResponseDto getSuggestedCompanies(
     String keyword,
     Double latitude,
@@ -124,6 +82,26 @@ public class CompanyService {
     );
   }
 
+  public CompaniesSearchResponseDto getSearchedCompaniesByKeyword(
+    String keyword,
+    Double latitude,
+    Double longitude,
+    User user,
+    Pageable pageable
+  ) {
+
+    String booleanKeyword = generateBooleanKeyword(keyword);
+
+    Page<CompanySearchOnly> companies = companyRepository.searchCompaniesByKeywordOrderByDistance(
+      booleanKeyword,
+      latitude,
+      longitude,
+      pageable
+    );
+
+    return buildCompaniesSearchResponseDto(companies, user);
+  }
+
   public CompaniesSearchResponseDto getNearbyCompanies(
     Double latitude,
     Double longitude,
@@ -132,29 +110,7 @@ public class CompanyService {
   ) {
     Page<CompanySearchOnly> companies = companyRepository.findCompaniesWithin3km(latitude, longitude, pageable);
 
-    List<Long> companyIds = companies.getContent().stream().map(CompanySearchOnly::getId).toList();
-
-    Map<Long, Double> totalRatings = reviewRatingRepository.getAverageScoresByCompanyIds(companyIds)
-      .stream()
-      .collect(
-        Collectors.toMap(
-          CompanyTotalRatingOnly::getCompanyId,
-          CompanyTotalRatingOnly::getTotalRating
-        )
-      );
-
-    Set<Long> followedCompanyIds = new HashSet<>(followCompanyRepository
-      .findFollowedCompanyIdsByUserIdAndCompanyIds(user.getId(), companyIds));
-
-    Map<Long, String> topReviews = companyReviewRepository
-      .findTopReviewPerCompany(companyIds)
-      .stream()
-      .collect(Collectors.toMap(
-        ReviewTitleOnly::getCompanyId,
-        ReviewTitleOnly::getTitle
-      ));
-
-    return CompaniesSearchResponseDto.from(companies, totalRatings, followedCompanyIds, topReviews);
+    return buildCompaniesSearchResponseDto(companies, user);
   }
 
   public CompaniesSearchResponseDto getCompaniesByMainRegion(
@@ -164,32 +120,9 @@ public class CompanyService {
     Pageable pageable
   ) {
     String region = createRegionWildCard(user.getMainRegion());
-
     Page<CompanySearchOnly> companies = companyRepository.findCompaniesByRegion(latitude, longitude, region, pageable);
 
-    List<Long> companyIds = companies.getContent().stream().map(CompanySearchOnly::getId).toList();
-
-    Map<Long, Double> totalRatings = reviewRatingRepository.getAverageScoresByCompanyIds(companyIds)
-      .stream()
-      .collect(
-        Collectors.toMap(
-          CompanyTotalRatingOnly::getCompanyId,
-          CompanyTotalRatingOnly::getTotalRating
-        )
-      );
-
-    Set<Long> followedCompanyIds = new HashSet<>(followCompanyRepository
-      .findFollowedCompanyIdsByUserIdAndCompanyIds(user.getId(), companyIds));
-
-    Map<Long, String> topReviews = companyReviewRepository
-      .findTopReviewPerCompany(companyIds)
-      .stream()
-      .collect(Collectors.toMap(
-        ReviewTitleOnly::getCompanyId,
-        ReviewTitleOnly::getTitle
-      ));
-
-    return CompaniesSearchResponseDto.from(companies, totalRatings, followedCompanyIds, topReviews);
+    return buildCompaniesSearchResponseDto(companies, user);
   }
 
   public CompaniesSearchResponseDto getCompaniesByInterestedRegion(
@@ -199,34 +132,11 @@ public class CompanyService {
     Pageable pageable
   ) {
     String region = createRegionWildCard(user.getInterestedRegion());
-
     Page<CompanySearchOnly> companies = companyRepository.findCompaniesByRegion(latitude, longitude, region, pageable);
 
-    List<Long> companyIds = companies.getContent().stream().map(CompanySearchOnly::getId).toList();
-
-    Map<Long, Double> totalRatings = reviewRatingRepository.getAverageScoresByCompanyIds(companyIds)
-      .stream()
-      .collect(
-        Collectors.toMap(
-          CompanyTotalRatingOnly::getCompanyId,
-          CompanyTotalRatingOnly::getTotalRating
-        )
-      );
-
-    Set<Long> followedCompanyIds = new HashSet<>(followCompanyRepository
-      .findFollowedCompanyIdsByUserIdAndCompanyIds(user.getId(), companyIds));
-
-    Map<Long, String> topReviews = companyReviewRepository
-      .findTopReviewPerCompany(companyIds)
-      .stream()
-      .collect(Collectors.toMap(
-        ReviewTitleOnly::getCompanyId,
-        ReviewTitleOnly::getTitle
-      ));
-
-    return CompaniesSearchResponseDto.from(companies, totalRatings, followedCompanyIds, topReviews);
+    return buildCompaniesSearchResponseDto(companies, user);
   }
-
+  
   private String createRegionWildCard(String region) {
     return region + "%";
   }
@@ -235,5 +145,43 @@ public class CompanyService {
     return Arrays.stream(keyword.split(" "))
       .map(word -> "+" + word)
       .collect(Collectors.joining(" "));
+  }
+
+  private CompaniesSearchResponseDto buildCompaniesSearchResponseDto(
+    Page<CompanySearchOnly> companies,
+    User user
+  ) {
+    List<Long> companyIds = companies.getContent().stream()
+      .map(CompanySearchOnly::getId)
+      .toList();
+
+    Map<Long, Double> totalRatings = getAverageRatings(companyIds);
+    Set<Long> followedCompanyIds = getFollowedCompanyIds(user, companyIds);
+    Map<Long, String> topReviews = getTopReviews(companyIds);
+
+    return CompaniesSearchResponseDto.from(companies, totalRatings, followedCompanyIds, topReviews);
+  }
+
+  private Map<Long, Double> getAverageRatings(List<Long> companyIds) {
+    return reviewRatingRepository.getAverageScoresByCompanyIds(companyIds)
+      .stream()
+      .collect(Collectors.toMap(
+        CompanyTotalRatingOnly::getCompanyId,
+        CompanyTotalRatingOnly::getTotalRating
+      ));
+  }
+
+  private Set<Long> getFollowedCompanyIds(User user, List<Long> companyIds) {
+    return new HashSet<>(followCompanyRepository
+      .findFollowedCompanyIdsByUserIdAndCompanyIds(user.getId(), companyIds));
+  }
+
+  private Map<Long, String> getTopReviews(List<Long> companyIds) {
+    return companyReviewRepository.findTopReviewPerCompany(companyIds)
+      .stream()
+      .collect(Collectors.toMap(
+        ReviewTitleOnly::getCompanyId,
+        ReviewTitleOnly::getTitle
+      ));
   }
 }
