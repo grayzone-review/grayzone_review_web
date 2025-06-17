@@ -2,6 +2,7 @@ package com.grayzone.domain.review.controller;
 
 import com.grayzone.common.ResponseDataDto;
 import com.grayzone.domain.review.dto.request.CreateCompanyReviewRequestDto;
+import com.grayzone.domain.review.dto.response.CompanyReviewResponseDto;
 import com.grayzone.domain.review.dto.response.CompanyReviewsResponseDto;
 import com.grayzone.domain.review.service.CompanyReviewService;
 import com.grayzone.domain.user.entity.User;
@@ -35,11 +36,15 @@ public class CompanyReviewController {
   }
 
   @PostMapping("/{companyId}/reviews")
-  public void createCompanyReview(
+  public ResponseEntity<ResponseDataDto<CompanyReviewResponseDto>> createCompanyReview(
     @PathVariable Long companyId,
     @Valid @RequestBody CreateCompanyReviewRequestDto requestDto,
     @AuthenticationPrincipal User user
   ) {
-    companyReviewService.createCompanyReview(companyId, requestDto, user);
+    return ResponseEntity.ok(
+      ResponseDataDto.from(
+        companyReviewService.createCompanyReview(companyId, requestDto, user)
+      )
+    );
   }
 }

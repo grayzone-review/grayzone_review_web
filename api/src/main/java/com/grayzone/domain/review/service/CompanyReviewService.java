@@ -4,6 +4,7 @@ import com.grayzone.domain.company.entity.Company;
 import com.grayzone.domain.company.repository.CompanyRepository;
 import com.grayzone.domain.review.ReviewTitleSummarizer;
 import com.grayzone.domain.review.dto.request.CreateCompanyReviewRequestDto;
+import com.grayzone.domain.review.dto.response.CompanyReviewResponseDto;
 import com.grayzone.domain.review.dto.response.CompanyReviewsResponseDto;
 import com.grayzone.domain.review.entity.CompanyReview;
 import com.grayzone.domain.review.entity.ReviewRating;
@@ -57,7 +58,7 @@ public class CompanyReviewService {
   }
 
   @Transactional
-  public void createCompanyReview(
+  public CompanyReviewResponseDto createCompanyReview(
     Long companyId,
     CreateCompanyReviewRequestDto requestDto,
     User user
@@ -74,5 +75,7 @@ public class CompanyReviewService {
 
     List<ReviewRating> reviewRatings = requestDto.toReviewRatings(companyReview);
     reviewRatingRepository.saveAll(reviewRatings);
+
+    return CompanyReviewResponseDto.from(companyReview, false);
   }
 }
