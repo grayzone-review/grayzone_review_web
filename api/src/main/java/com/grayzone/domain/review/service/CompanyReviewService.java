@@ -5,8 +5,10 @@ import com.grayzone.domain.company.repository.CompanyRepository;
 import com.grayzone.domain.review.dto.request.CreateCompanyReviewRequestDto;
 import com.grayzone.domain.review.dto.response.CompanyReviewsResponseDto;
 import com.grayzone.domain.review.entity.CompanyReview;
+import com.grayzone.domain.review.entity.ReviewRating;
 import com.grayzone.domain.review.repository.CompanyReviewRepository;
 import com.grayzone.domain.review.repository.ReviewLikeRepository;
+import com.grayzone.domain.review.repository.ReviewRatingRepository;
 import com.grayzone.domain.user.entity.User;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ public class CompanyReviewService {
   private final CompanyReviewRepository companyReviewRepository;
   private final CompanyRepository companyRepository;
   private final ReviewLikeRepository reviewLikeRepository;
+  private final ReviewRatingRepository reviewRatingRepository;
 
   public CompanyReviewsResponseDto getReviewsByCompanyId(Long companyId, Long userId, Pageable pageable) {
     if (!companyRepository.existsById(companyId)) {
@@ -49,6 +52,7 @@ public class CompanyReviewService {
     );
   }
 
+  @Transactional
   public void createCompanyReview(
     Long companyId,
     CreateCompanyReviewRequestDto requestDto,
@@ -57,6 +61,12 @@ public class CompanyReviewService {
     Company company = companyRepository.findById(companyId)
       .orElseThrow(() -> new EntityNotFoundException("Company not found"));
 
+    String title = "aaaaaaaaaaaaaaa";
 
+    CompanyReview companyReview = requestDto.toCompanyReview(company, user, title);
+    companyReviewRepository.save(companyReview);
+
+    List<ReviewRating> reviewRatings = requestDto.toReviewRatings(companyReview);
+    reviewRatingRepository.saveAll(reviewRatings);
   }
 }

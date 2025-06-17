@@ -40,6 +40,6 @@ public class CompanyReviewController {
     @Valid @RequestBody CreateCompanyReviewRequestDto requestDto,
     @AuthenticationPrincipal User user
   ) {
-
+    companyReviewService.createCompanyReview(companyId, requestDto, user);
   }
 }
