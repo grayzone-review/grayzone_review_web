@@ -23,7 +23,7 @@ public class GeminiReviewTitleSummarizer implements ReviewTitleSummarizer {
 
   @Override
   public String summarize(String body) {
-    String summarizeSource = body + "Summarize the following into a Korean review title (max 100 characters). No explanation only return the title in Korean.";
+    String summarizeSource = body + GeminiConst.SUMMARY_PROMPT;
     log.info("summarizeSource: {}", summarizeSource);
 
     GeminiSummarizeRequest request = new GeminiSummarizeRequest(summarizeSource);
