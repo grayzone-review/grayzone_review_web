@@ -2,12 +2,15 @@ package com.grayzone.domain.review.entity;
 
 import com.grayzone.domain.review.RatingCategory;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "review_ratings")
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReviewRating {
 
   @Id

@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "review_comments")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReviewComment extends BaseTimeEntity {
 
   @Id
