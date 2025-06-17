@@ -6,7 +6,7 @@ import java.util.List;
 
 @Getter
 public class GeminiRequest {
-  private List<Content> contents;
+  private final List<Content> contents;
 
   public GeminiRequest(List<Content> contents) {
     this.contents = contents;
@@ -14,7 +14,7 @@ public class GeminiRequest {
 
   @Getter
   public static class Content {
-    private List<Part> parts;
+    private final List<Part> parts;
 
     public Content(List<Part> parts) {
       this.parts = parts;
@@ -23,7 +23,7 @@ public class GeminiRequest {
 
   @Getter
   public static class Part {
-    private String text;
+    private final String text;
 
     public Part(String text) {
       this.text = text;
