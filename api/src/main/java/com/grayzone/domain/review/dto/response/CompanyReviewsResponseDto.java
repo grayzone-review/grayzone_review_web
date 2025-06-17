@@ -1,6 +1,5 @@
 package com.grayzone.domain.review.dto.response;
 
-import com.grayzone.domain.review.RatingCategory;
 import com.grayzone.domain.review.entity.CompanyReview;
 import com.grayzone.domain.review.entity.ReviewRating;
 import lombok.Builder;
@@ -44,7 +43,7 @@ public class CompanyReviewsResponseDto {
   @Builder
   public static class CompanyReviewResponseDto {
     private Long id;
-    private Map<RatingCategory, Double> ratings;
+    private Map<String, Double> ratings;
     private String author;
     private String title;
     private String advantagePoint;
@@ -61,9 +60,9 @@ public class CompanyReviewsResponseDto {
       CompanyReview companyReview,
       boolean isLiked
     ) {
-      Map<RatingCategory, Double> ratings = companyReview.getRatings().stream()
+      Map<String, Double> ratings = companyReview.getRatings().stream()
         .collect(Collectors.toMap(
-          ReviewRating::getCategory,
+          ReviewRating::getCategoryName,
           ReviewRating::getRating
         ));
 

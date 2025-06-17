@@ -22,4 +22,8 @@ public class ReviewRating {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "company_review_id")
   private CompanyReview companyReview;
+
+  public String getCategoryName() {
+    return category.getLabel();
+  }
 }
