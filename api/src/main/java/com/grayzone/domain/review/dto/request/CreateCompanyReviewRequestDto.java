@@ -27,6 +27,10 @@ public class CreateCompanyReviewRequestDto {
 
   private Map<String, Double> ratings;
 
+  public String getSummarizeSourceText() {
+    return advantagePoint + disadvantagePoint + managementFeedback;
+  }
+
   public CompanyReview toCompanyReview(
     Company company,
     User user,

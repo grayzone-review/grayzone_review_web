@@ -2,6 +2,7 @@ package com.grayzone.domain.review.service;
 
 import com.grayzone.domain.company.entity.Company;
 import com.grayzone.domain.company.repository.CompanyRepository;
+import com.grayzone.domain.review.ReviewTitleSummarizer;
 import com.grayzone.domain.review.dto.request.CreateCompanyReviewRequestDto;
 import com.grayzone.domain.review.dto.response.CompanyReviewsResponseDto;
 import com.grayzone.domain.review.entity.CompanyReview;
@@ -12,6 +13,7 @@ import com.grayzone.domain.review.repository.ReviewRatingRepository;
 import com.grayzone.domain.user.entity.User;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Set;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -29,6 +32,7 @@ public class CompanyReviewService {
   private final CompanyRepository companyRepository;
   private final ReviewLikeRepository reviewLikeRepository;
   private final ReviewRatingRepository reviewRatingRepository;
+  private final ReviewTitleSummarizer reviewTitleSummarizer;
 
   public CompanyReviewsResponseDto getReviewsByCompanyId(Long companyId, Long userId, Pageable pageable) {
     if (!companyRepository.existsById(companyId)) {
@@ -61,7 +65,9 @@ public class CompanyReviewService {
     Company company = companyRepository.findById(companyId)
       .orElseThrow(() -> new EntityNotFoundException("Company not found"));
 
-    String title = "aaaaaaaaaaaaaaa";
+    String title = reviewTitleSummarizer.summarize(requestDto.getSummarizeSourceText());
+
+    log.info("gemini summarized title: {}", title);
 
     CompanyReview companyReview = requestDto.toCompanyReview(company, user, title);
     companyReviewRepository.save(companyReview);

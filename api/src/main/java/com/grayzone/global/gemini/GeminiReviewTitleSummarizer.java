@@ -1,12 +1,18 @@
 package com.grayzone.global.gemini;
 
 import com.grayzone.domain.review.ReviewTitleSummarizer;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
+@Slf4j
 @Component
 public class GeminiReviewTitleSummarizer implements ReviewTitleSummarizer {
   private final RestClient restClient;
+
+  @Value("${gemini.key}")
+  private String key;
 
   public GeminiReviewTitleSummarizer() {
     this.restClient = RestClient.builder()
@@ -17,18 +23,26 @@ public class GeminiReviewTitleSummarizer implements ReviewTitleSummarizer {
 
   @Override
   public String summarize(String body) {
-    GeminiSummarizeRequest request = new GeminiSummarizeRequest(body);
-    GeminiSummarizeResponse response = restClient.post()
-      .uri(uriBuilder -> uriBuilder
-        .path(GeminiConst.PATH)
-        .queryParam("key", GeminiConst.KEY)
-        .build()
-      ).body(request)
-      .retrieve()
-      .body(GeminiSummarizeResponse.class);
+    String summarizeSource = body + "Summarize the following into a Korean review title (max 100 characters). No explanation only return the title in Korean.";
+    log.info("summarizeSource: {}", summarizeSource);
 
-    String text = response.getText();
+    GeminiSummarizeRequest request = new GeminiSummarizeRequest(summarizeSource);
 
-    return text;
+    try {
+      GeminiSummarizeResponse response = restClient.post()
+        .uri(uriBuilder -> uriBuilder
+          .path(GeminiConst.PATH)
+          .queryParam("key", key)
+          .build()
+        )
+        .header("Content-Type", "application/json")
+        .body(request)
+        .retrieve()
+        .body(GeminiSummarizeResponse.class);
+      return response.getText();
+    } catch (Exception e) {
+      log.info("error", e);
+      throw e;
+    }
   }
 }
