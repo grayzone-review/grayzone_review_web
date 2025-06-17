@@ -1,10 +1,13 @@
 package com.grayzone.domain.review.service;
 
+import com.grayzone.domain.company.entity.Company;
 import com.grayzone.domain.company.repository.CompanyRepository;
+import com.grayzone.domain.review.dto.request.CreateCompanyReviewRequestDto;
 import com.grayzone.domain.review.dto.response.CompanyReviewsResponseDto;
 import com.grayzone.domain.review.entity.CompanyReview;
 import com.grayzone.domain.review.repository.CompanyReviewRepository;
 import com.grayzone.domain.review.repository.ReviewLikeRepository;
+import com.grayzone.domain.user.entity.User;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -44,5 +47,16 @@ public class CompanyReviewService {
       reviewPage,
       userLikedReviewIds
     );
+  }
+
+  public void createCompanyReview(
+    Long companyId,
+    CreateCompanyReviewRequestDto requestDto,
+    User user
+  ) {
+    Company company = companyRepository.findById(companyId)
+      .orElseThrow(() -> new EntityNotFoundException("Company not found"));
+
+
   }
 }
