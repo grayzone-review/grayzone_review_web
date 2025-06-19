@@ -4,9 +4,7 @@ import com.grayzone.common.BaseTimeEntity;
 import com.grayzone.domain.company.entity.Company;
 import com.grayzone.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +46,30 @@ public class CompanyReview extends BaseTimeEntity {
   @OneToMany(mappedBy = "companyReview", fetch = FetchType.LAZY)
   private List<ReviewLike> likes = new ArrayList<>();
 
+  @Setter
   @OneToMany(mappedBy = "companyReview", fetch = FetchType.LAZY)
   private List<ReviewRating> ratings = new ArrayList<>();
+
+  @Builder
+  public CompanyReview(
+    String title,
+    String advantagePoint,
+    String disadvantagePoint,
+    String managementFeedback,
+    String jobRole,
+    String employmentPeriod,
+    Company company,
+    User user
+  ) {
+    this.title = title;
+    this.advantagePoint = advantagePoint;
+    this.disadvantagePoint = disadvantagePoint;
+    this.managementFeedback = managementFeedback;
+    this.jobRole = jobRole;
+    this.employmentPeriod = employmentPeriod;
+    this.company = company;
+    this.user = user;
+  }
 
   public int getLikeCount() {
     return likes.size();
@@ -62,4 +82,5 @@ public class CompanyReview extends BaseTimeEntity {
   public Long getAuthorId() {
     return user.getId();
   }
+
 }

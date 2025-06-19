@@ -3,14 +3,23 @@ package com.grayzone.domain.review;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 @Getter
 @AllArgsConstructor
 public enum RatingCategory {
-  WORK_LIFE_BALANCE("워라밸"),
-  SALARY("급여"),
-  WELFARE("복지"),
-  COMPANY_CULTURE("사내문화"),
-  MANAGEMENT("경영진");
+  WORK_LIFE_BALANCE("workLifeBalance"),
+  SALARY("salary"),
+  WELFARE("welfare"),
+  COMPANY_CULTURE("companyCulture"),
+  MANAGEMENT("management");
 
   private final String label;
+
+  public static Optional<RatingCategory> fromLabel(String target) {
+    return Arrays.stream(values())
+      .filter(category -> category.label.equals(target))
+      .findFirst();
+  }
 }
