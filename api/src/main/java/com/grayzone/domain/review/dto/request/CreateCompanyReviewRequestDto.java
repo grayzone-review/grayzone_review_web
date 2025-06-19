@@ -14,11 +14,11 @@ import java.util.Map;
 
 @Setter
 public class CreateCompanyReviewRequestDto {
-  @Length(min = 30, max = 1000)
+  
   private String advantagePoint;
-  @Length(min = 30, max = 1000)
+
   private String disadvantagePoint;
-  @Length(min = 30, max = 1000)
+
   private String managementFeedback;
   @NotBlank
   private String jobRole;

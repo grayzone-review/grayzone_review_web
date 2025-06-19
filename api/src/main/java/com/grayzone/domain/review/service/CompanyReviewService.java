@@ -75,6 +75,7 @@ public class CompanyReviewService {
 
     List<ReviewRating> reviewRatings = requestDto.toReviewRatings(companyReview);
     reviewRatingRepository.saveAll(reviewRatings);
+    companyReview.setRatings(reviewRatings);
 
     return CompanyReviewResponseDto.from(companyReview, false);
   }
