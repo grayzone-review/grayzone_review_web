@@ -4,10 +4,10 @@ import com.grayzone.domain.company.repository.projection.CompanySuggestionOnly;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.domain.Slice;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Getter
 @Builder
@@ -52,10 +52,9 @@ public class CompaniesSuggestResponseDto {
         .id(company.getId())
         .companyName(company.getCompanyName())
         .companyAddress(
-          Objects.requireNonNullElse(
-            company.getSiteFullAddress(),
-            company.getRoadNameAddress()
-          )
+          StringUtils.hasText(company.getSiteFullAddress())
+            ? company.getSiteFullAddress()
+            : company.getRoadNameAddress()
         )
         .totalRating(totalRating)
         .build();

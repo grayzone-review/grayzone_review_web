@@ -4,10 +4,10 @@ import com.grayzone.domain.company.repository.projection.CompanySearchOnly;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 @Getter
@@ -66,10 +66,9 @@ public class CompaniesSearchResponseDto {
         .id(company.getId())
         .companyName(company.getCompanyName())
         .companyAddress(
-          Objects.requireNonNullElse(
-            company.getSiteFullAddress(),
-            company.getRoadNameAddress()
-          )
+          StringUtils.hasText(company.getSiteFullAddress())
+            ? company.getSiteFullAddress()
+            : company.getRoadNameAddress()
         )
         .reviewTitle(reviewTitle)
         .totalRating(totalRating)

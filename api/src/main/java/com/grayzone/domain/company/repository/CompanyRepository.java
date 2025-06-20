@@ -79,7 +79,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
     LEFT JOIN company_reviews r ON r.company_id = c.id
     WHERE c.site_full_address LIKE :region
     GROUP BY c.id, c.business_name, c.site_full_address, c.road_name_address
-    ORDER BY COUNT(r.id) DESC, distance ASC
+    ORDER BY (c.latitude IS NULL OR c.longitude IS NULL) ASC, COUNT(r.id) DESC, distance ASC, c.id ASC
     """, nativeQuery = true)
   Page<CompanySearchOnly> findCompaniesByRegion(
     @Param("latitude") Double latitude,
