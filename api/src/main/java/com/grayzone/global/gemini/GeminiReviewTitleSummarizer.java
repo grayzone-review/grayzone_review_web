@@ -14,12 +14,11 @@ public class GeminiReviewTitleSummarizer implements ReviewTitleSummarizer {
   @Value("${gemini.key}")
   private String key;
 
-  public GeminiReviewTitleSummarizer() {
-    this.restClient = RestClient.builder()
+  public GeminiReviewTitleSummarizer(RestClient.Builder builder) {
+    this.restClient = builder
       .baseUrl(GeminiConst.BASEURL)
       .build();
   }
-
 
   @Override
   public String summarize(String body) {
