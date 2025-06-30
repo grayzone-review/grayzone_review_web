@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -31,8 +32,7 @@ public class DevelopAuthenticationFilter extends OncePerRequestFilter {
   ) throws ServletException, IOException {
 
     String id = request.getHeader("Authorization");
-    log.info(id);
-  
+
     UserDetails userDetails = userDetailsService.loadUserByUsername(id);
 
     Authentication authentication =
@@ -47,5 +47,18 @@ public class DevelopAuthenticationFilter extends OncePerRequestFilter {
     SecurityContextHolder.setContext(context);
 
     filterChain.doFilter(request, response);
+  }
+
+  @Override
+  protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+    String path = request.getRequestURI();
+
+    List<String> whitelist = List.of(
+      "/api/users/nickname-verify",
+      "/api/legal-districts/setup",
+      "/api/legal-districts"
+    );
+
+    return whitelist.stream().anyMatch(path::startsWith);
   }
 }
