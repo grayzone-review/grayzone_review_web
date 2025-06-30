@@ -29,7 +29,7 @@ public class User implements UserDetails {
   private LegalDistrict mainRegion;
 
   @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-  private List<LegalDistrict> interestedRegions;
+  private List<InterestedRegion> interestedRegions;
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
