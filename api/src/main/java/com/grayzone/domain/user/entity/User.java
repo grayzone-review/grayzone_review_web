@@ -1,5 +1,6 @@
 package com.grayzone.domain.user.entity;
 
+import com.grayzone.domain.legaldistrict.entity.LegalDistrict;
 import jakarta.persistence.*;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,10 +18,18 @@ public class User implements UserDetails {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private String username;
+  @Column(unique = true, nullable = false)
+  private String email;
 
-  private String mainRegion;
-  private String interestedRegion;
+  @Column(unique = true, nullable = false)
+  private String nickname;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "main_region_id")
+  private LegalDistrict mainRegion;
+
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+  private List<LegalDistrict> interestedRegions;
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -30,5 +39,10 @@ public class User implements UserDetails {
   @Override
   public String getPassword() {
     return "";
+  }
+
+  @Override
+  public String getUsername() {
+    return getEmail();
   }
 }
