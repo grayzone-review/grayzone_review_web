@@ -20,11 +20,9 @@ public class GeminiReviewTitleSummarizer implements ReviewTitleSummarizer {
       .build();
   }
 
-
   @Override
   public String summarize(String body) {
     String summarizeSource = body + GeminiConst.SUMMARY_PROMPT;
-    log.info("summarizeSource: {}", summarizeSource);
 
     GeminiSummarizeRequest request = new GeminiSummarizeRequest(summarizeSource);
 
