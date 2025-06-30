@@ -56,7 +56,8 @@ public class DevelopAuthenticationFilter extends OncePerRequestFilter {
     List<String> whitelist = List.of(
       "/api/users/nickname-verify",
       "/api/legal-districts/setup",
-      "/api/legal-districts"
+      "/api/legal-districts",
+      "/api/terms"
     );
 
     return whitelist.stream().anyMatch(path::startsWith);

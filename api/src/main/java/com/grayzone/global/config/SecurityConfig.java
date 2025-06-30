@@ -25,7 +25,8 @@ public class SecurityConfig {
       .authorizeHttpRequests(auth -> auth
         .requestMatchers(HttpMethod.GET,
           "/api/legal-districts/setup",
-          "/api/legal-districts"
+          "/api/legal-districts",
+          "/api/terms"
         ).permitAll()
         .requestMatchers(HttpMethod.POST,
           "/api/users/nickname-verify"
