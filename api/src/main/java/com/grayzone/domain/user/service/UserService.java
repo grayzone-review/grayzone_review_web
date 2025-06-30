@@ -11,4 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
   private final UserRepository userRepository;
+
+  public void verifyNicknameDuplicate(String nickname) {
+    if (userRepository.existsByNickname(nickname)) {
+      throw new IllegalArgumentException("Nickname already exists");
+    }
+  }
 }
