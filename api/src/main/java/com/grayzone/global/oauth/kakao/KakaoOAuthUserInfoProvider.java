@@ -9,16 +9,10 @@ import org.springframework.web.client.RestClient;
 
 @Component
 public class KakaoOAuthUserInfoProvider implements OAuthUserInfoProvider {
-  private final RestClient restClient;
+  private final RestClient restClient = RestClient.create();
 
   @Value("${kakao.user-info-uri}")
-  private String userInfoUri;
-
-  public KakaoOAuthUserInfoProvider() {
-    this.restClient = RestClient.builder()
-      .baseUrl(userInfoUri)
-      .build();
-  }
+  private String kakaoUserInfoUri;
 
   @Override
   public boolean support(OAuthProvider provider) {
@@ -28,6 +22,7 @@ public class KakaoOAuthUserInfoProvider implements OAuthUserInfoProvider {
   @Override
   public OAuthUserInfo parse(String token) {
     KakaoUserInfoResponse kakaoUserInfo = restClient.get()
+      .uri(kakaoUserInfoUri)
       .header("Authorization", "Bearer " + token)
       .retrieve()
       .body(KakaoUserInfoResponse.class);
