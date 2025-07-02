@@ -41,9 +41,13 @@ public class UserService {
     User user = requestDto.toEntity(userInfo.getEmail(), mainRegion);
     userRepository.save(user);
 
-    List<InterestedRegion> interestedRegions = legalDistrictRepository.findAllById(requestDto.getInterestedRegionIds())
-      .stream().map(legalDistrict -> new InterestedRegion(user, legalDistrict)).toList();
+    if (!requestDto.getInterestedRegionIds().isEmpty()) {
+      List<InterestedRegion> interestedRegions = legalDistrictRepository.findAllById(requestDto.getInterestedRegionIds())
+        .stream()
+        .map(legalDistrict -> new InterestedRegion(user, legalDistrict))
+        .toList();
 
-    interestedRegionRepository.saveAll(interestedRegions);
+      interestedRegionRepository.saveAll(interestedRegions);
+    }
   }
 }

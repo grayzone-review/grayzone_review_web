@@ -43,7 +43,7 @@ public class User implements UserDetails {
   public User(
     String email,
     String nickname,
-    String oAuthProvider,
+    OAuthProvider oAuthProvider,
     LegalDistrict mainRegion,
     boolean agreedServiceUse,
     boolean agreedPrivacy,

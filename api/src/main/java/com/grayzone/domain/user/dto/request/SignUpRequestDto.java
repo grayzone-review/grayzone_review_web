@@ -25,6 +25,7 @@ public class SignUpRequestDto {
   @NotNull
   private Long mainRegionId;
 
+  @NotNull
   @Size(max = 3)
   private List<Long> interestedRegionIds;
 
