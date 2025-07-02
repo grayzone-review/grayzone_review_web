@@ -1,4 +1,4 @@
-package com.grayzone.domain.user.dto;
+package com.grayzone.domain.user.dto.response;
 
 import lombok.Getter;
 
@@ -17,11 +17,13 @@ public class TermsResponseDto {
     private boolean isRequired;
     private String term;
     private String url;
+    private String code;
 
-    public TermResponseDto(boolean isRequired, String term, String url) {
+    public TermResponseDto(boolean isRequired, String term, String url, String code) {
       this.isRequired = isRequired;
       this.term = term;
       this.url = url;
+      this.code = code;
     }
   }
 }

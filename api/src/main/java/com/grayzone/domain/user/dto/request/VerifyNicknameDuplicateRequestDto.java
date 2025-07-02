@@ -1,4 +1,4 @@
-package com.grayzone.domain.user.dto;
+package com.grayzone.domain.user.dto.request;
 
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
