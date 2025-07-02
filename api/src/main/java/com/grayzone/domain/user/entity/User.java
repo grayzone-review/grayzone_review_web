@@ -26,6 +26,7 @@ public class User implements UserDetails {
   @Column(unique = true, nullable = false)
   private String nickname;
 
+  @Enumerated(EnumType.STRING)
   private OAuthProvider oAuthProvider;
 
   @ManyToOne(fetch = FetchType.LAZY)

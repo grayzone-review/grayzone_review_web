@@ -24,12 +24,10 @@ public class JWTUtils {
 
   public String createToken(User user, long expirationTime) {
     Long userId = user.getId();
-    String username = user.getUsername();
 
     Claims claims = Jwts.claims()
       .subject(String.valueOf(userId))
       .build();
-    claims.put("username", username);
 
     Date now = new Date();
     Date validity = new Date(now.getTime() + expirationTime);

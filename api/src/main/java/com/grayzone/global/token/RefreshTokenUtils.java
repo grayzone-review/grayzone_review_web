@@ -1,5 +1,6 @@
 package com.grayzone.global.token;
 
+import com.grayzone.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -14,8 +15,8 @@ public class RefreshTokenUtils {
   private final PasswordEncoder passwordEncoder;
   private final SecureRandom secureRandom = new SecureRandom();
 
-  public String createToken(String username) {
-    String emailKey = encodeUsernameToKey(username);
+  public String createToken(User user) {
+    String emailKey = encodeUsernameToKey(user.getId());
 
     byte[] tokenBytes = new byte[16];
     secureRandom.nextBytes(tokenBytes);
@@ -32,8 +33,8 @@ public class RefreshTokenUtils {
     return passwordEncoder.matches(rawRefreshToken, hashedRefreshToken);
   }
 
-  public String encodeUsernameToKey(String email) {
+  public String encodeUsernameToKey(Long userId) {
     return Base64.getUrlEncoder().withoutPadding()
-      .encodeToString(email.getBytes(StandardCharsets.UTF_8));
+      .encodeToString(String.valueOf(userId).getBytes(StandardCharsets.UTF_8));
   }
 }
