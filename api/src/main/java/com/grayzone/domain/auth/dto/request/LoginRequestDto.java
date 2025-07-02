@@ -12,5 +12,5 @@ public class LoginRequestDto {
   private String oauthToken;
 
   @NotNull
-  private OAuthProvider provider;
+  private OAuthProvider oauthProvider;
 }

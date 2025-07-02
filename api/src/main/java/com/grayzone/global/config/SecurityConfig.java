@@ -30,6 +30,7 @@ public class SecurityConfig {
           "/api/terms"
         ).permitAll()
         .requestMatchers(HttpMethod.POST,
+          "/api/auth/**",
           "/api/users/nickname-verify"
         ).permitAll()
         .anyRequest().authenticated()

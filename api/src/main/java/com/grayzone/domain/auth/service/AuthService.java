@@ -42,7 +42,7 @@ public class AuthService {
     LegalDistrict mainRegion = legalDistrictRepository.findById(mainRegionId)
       .orElseThrow(() -> new IllegalArgumentException("메인 동네 지정을 필수입니다."));
 
-    OAuthUserInfo userInfo = oAuthUserInfoDispatcher.dispatch(requestDto.getOAuthProvider(), requestDto.getToken());
+    OAuthUserInfo userInfo = oAuthUserInfoDispatcher.dispatch(requestDto.getOauthProvider(), requestDto.getOauthToken());
 
     User user = requestDto.toEntity(userInfo.getEmail(), mainRegion);
     userRepository.save(user);
@@ -65,7 +65,7 @@ public class AuthService {
   }
 
   public LoginResponseDto login(LoginRequestDto requestDto) {
-    OAuthUserInfo userInfo = oAuthUserInfoDispatcher.dispatch(requestDto.getProvider(), requestDto.getOauthToken());
+    OAuthUserInfo userInfo = oAuthUserInfoDispatcher.dispatch(requestDto.getOauthProvider(), requestDto.getOauthToken());
 
     User user = userRepository.findByEmail(userInfo.getEmail())
       .orElseThrow(() -> new EntityNotFoundException("비회원입니다."));

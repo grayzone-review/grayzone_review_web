@@ -19,9 +19,10 @@ import java.util.stream.Stream;
 @Setter
 public class SignUpRequestDto {
   @NotBlank
-  private String token;
-  @NotBlank
-  private OAuthProvider oAuthProvider;
+  private String oauthToken;
+
+  private OAuthProvider oauthProvider;
+
   @NotNull
   private Long mainRegionId;
 
@@ -41,7 +42,7 @@ public class SignUpRequestDto {
     return User.builder()
       .email(email)
       .nickname(nickname)
-      .oAuthProvider(oAuthProvider)
+      .oAuthProvider(oauthProvider)
       .mainRegion(mainRegion)
       .agreedServiceUse(true)
       .agreedPrivacy(true)
