@@ -1,11 +1,13 @@
 package com.grayzone.global.oauth.kakao;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class KakaoUserInfoResponse {
+  @JsonProperty("kakao_account")
   private KakaoAccount kakaoAccount;
 
   public boolean isEmailValid() {
@@ -23,7 +25,9 @@ public class KakaoUserInfoResponse {
   @Getter
   @Setter
   public static class KakaoAccount {
+    @JsonProperty("is_email_valid")
     private boolean isEmailValid;
+    @JsonProperty("is_email_verified")
     private boolean isEmailVerified;
     private String email;
   }
