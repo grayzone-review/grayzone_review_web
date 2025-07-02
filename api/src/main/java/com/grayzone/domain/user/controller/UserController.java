@@ -2,7 +2,9 @@ package com.grayzone.domain.user.controller;
 
 import com.grayzone.common.ResponseDataDto;
 import com.grayzone.domain.user.UserTerm;
+import com.grayzone.domain.user.dto.request.SignUpRequestDto;
 import com.grayzone.domain.user.dto.request.VerifyNicknameDuplicateRequestDto;
+import com.grayzone.domain.user.dto.response.SignUpResponseDto;
 import com.grayzone.domain.user.dto.response.TermsResponseDto;
 import com.grayzone.domain.user.service.UserService;
 import jakarta.validation.Valid;
@@ -39,6 +41,17 @@ public class UserController {
           Stream.of(UserTerm.values()).map(term ->
             new TermsResponseDto.TermResponseDto(term.isRequired(), term.getTitle(), term.getUrl(), term.getCode())
           ).toList())
+      )
+    );
+  }
+
+  @PostMapping("/users")
+  public ResponseEntity<ResponseDataDto<SignUpResponseDto>> signUp(
+    @RequestBody SignUpRequestDto requestDto
+  ) {
+    return ResponseEntity.ok(
+      ResponseDataDto.from(
+        userService.signUp(requestDto)
       )
     );
   }

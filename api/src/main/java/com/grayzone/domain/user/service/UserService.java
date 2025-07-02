@@ -3,12 +3,14 @@ package com.grayzone.domain.user.service;
 import com.grayzone.domain.legaldistrict.entity.LegalDistrict;
 import com.grayzone.domain.legaldistrict.repository.LegalDistrictRepository;
 import com.grayzone.domain.user.dto.request.SignUpRequestDto;
+import com.grayzone.domain.user.dto.response.SignUpResponseDto;
 import com.grayzone.domain.user.entity.InterestedRegion;
 import com.grayzone.domain.user.entity.User;
 import com.grayzone.domain.user.repository.InterestedRegionRepository;
 import com.grayzone.domain.user.repository.UserRepository;
 import com.grayzone.global.oauth.OAuthUserInfo;
 import com.grayzone.global.oauth.OAuthUserInfoDispatcher;
+import com.grayzone.global.token.TokenManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +26,7 @@ public class UserService {
   private final LegalDistrictRepository legalDistrictRepository;
   private final InterestedRegionRepository interestedRegionRepository;
   private final OAuthUserInfoDispatcher oAuthUserInfoDispatcher;
+  private final TokenManager tokenManager;
 
   public void verifyNicknameDuplicate(String nickname) {
     if (userRepository.existsByNickname(nickname)) {
@@ -31,7 +34,9 @@ public class UserService {
     }
   }
 
-  public void signUp(SignUpRequestDto requestDto) {
+  public SignUpResponseDto signUp(SignUpRequestDto requestDto) {
+    verifyNicknameDuplicate(requestDto.getNickname());
+
     Long mainRegionId = requestDto.getMainRegionId();
     LegalDistrict mainRegion = legalDistrictRepository.findById(mainRegionId)
       .orElseThrow(() -> new IllegalArgumentException("메인 동네 지정을 필수입니다."));
@@ -49,5 +54,13 @@ public class UserService {
 
       interestedRegionRepository.saveAll(interestedRegions);
     }
+
+    String accessToken = tokenManager.createAccessToken(user);
+    String refreshToken = tokenManager.createRefreshToken(user);
+
+    return SignUpResponseDto.builder()
+      .accessToken(accessToken)
+      .refreshToken(refreshToken)
+      .build();
   }
 }

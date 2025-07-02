@@ -17,6 +17,6 @@ public class TokenManager {
   }
 
   public String createRefreshToken(User user) {
-    return refreshTokenUtils.createToken(user.getUsername())
+    return refreshTokenUtils.createToken(user.getUsername());
   }
 }

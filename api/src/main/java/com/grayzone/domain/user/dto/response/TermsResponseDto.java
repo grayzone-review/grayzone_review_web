@@ -14,10 +14,10 @@ public class TermsResponseDto {
 
   @Getter
   public static class TermResponseDto {
-    private boolean isRequired;
-    private String term;
-    private String url;
-    private String code;
+    private final boolean isRequired;
+    private final String term;
+    private final String url;
+    private final String code;
 
     public TermResponseDto(boolean isRequired, String term, String url, String code) {
       this.isRequired = isRequired;
