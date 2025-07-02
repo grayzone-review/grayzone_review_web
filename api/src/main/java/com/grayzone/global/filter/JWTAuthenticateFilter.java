@@ -1,7 +1,5 @@
 package com.grayzone.global.filter;
 
-import com.grayzone.domain.user.entity.User;
-import com.grayzone.domain.user.repository.UserRepository;
 import com.grayzone.global.config.PublicEndpoints;
 import com.grayzone.global.token.TokenManager;
 import jakarta.servlet.FilterChain;
@@ -14,6 +12,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.StringUtils;
@@ -29,7 +29,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class JWTAuthenticateFilter extends OncePerRequestFilter {
   private static final AntPathMatcher pathMatcher = new AntPathMatcher();
-  private final UserRepository userRepository;
+  private final UserDetailsService userDetailsService;
   private final TokenManager tokenManager;
 
   @Override
@@ -49,10 +49,9 @@ public class JWTAuthenticateFilter extends OncePerRequestFilter {
       throw new ServletException("Invalid JWT token");
     }
 
-    Long userId = Long.parseLong(tokenManager.parseSubject(token));
-    User user = userRepository.findById(userId)
-      .orElseThrow(() -> new ServletException("Invalid User Jwt token"));
-
+    String subject = tokenManager.parseSubject(token);
+    UserDetails user = userDetailsService.loadUserByUsername(subject);
+    
     Authentication authentication =
       new UsernamePasswordAuthenticationToken(
         user,
