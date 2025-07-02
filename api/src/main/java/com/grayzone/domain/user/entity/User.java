@@ -1,6 +1,7 @@
 package com.grayzone.domain.user.entity;
 
 import com.grayzone.domain.legaldistrict.entity.LegalDistrict;
+import com.grayzone.global.oauth.OAuthProvider;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,7 +26,7 @@ public class User implements UserDetails {
   @Column(unique = true, nullable = false)
   private String nickname;
 
-  private String oAuthProvider;
+  private OAuthProvider oAuthProvider;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "main_region_id")

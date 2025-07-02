@@ -3,6 +3,7 @@ package com.grayzone.domain.user.dto.request;
 import com.grayzone.domain.legaldistrict.entity.LegalDistrict;
 import com.grayzone.domain.user.UserTerm;
 import com.grayzone.domain.user.entity.User;
+import com.grayzone.global.oauth.OAuthProvider;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -20,7 +21,7 @@ public class SignUpRequestDto {
   @NotBlank
   private String token;
   @NotBlank
-  private String oAuthProvider;
+  private OAuthProvider oAuthProvider;
   @NotNull
   private Long mainRegionId;
 

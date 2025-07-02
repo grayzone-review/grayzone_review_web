@@ -2,6 +2,7 @@ package com.grayzone.domain.user.entity;
 
 import com.grayzone.domain.legaldistrict.entity.LegalDistrict;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 
 @Entity
@@ -20,4 +21,10 @@ public class InterestedRegion {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "interested_legal_district_id")
   private LegalDistrict legalDistrict;
+
+  @Builder
+  public InterestedRegion(User user, LegalDistrict legalDistrict) {
+    this.user = user;
+    this.legalDistrict = legalDistrict;
+  }
 }
