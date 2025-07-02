@@ -1,4 +1,4 @@
-package com.grayzone.domain.user.dto.response;
+package com.grayzone.domain.auth.dto.response;
 
 import lombok.Getter;
 

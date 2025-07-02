@@ -1,4 +1,4 @@
-package com.grayzone.domain.user.dto.request;
+package com.grayzone.domain.auth.dto.request;
 
 import com.grayzone.domain.legaldistrict.entity.LegalDistrict;
 import com.grayzone.domain.user.UserTerm;
