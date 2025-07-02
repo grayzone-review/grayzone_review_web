@@ -16,20 +16,20 @@ public class GeminiReviewTitleSummarizer implements ReviewTitleSummarizer {
 
   public GeminiReviewTitleSummarizer() {
     this.restClient = RestClient.builder()
-      .baseUrl(GeminiConst.BASEURL)
+      .baseUrl(GeminiProperties.BASEURL)
       .build();
   }
 
   @Override
   public String summarize(String body) {
-    String summarizeSource = body + GeminiConst.SUMMARY_PROMPT;
+    String summarizeSource = body + GeminiProperties.SUMMARY_PROMPT;
 
     GeminiSummarizeRequest request = new GeminiSummarizeRequest(summarizeSource);
 
     try {
       GeminiSummarizeResponse response = restClient.post()
         .uri(uriBuilder -> uriBuilder
-          .path(GeminiConst.PATH)
+          .path(GeminiProperties.PATH)
           .queryParam("key", key)
           .build()
         )

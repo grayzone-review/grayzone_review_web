@@ -7,6 +7,7 @@ import com.grayzone.domain.company.entity.Company;
 import com.grayzone.domain.company.repository.CompanyRepository;
 import com.grayzone.domain.company.repository.projection.CompanySearchOnly;
 import com.grayzone.domain.company.repository.projection.CompanySuggestionOnly;
+import com.grayzone.domain.legaldistrict.entity.LegalDistrict;
 import com.grayzone.domain.review.repository.CompanyReviewRepository;
 import com.grayzone.domain.review.repository.ReviewRatingRepository;
 import com.grayzone.domain.review.repository.projection.CompanyTotalRatingOnly;
@@ -125,20 +126,20 @@ public class CompanyService {
     return buildCompaniesSearchResponseDto(companies, user);
   }
 
-  public CompaniesSearchResponseDto getCompaniesByInterestedRegion(
-    Double latitude,
-    Double longitude,
-    User user,
-    Pageable pageable
-  ) {
-    String region = createRegionWildCard(user.getInterestedRegion());
-    Page<CompanySearchOnly> companies = companyRepository.findCompaniesByRegion(latitude, longitude, region, pageable);
+//  public CompaniesSearchResponseDto getCompaniesByInterestedRegion(
+//    Double latitude,
+//    Double longitude,
+//    User user,
+//    Pageable pageable
+//  ) {
+//    String region = createRegionWildCard(user.getInterestedRegion());
+//    Page<CompanySearchOnly> companies = companyRepository.findCompaniesByRegion(latitude, longitude, region, pageable);
+//
+//    return buildCompaniesSearchResponseDto(companies, user);
+//  }
 
-    return buildCompaniesSearchResponseDto(companies, user);
-  }
-  
-  private String createRegionWildCard(String region) {
-    return region + "%";
+  private String createRegionWildCard(LegalDistrict region) {
+    return region.getAddress() + "%";
   }
 
   private String generateBooleanKeyword(String keyword) {
