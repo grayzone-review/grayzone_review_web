@@ -23,4 +23,12 @@ public class TokenManager {
   public TokenPair createTokenPair(User user) {
     return new TokenPair(createAccessToken(user), createRefreshToken(user));
   }
+
+  public boolean validateAccessToken(String token) {
+    return jwtUtils.validateToken(token);
+  }
+
+  public String parseSubject(String token) {
+    return jwtUtils.parseToken(token).getSubject();
+  }
 }
