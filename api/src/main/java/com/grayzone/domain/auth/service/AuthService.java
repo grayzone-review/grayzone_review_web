@@ -1,6 +1,8 @@
 package com.grayzone.domain.auth.service;
 
+import com.grayzone.domain.auth.dto.request.LoginRequestDto;
 import com.grayzone.domain.auth.dto.request.SignUpRequestDto;
+import com.grayzone.domain.auth.dto.response.LoginResponseDto;
 import com.grayzone.domain.auth.dto.response.SignUpResponseDto;
 import com.grayzone.domain.legaldistrict.entity.LegalDistrict;
 import com.grayzone.domain.legaldistrict.repository.LegalDistrictRepository;
@@ -11,6 +13,8 @@ import com.grayzone.domain.user.repository.UserRepository;
 import com.grayzone.global.oauth.OAuthUserInfo;
 import com.grayzone.global.oauth.OAuthUserInfoDispatcher;
 import com.grayzone.global.token.TokenManager;
+import com.grayzone.global.token.TokenPair;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +31,6 @@ public class AuthService {
   private final InterestedRegionRepository interestedRegionRepository;
   private final OAuthUserInfoDispatcher oAuthUserInfoDispatcher;
   private final TokenManager tokenManager;
-
 
   @Transactional
   public SignUpResponseDto signUp(SignUpRequestDto requestDto) {
@@ -53,12 +56,27 @@ public class AuthService {
       interestedRegionRepository.saveAll(interestedRegions);
     }
 
-    String accessToken = tokenManager.createAccessToken(user);
-    String refreshToken = tokenManager.createRefreshToken(user);
+    TokenPair tokenPair = tokenManager.createTokenPair(user);
 
     return SignUpResponseDto.builder()
-      .accessToken(accessToken)
-      .refreshToken(refreshToken)
+      .accessToken(tokenPair.getAccessToken())
+      .refreshToken(tokenPair.getRefreshToken())
       .build();
   }
+
+  public LoginResponseDto login(LoginRequestDto requestDto) {
+    OAuthUserInfo userInfo = oAuthUserInfoDispatcher.dispatch(requestDto.getProvider(), requestDto.getOauthToken());
+
+    User user = userRepository.findByEmail(userInfo.getEmail())
+      .orElseThrow(() -> new EntityNotFoundException("비회원입니다."));
+
+    TokenPair tokenPair = tokenManager.createTokenPair(user);
+
+    return LoginResponseDto.builder()
+      .accessToken(tokenPair.getAccessToken())
+      .refreshToken(tokenPair.getRefreshToken())
+      .build();
+  }
+
+
 }

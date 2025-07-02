@@ -19,4 +19,8 @@ public class TokenManager {
   public String createRefreshToken(User user) {
     return refreshTokenUtils.createToken(user);
   }
+
+  public TokenPair createTokenPair(User user) {
+    return new TokenPair(createAccessToken(user), createRefreshToken(user));
+  }
 }
