@@ -4,7 +4,7 @@ public class PublicEndpoints {
   public static final String[] GET = {
     "/api/legal-districts/setup",
     "/api/legal-districts",
-    "/error"
+    "/api/auth/**"
   };
 
   public static final String[] POST = {
