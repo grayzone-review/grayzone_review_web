@@ -40,8 +40,8 @@ public class ApplePublicKeys {
     }
 
     PublicKey getPublicKey() {
-      byte[] modulusBytes = Base64.getDecoder().decode(this.n);
-      byte[] exponentBytes = Base64.getDecoder().decode(this.e);
+      byte[] modulusBytes = Base64.getUrlDecoder().decode(this.n);
+      byte[] exponentBytes = Base64.getUrlDecoder().decode(this.e);
 
       BigInteger modulus = new BigInteger(1, modulusBytes);
       BigInteger exponent = new BigInteger(1, exponentBytes);

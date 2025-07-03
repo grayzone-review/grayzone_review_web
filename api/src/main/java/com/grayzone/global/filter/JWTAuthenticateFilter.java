@@ -51,7 +51,7 @@ public class JWTAuthenticateFilter extends OncePerRequestFilter {
 
     String subject = tokenManager.parseSubject(token);
     UserDetails user = userDetailsService.loadUserByUsername(subject);
-    
+
     Authentication authentication =
       new UsernamePasswordAuthenticationToken(
         user,

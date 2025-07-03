@@ -1,20 +1,26 @@
 package com.grayzone.global.oauth.apple;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.grayzone.global.oauth.OAuthProvider;
 import com.grayzone.global.oauth.OAuthUserInfo;
 import com.grayzone.global.oauth.OAuthUserInfoProvider;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwsHeader;
 import io.jsonwebtoken.Jwts;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
+import java.nio.charset.StandardCharsets;
 import java.security.PublicKey;
+import java.util.Base64;
 
+@Slf4j
 @Component
 public class AppleOAuthUserInfoProvider implements OAuthUserInfoProvider {
   private final RestClient restClient = RestClient.create();
+  private final ObjectMapper objectMapper = new ObjectMapper();
 
   @Value("${apple.public-key-uri}")
   private String applePublicKeyURI;
@@ -35,13 +41,10 @@ public class AppleOAuthUserInfoProvider implements OAuthUserInfoProvider {
       .retrieve()
       .body(ApplePublicKeys.class);
 
-    JwsHeader header = Jwts.parser()
-      .build()
-      .parseSignedClaims(token)
-      .getHeader();
+    AppleJWTHeader appleJWTHeader = parseJWTHeader(token);
 
     PublicKey publicKey = applePublicKeys
-      .getMatchedPublicKey(header.getAlgorithm(), header.getKeyId());
+      .getMatchedPublicKey(appleJWTHeader.getAlg(), appleJWTHeader.getKid());
 
     Claims payload = Jwts.parser()
       .verifyWith(publicKey)
@@ -60,8 +63,19 @@ public class AppleOAuthUserInfoProvider implements OAuthUserInfoProvider {
       throw new IllegalArgumentException("Invalid Token");
     }
 
-    if (!payload.getAudience().equals(appleClientId)) {
+    if (!payload.getAudience().contains(appleClientId)) {
       throw new IllegalArgumentException("Invalid Token");
+    }
+  }
+
+  private AppleJWTHeader parseJWTHeader(String token) {
+    String[] parts = token.split("\\.");
+
+    try {
+      String headerJson = new String(Base64.getUrlDecoder().decode(parts[0]), StandardCharsets.UTF_8);
+      return objectMapper.readValue(headerJson, AppleJWTHeader.class);
+    } catch (JsonProcessingException e) {
+      throw new IllegalArgumentException("잘못된 JWT 토큰 형식입니다.");
     }
   }
 }

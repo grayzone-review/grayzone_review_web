@@ -10,7 +10,6 @@ public enum OAuthProvider {
 
   @JsonCreator
   public static OAuthProvider from(String name) {
-    log.info("OAuth provider name: {}", name);
     return switch (name.toLowerCase()) {
       case "kakao" -> KAKAO;
       case "apple" -> APPLE;
