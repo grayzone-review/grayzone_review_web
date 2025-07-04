@@ -3,7 +3,6 @@ package com.grayzone.domain.auth.service;
 import com.grayzone.domain.auth.dto.request.LoginRequestDto;
 import com.grayzone.domain.auth.dto.request.SignUpRequestDto;
 import com.grayzone.domain.auth.dto.response.LoginResponseDto;
-import com.grayzone.domain.auth.dto.response.SignUpResponseDto;
 import com.grayzone.domain.legaldistrict.entity.LegalDistrict;
 import com.grayzone.domain.legaldistrict.repository.LegalDistrictRepository;
 import com.grayzone.domain.user.entity.InterestedRegion;
@@ -33,7 +32,7 @@ public class AuthService {
   private final TokenManager tokenManager;
 
   @Transactional
-  public SignUpResponseDto signUp(SignUpRequestDto requestDto) {
+  public void signUp(SignUpRequestDto requestDto) {
     if (userRepository.existsByNickname(requestDto.getNickname())) {
       throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
     }
@@ -58,10 +57,7 @@ public class AuthService {
 
     TokenPair tokenPair = tokenManager.createTokenPair(user);
 
-    return SignUpResponseDto.builder()
-      .accessToken(tokenPair.getAccessToken())
-      .refreshToken(tokenPair.getRefreshToken())
-      .build();
+    return;
   }
 
   public LoginResponseDto login(LoginRequestDto requestDto) {

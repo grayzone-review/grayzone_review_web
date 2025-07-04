@@ -4,7 +4,6 @@ import com.grayzone.common.ResponseDataDto;
 import com.grayzone.domain.auth.dto.request.LoginRequestDto;
 import com.grayzone.domain.auth.dto.request.SignUpRequestDto;
 import com.grayzone.domain.auth.dto.response.LoginResponseDto;
-import com.grayzone.domain.auth.dto.response.SignUpResponseDto;
 import com.grayzone.domain.auth.dto.response.TermsResponseDto;
 import com.grayzone.domain.auth.service.AuthService;
 import com.grayzone.domain.user.UserTerm;
@@ -23,7 +22,7 @@ public class AuthController {
   private final AuthService authService;
 
   @PostMapping("/signup")
-  public ResponseEntity<ResponseDataDto<SignUpResponseDto>> signUp(
+  public ResponseEntity<ResponseDataDto<Void>> signUp(
     @Valid @RequestBody SignUpRequestDto requestDto
   ) {
     return ResponseEntity.ok(
