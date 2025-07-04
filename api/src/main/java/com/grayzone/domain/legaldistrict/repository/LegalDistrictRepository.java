@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface LegalDistrictRepository extends JpaRepository<LegalDistrict, Long> {
   @Query(value = """
-        SELECT ld.id, SUBSTRING_INDEX(ld.address, ' ', 3) AS legal_district
+        SELECT ld.id, ld.address AS legal_district
         FROM legal_districts ld
         WHERE ld.address LIKE %:keyword%
         GROUP BY legal_district, id
