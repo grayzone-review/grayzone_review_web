@@ -54,10 +54,6 @@ public class AuthService {
 
       interestedRegionRepository.saveAll(interestedRegions);
     }
-
-    TokenPair tokenPair = tokenManager.createTokenPair(user);
-
-    return;
   }
 
   public LoginResponseDto login(LoginRequestDto requestDto) {

@@ -25,9 +25,11 @@ public class AuthController {
   public ResponseEntity<ResponseDataDto<Void>> signUp(
     @Valid @RequestBody SignUpRequestDto requestDto
   ) {
+    authService.signUp(requestDto);
+    
     return ResponseEntity.ok(
       ResponseDataDto.from(
-        authService.signUp(requestDto)
+        null
       )
     );
   }
