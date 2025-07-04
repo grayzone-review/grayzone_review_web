@@ -26,7 +26,7 @@ public class UserController {
     userService.verifyNicknameDuplicate(requestDto.getNickname());
 
     return ResponseEntity
-      .status(HttpStatus.NO_CONTENT)
+      .status(HttpStatus.OK)
       .body(ResponseDataDto.from(null));
   }
 }
