@@ -18,21 +18,21 @@ services:
       retries: 3
       start_period: 30s
   
-    redis:
-      container_name: redis_container
-      image: redis:latest
-      volumes:
-        - redis-volume:/data
-      env_file:
-        - .env
-      networks:
-       - cache-network
-      healthcheck:
-        test: ["CMD", "redis-cli", "ping"]
-        interval: 10s
-        timeout: 5s
-        retries: 3
-        start_period: 10s
+  redis:
+    container_name: redis_container
+    image: redis:latest
+    volumes:
+      - redis-volume:/data
+    env_file:
+      - .env.local
+    networks:
+      - cache-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
   
   api:
     container_name: api-container-local
