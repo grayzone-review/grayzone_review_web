@@ -3,6 +3,7 @@ package com.grayzone.domain.auth.service;
 import com.grayzone.domain.auth.dto.request.LoginRequestDto;
 import com.grayzone.domain.auth.dto.request.SignUpRequestDto;
 import com.grayzone.domain.auth.dto.response.LoginResponseDto;
+import com.grayzone.domain.auth.dto.response.ReissueResponseDto;
 import com.grayzone.domain.legaldistrict.entity.LegalDistrict;
 import com.grayzone.domain.legaldistrict.repository.LegalDistrictRepository;
 import com.grayzone.domain.user.entity.InterestedRegion;
@@ -62,7 +63,7 @@ public class AuthService {
     User user = userRepository.findByEmail(userInfo.getEmail())
       .orElseThrow(() -> new EntityNotFoundException("비회원입니다."));
 
-    TokenPair tokenPair = tokenManager.createTokenPair(user);
+    TokenPair tokenPair = tokenManager.createTokenPair(user.getId());
 
     return LoginResponseDto.builder()
       .accessToken(tokenPair.getAccessToken())
@@ -70,5 +71,20 @@ public class AuthService {
       .build();
   }
 
+  public ReissueResponseDto reissue(String token) {
+    if (!tokenManager.validateRefreshToken(token)) {
+      throw new IllegalArgumentException("Invalid refresh token.");
+    }
+
+    long userId = tokenManager.parseUserIdFromRefreshToken(token);
+    TokenPair tokenPair = tokenManager.createTokenPair(userId);
+
+    tokenManager.invalidateRefreshToken(token);
+
+    return ReissueResponseDto.builder()
+      .accessToken(tokenPair.getAccessToken())
+      .refreshToken(tokenPair.getRefreshToken())
+      .build();
+  }
 
 }

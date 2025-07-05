@@ -1,6 +1,5 @@
 package com.grayzone.global.token;
 
-import com.grayzone.domain.user.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -23,9 +22,7 @@ public class JWTUtils {
     secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
   }
 
-  public String createToken(User user, long expirationTime) {
-    Long userId = user.getId();
-
+  public String createToken(long userId, long expirationTime) {
     Claims claims = Jwts.claims()
       .subject(String.valueOf(userId))
       .build();

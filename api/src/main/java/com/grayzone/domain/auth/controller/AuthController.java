@@ -2,8 +2,10 @@ package com.grayzone.domain.auth.controller;
 
 import com.grayzone.common.ResponseDataDto;
 import com.grayzone.domain.auth.dto.request.LoginRequestDto;
+import com.grayzone.domain.auth.dto.request.ReissueRequestDto;
 import com.grayzone.domain.auth.dto.request.SignUpRequestDto;
 import com.grayzone.domain.auth.dto.response.LoginResponseDto;
+import com.grayzone.domain.auth.dto.response.ReissueResponseDto;
 import com.grayzone.domain.auth.dto.response.TermsResponseDto;
 import com.grayzone.domain.auth.service.AuthService;
 import com.grayzone.domain.user.UserTerm;
@@ -26,7 +28,7 @@ public class AuthController {
     @Valid @RequestBody SignUpRequestDto requestDto
   ) {
     authService.signUp(requestDto);
-    
+
     return ResponseEntity.ok(
       ResponseDataDto.from(
         null
@@ -53,6 +55,17 @@ public class AuthController {
           Stream.of(UserTerm.values()).map(term ->
             new TermsResponseDto.TermResponseDto(term.isRequired(), term.getTitle(), term.getUrl(), term.getCode())
           ).toList())
+      )
+    );
+  }
+
+  @PostMapping("/reissue")
+  public ResponseEntity<ResponseDataDto<ReissueResponseDto>> reissue(
+    @Valid @RequestBody ReissueRequestDto requestDto
+  ) {
+    return ResponseEntity.ok(
+      ResponseDataDto.from(
+        authService.reissue(requestDto.getRefreshToken())
       )
     );
   }

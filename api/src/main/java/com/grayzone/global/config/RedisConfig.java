@@ -1,5 +1,6 @@
 package com.grayzone.global.config;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -45,6 +46,8 @@ public class RedisConfig {
       objectMapper.getPolymorphicTypeValidator(),
       ObjectMapper.DefaultTyping.NON_FINAL
     );
+
+    objectMapper.configure(DeserializationFeature.USE_LONG_FOR_INTS, true);
 
     GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer(objectMapper);
 
