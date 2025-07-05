@@ -1,7 +1,9 @@
 package com.grayzone.global.oauth;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public enum OAuthProvider {
   KAKAO,
   APPLE;

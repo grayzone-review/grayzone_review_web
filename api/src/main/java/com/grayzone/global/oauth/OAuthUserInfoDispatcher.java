@@ -14,7 +14,7 @@ public class OAuthUserInfoDispatcher {
     return oAuthUserInfoProviders.stream()
       .filter(oAuthUserInfoProvider -> oAuthUserInfoProvider.support(provider))
       .findFirst()
-      .orElseThrow(() -> new IllegalArgumentException("Invalid Token"))
+      .orElseThrow(() -> new IllegalArgumentException("Not Support Provider"))
       .parse(token);
   }
 }

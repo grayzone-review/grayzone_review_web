@@ -11,6 +11,11 @@ public class ResponseDataDto<T> extends ResponseDto {
     this.data = data;
   }
 
+  public ResponseDataDto(T data, String message) {
+    super(true, message);
+    this.data = data;
+  }
+
   public static <T> ResponseDataDto<T> from(T data) {
     return new ResponseDataDto<>(data);
   }

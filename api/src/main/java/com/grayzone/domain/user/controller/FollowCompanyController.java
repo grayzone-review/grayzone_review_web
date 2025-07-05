@@ -22,7 +22,8 @@ public class FollowCompanyController {
     @AuthenticationPrincipal User user
   ) {
     followCompanyService.createFollowCompany(companyId, user);
-    return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+    return ResponseEntity.status(HttpStatus.OK)
+      .body(null);
   }
 
   @DeleteMapping("/{companyId}/follows")
@@ -31,6 +32,7 @@ public class FollowCompanyController {
     @AuthenticationPrincipal User user
   ) {
     followCompanyService.deleteFollowCompany(companyId, user);
-    return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+    return ResponseEntity.status(HttpStatus.OK)
+      .body(null);
   }
 }

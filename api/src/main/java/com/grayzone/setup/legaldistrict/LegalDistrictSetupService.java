@@ -31,13 +31,12 @@ public class LegalDistrictSetupService {
 
       legalDistrictsApiResponse.getData().stream()
         .filter(legalDistrict -> legalDistrict.getDeletedDate() == null)
-        .filter(ld -> ld.getProvince() != null && ld.getCity() != null && ld.getTown() != null)
+        .filter(ld -> ld.getProvince() != null && ld.getCity() != null && ld.getTown() != null && ld.getVillage() == null)
         .map(legalDistrict -> {
           String address = Stream.of(
               legalDistrict.getProvince(),
               legalDistrict.getCity(),
-              legalDistrict.getTown(),
-              legalDistrict.getVillage()
+              legalDistrict.getTown()
             )
             .filter(Objects::nonNull)
             .collect(Collectors.joining(" "));

@@ -12,5 +12,17 @@ services:
       - mysql-test-volume:/var/lib/mysql
       - ../basedata:/var/lib/mysql-files/basedata
 
+  redis:
+    image: redis:alpine
+    container_name: redis_dev
+    volumes:
+      - redis-volume:/data
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    ports:
+      - "${REDIS_PORT}:6379"
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+
 volumes:
   mysql-test-volume:
+  redis-volume:

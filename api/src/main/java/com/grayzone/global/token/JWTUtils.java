@@ -1,7 +1,7 @@
 package com.grayzone.global.token;
 
-import com.grayzone.domain.user.entity.User;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -22,9 +22,7 @@ public class JWTUtils {
     secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
   }
 
-  public String createToken(User user, long expirationTime) {
-    Long userId = user.getId();
-
+  public String createToken(long userId, long expirationTime) {
     Claims claims = Jwts.claims()
       .subject(String.valueOf(userId))
       .build();
@@ -38,5 +36,26 @@ public class JWTUtils {
       .expiration(validity)
       .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
       .compact();
+  }
+
+  public boolean validateToken(String token) {
+    try {
+      Jwts.parser()
+        .verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
+        .build()
+        .parseSignedClaims(token);
+
+      return true;
+    } catch (JwtException | IllegalArgumentException e) {
+      return false;
+    }
+  }
+
+  public Claims parseToken(String token) {
+    return Jwts.parser()
+      .verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
+      .build()
+      .parseSignedClaims(token)
+      .getPayload();
   }
 }
