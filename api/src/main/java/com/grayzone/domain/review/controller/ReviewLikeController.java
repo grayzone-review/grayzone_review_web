@@ -24,7 +24,7 @@ public class ReviewLikeController {
     reviewLikeService.createReviewLike(reviewId, user);
 
     return ResponseEntity
-      .status(HttpStatus.NO_CONTENT)
+      .status(HttpStatus.OK)
       .body(ResponseDataDto.from(null));
   }
 
@@ -36,7 +36,7 @@ public class ReviewLikeController {
     reviewLikeService.deleteReviewLike(reviewId, user);
 
     return ResponseEntity
-      .status(HttpStatus.NO_CONTENT)
+      .status(HttpStatus.OK)
       .body(ResponseDataDto.from(null));
   }
 }

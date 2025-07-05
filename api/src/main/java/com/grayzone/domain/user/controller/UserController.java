@@ -27,6 +27,6 @@ public class UserController {
 
     return ResponseEntity
       .status(HttpStatus.OK)
-      .body(ResponseDataDto.from(null));
+      .body(new ResponseDataDto<>(null, "사용가능한 닉네임입니다."));
   }
 }
