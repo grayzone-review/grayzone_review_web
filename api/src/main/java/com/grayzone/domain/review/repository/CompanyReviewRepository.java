@@ -42,4 +42,16 @@ public interface CompanyReviewRepository extends JpaRepository<CompanyReview, Lo
     """
   )
   Slice<CompanyReview> findCompanyReviewsOrderByLikeCountDesc(Pageable pageable);
+
+  @Query(value = """
+    SELECT cr FROM CompanyReview cr
+    LEFT JOIN cr.company c
+    WHERE c.businessName LIKE :mainRegionAddress
+    ORDER BY cr.createdAt DESC
+    """
+  )
+  Slice<CompanyReview> findCompanyReviewsByMainRegion(
+    Pageable pageable,
+    @Param("mainRegionAddress") String mainRegionAddress
+  );
 }
