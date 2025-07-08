@@ -78,6 +78,9 @@ public class CompanyReviewService {
     User user
   ) {
     String mainRegionAddress = user.getMainRegion().getAddress() + "%";
+
+    log.info("Main region address: {}", mainRegionAddress);
+
     Slice<CompanyReview> mainRegionLatestCompanyReviews = companyReviewRepository
       .findCompanyReviewsByMainRegion(pageable, mainRegionAddress);
 

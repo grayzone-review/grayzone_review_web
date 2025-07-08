@@ -50,6 +50,20 @@ public class CompanyReviewController {
     );
   }
 
+  @GetMapping("/reviews/main-region")
+  public ResponseEntity<ResponseDataDto<AggregatedCompanyReviewsResponseDto>> getMainRegionCompanyReviews(
+    @RequestParam("latitude") Double latitude,
+    @RequestParam("longitude") Double longitude,
+    @AuthenticationPrincipal User user,
+    Pageable pageable
+  ) {
+    return ResponseEntity.ok(
+      ResponseDataDto.from(
+        companyReviewService.getMainRegionLatestCompanyReviews(pageable, latitude, longitude, user)
+      )
+    );
+  }
+
   @PostMapping("/companies/{companyId}/reviews")
   public ResponseEntity<ResponseDataDto<CompanyReviewResponseDto>> createCompanyReview(
     @PathVariable Long companyId,

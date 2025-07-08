@@ -46,7 +46,7 @@ public interface CompanyReviewRepository extends JpaRepository<CompanyReview, Lo
   @Query(value = """
     SELECT cr FROM CompanyReview cr
     LEFT JOIN cr.company c
-    WHERE c.businessName LIKE :mainRegionAddress
+    WHERE c.siteFullAddress LIKE :mainRegionAddress
     ORDER BY cr.createdAt DESC
     """
   )
