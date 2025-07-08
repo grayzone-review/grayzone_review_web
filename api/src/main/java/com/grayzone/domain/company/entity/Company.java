@@ -34,4 +34,25 @@ public class Company {
 
   @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
   private List<CompanyReview> companyReviews = new ArrayList<>();
+
+  public Double calculateDistanceFrom(
+    Double targetLatitude,
+    Double targetLongitude
+  ) {
+    final int EARTH_RADIUS_KM = 6371;
+
+    double lat1Rad = Math.toRadians(this.latitude);
+    double lat2Rad = Math.toRadians(targetLatitude);
+    double deltaLat = Math.toRadians(targetLatitude - this.latitude);
+    double deltaLng = Math.toRadians(targetLongitude - this.longitude);
+
+    double a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2)
+      + Math.cos(lat1Rad) * Math.cos(lat2Rad)
+      * Math.sin(deltaLng / 2) * Math.sin(deltaLng / 2);
+
+    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return EARTH_RADIUS_KM * c;
+  }
+
 }
