@@ -17,7 +17,7 @@ public class CompanyReviewsWithCompanyResponseDto {
   List<CompanyReviewWithCompanyResponseDto> reviews;
 
   public static CompanyReviewsWithCompanyResponseDto from(
-    Slice<CompanyReview> reviewPage,
+    Slice<CompanyReview> reviews,
     Set<Long> userLikedReviewIds,
     Map<Long, Double> totalRatings,
     Set<Long> followedCompanyIds,
@@ -26,7 +26,7 @@ public class CompanyReviewsWithCompanyResponseDto {
     Double longitude
   ) {
 
-    List<CompanyReviewWithCompanyResponseDto> dtos = reviewPage.getContent().stream()
+    List<CompanyReviewWithCompanyResponseDto> dtos = reviews.getContent().stream()
       .map(companyReview -> {
           Company company = companyReview.getCompany();
           return CompanyReviewWithCompanyResponseDto.from(

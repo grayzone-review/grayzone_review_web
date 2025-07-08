@@ -14,7 +14,6 @@ import com.grayzone.domain.review.repository.projection.CompanyTotalRatingOnly;
 import com.grayzone.domain.review.repository.projection.ReviewTitleOnly;
 import com.grayzone.domain.user.entity.User;
 import com.grayzone.domain.user.repository.FollowCompanyRepository;
-import com.grayzone.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -36,7 +35,6 @@ public class CompanyService {
   private final ReviewRatingRepository reviewRatingRepository;
   private final FollowCompanyRepository followCompanyRepository;
   private final CompanyReviewRepository companyReviewRepository;
-  private final UserRepository userRepository;
 
   public CompanyDetailResponseDto getCompanyById(Long companyId, Long userId) {
     Double companyRating = Optional.ofNullable(reviewRatingRepository.getAverageScoreByCompanyId(companyId))
