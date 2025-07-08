@@ -4,6 +4,7 @@ import com.grayzone.domain.review.entity.CompanyReview;
 import com.grayzone.domain.review.repository.projection.ReviewTitleOnly;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -32,4 +33,13 @@ public interface CompanyReviewRepository extends JpaRepository<CompanyReview, Lo
     WHERE cr.rn = 1
     """, nativeQuery = true)
   List<ReviewTitleOnly> findTopReviewPerCompany(@Param("companyIds") List<Long> companyIds);
+
+  @Query(value = """
+    SELECT cr FROM CompanyReview cr
+    LEFT JOIN cr.likes l
+    GROUP BY cr.id
+    ORDER BY COUNT(l) DESC, cr.createdAt DESC
+    """
+  )
+  Slice<CompanyReview> findCompanyReviewsOrderByLikeCountDesc(Pageable pageable);
 }

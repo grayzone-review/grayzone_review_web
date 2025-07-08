@@ -57,6 +57,10 @@ public class CompanyReviewService {
     );
   }
 
+  public void getPopularCompanyReviews() {
+
+  }
+
   @Transactional
   public CompanyReviewResponseDto createCompanyReview(
     Long companyId,
