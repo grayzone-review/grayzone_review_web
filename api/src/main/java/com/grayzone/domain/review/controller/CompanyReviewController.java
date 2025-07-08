@@ -2,9 +2,9 @@ package com.grayzone.domain.review.controller;
 
 import com.grayzone.common.ResponseDataDto;
 import com.grayzone.domain.review.dto.request.CreateCompanyReviewRequestDto;
+import com.grayzone.domain.review.dto.response.AggregatedCompanyReviewsResponseDto;
 import com.grayzone.domain.review.dto.response.CompanyReviewResponseDto;
 import com.grayzone.domain.review.dto.response.CompanyReviewsResponseDto;
-import com.grayzone.domain.review.dto.response.CompanyReviewsWithCompanyResponseDto;
 import com.grayzone.domain.review.service.CompanyReviewService;
 import com.grayzone.domain.user.entity.User;
 import jakarta.validation.Valid;
@@ -37,7 +37,7 @@ public class CompanyReviewController {
   }
 
   @GetMapping("/reviews/popular")
-  public ResponseEntity<ResponseDataDto<CompanyReviewsWithCompanyResponseDto>> getPopularCompanyReviews(
+  public ResponseEntity<ResponseDataDto<AggregatedCompanyReviewsResponseDto>> getPopularCompanyReviews(
     @RequestParam("latitude") Double latitude,
     @RequestParam("longitude") Double longitude,
     @AuthenticationPrincipal User user,

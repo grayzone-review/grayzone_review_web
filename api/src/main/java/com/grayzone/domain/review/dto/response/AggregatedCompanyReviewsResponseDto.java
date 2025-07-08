@@ -13,10 +13,10 @@ import java.util.Set;
 
 @Getter
 @Builder
-public class CompanyReviewsWithCompanyResponseDto {
-  List<CompanyReviewWithCompanyResponseDto> reviews;
+public class AggregatedCompanyReviewsResponseDto {
+  List<AggregatedCompanyReviewResponseDto> reviews;
 
-  public static CompanyReviewsWithCompanyResponseDto from(
+  public static AggregatedCompanyReviewsResponseDto from(
     Slice<CompanyReview> reviews,
     Set<Long> userLikedReviewIds,
     Map<Long, Double> totalRatings,
@@ -26,10 +26,10 @@ public class CompanyReviewsWithCompanyResponseDto {
     Double longitude
   ) {
 
-    List<CompanyReviewWithCompanyResponseDto> dtos = reviews.getContent().stream()
+    List<AggregatedCompanyReviewResponseDto> dtos = reviews.getContent().stream()
       .map(companyReview -> {
           Company company = companyReview.getCompany();
-          return CompanyReviewWithCompanyResponseDto.from(
+          return AggregatedCompanyReviewResponseDto.from(
             companyReview,
             userLikedReviewIds.contains(companyReview.getId()),
             company,
@@ -42,18 +42,18 @@ public class CompanyReviewsWithCompanyResponseDto {
         }
       ).toList();
 
-    return CompanyReviewsWithCompanyResponseDto.builder()
+    return AggregatedCompanyReviewsResponseDto.builder()
       .reviews(dtos)
       .build();
   }
 
   @Getter
   @Builder
-  static class CompanyReviewWithCompanyResponseDto {
+  static class AggregatedCompanyReviewResponseDto {
     private CompanyReviewResponseDto companyReview;
     private CompanyResponseDto company;
 
-    public static CompanyReviewWithCompanyResponseDto from(
+    public static AggregatedCompanyReviewResponseDto from(
       CompanyReview companyReview,
       boolean isLiked,
       Company company,
@@ -63,7 +63,7 @@ public class CompanyReviewsWithCompanyResponseDto {
       Double latitude,
       Double longitude
     ) {
-      return CompanyReviewWithCompanyResponseDto.builder()
+      return AggregatedCompanyReviewResponseDto.builder()
         .companyReview(CompanyReviewResponseDto.from(
           companyReview, isLiked
         ))

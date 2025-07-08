@@ -4,9 +4,9 @@ import com.grayzone.domain.company.entity.Company;
 import com.grayzone.domain.company.repository.CompanyRepository;
 import com.grayzone.domain.review.ReviewTitleSummarizer;
 import com.grayzone.domain.review.dto.request.CreateCompanyReviewRequestDto;
+import com.grayzone.domain.review.dto.response.AggregatedCompanyReviewsResponseDto;
 import com.grayzone.domain.review.dto.response.CompanyReviewResponseDto;
 import com.grayzone.domain.review.dto.response.CompanyReviewsResponseDto;
-import com.grayzone.domain.review.dto.response.CompanyReviewsWithCompanyResponseDto;
 import com.grayzone.domain.review.entity.CompanyReview;
 import com.grayzone.domain.review.entity.ReviewRating;
 import com.grayzone.domain.review.repository.CompanyReviewRepository;
@@ -59,7 +59,7 @@ public class CompanyReviewService {
     );
   }
 
-  public CompanyReviewsWithCompanyResponseDto getPopularCompanyReviews(
+  public AggregatedCompanyReviewsResponseDto getPopularCompanyReviews(
     Pageable pageable,
     Double latitude,
     Double longitude,
@@ -68,26 +68,20 @@ public class CompanyReviewService {
     Slice<CompanyReview> popularCompanyReviews = companyReviewRepository
       .findCompanyReviewsOrderByLikeCountDesc(pageable);
 
-    Set<Long> userLikedReviewIds = getUserLikedReviewIds(popularCompanyReviews.getContent(), user.getId());
+    return buildAggregatedCompanyReviews(popularCompanyReviews, latitude, longitude, user);
+  }
 
-    List<Long> companyIds = popularCompanyReviews.getContent()
-      .stream()
-      .map(element -> element.getCompany().getId())
-      .toList();
+  public AggregatedCompanyReviewsResponseDto getMainRegionLatestCompanyReviews(
+    Pageable pageable,
+    Double latitude,
+    Double longitude,
+    User user
+  ) {
+    String mainRegionAddress = user.getMainRegion().getAddress() + "%";
+    Slice<CompanyReview> mainRegionLatestCompanyReviews = companyReviewRepository
+      .findCompanyReviewsByMainRegion(pageable, mainRegionAddress);
 
-    Map<Long, Double> averageRatings = getAverageRatings(companyIds);
-    Set<Long> followedCompanyIds = getFollowedCompanyIds(user, companyIds);
-    Map<Long, String> topReviews = getTopReviews(companyIds);
-
-    return CompanyReviewsWithCompanyResponseDto.from(
-      popularCompanyReviews,
-      userLikedReviewIds,
-      averageRatings,
-      followedCompanyIds,
-      topReviews,
-      latitude,
-      longitude
-    );
+    return buildAggregatedCompanyReviews(mainRegionLatestCompanyReviews, latitude, longitude, user);
   }
 
   @Transactional
@@ -111,6 +105,34 @@ public class CompanyReviewService {
     companyReview.setRatings(reviewRatings);
 
     return CompanyReviewResponseDto.from(companyReview, false);
+  }
+
+  private AggregatedCompanyReviewsResponseDto buildAggregatedCompanyReviews(
+    Slice<CompanyReview> companyReviews,
+    Double latitude,
+    Double longitude,
+    User user
+  ) {
+    Set<Long> userLikedReviewIds = getUserLikedReviewIds(companyReviews.getContent(), user.getId());
+
+    List<Long> companyIds = companyReviews.getContent()
+      .stream()
+      .map(element -> element.getCompany().getId())
+      .toList();
+
+    Map<Long, Double> averageRatings = getAverageRatings(companyIds);
+    Set<Long> followedCompanyIds = getFollowedCompanyIds(user, companyIds);
+    Map<Long, String> topReviews = getTopReviews(companyIds);
+
+    return AggregatedCompanyReviewsResponseDto.from(
+      companyReviews,
+      userLikedReviewIds,
+      averageRatings,
+      followedCompanyIds,
+      topReviews,
+      latitude,
+      longitude
+    );
   }
 
   private Set<Long> getUserLikedReviewIds(List<CompanyReview> reviews, Long userId) {
