@@ -4,10 +4,12 @@ import com.grayzone.domain.legaldistrict.entity.LegalDistrict;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "interested_regions")
 @Getter
+@NoArgsConstructor
 public class InterestedRegion {
 
   @Id

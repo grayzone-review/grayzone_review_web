@@ -60,9 +60,9 @@ public interface CompanyReviewRepository extends JpaRepository<CompanyReview, Lo
   @Query("""
     SELECT cr FROM CompanyReview cr
     LEFT JOIN cr.company c
-    WHERE (:address1 IS NULL OR c.siteFullAddress LIKE :addr1)
-        OR (:address1 IS NULL OR c.siteFullAddress LIKE :addr2)
-        OR (:address1 IS NULL OR c.siteFullAddress LIKE :addr3)
+    WHERE (:address1 IS NULL OR c.siteFullAddress LIKE :address1)
+        OR (:address2 IS NULL OR c.siteFullAddress LIKE :address2)
+        OR (:address3 IS NULL OR c.siteFullAddress LIKE :address3)
     ORDER BY cr.createdAt DESC
     """)
   Slice<CompanyReview> findCompanyReviewByInterestedRegions(

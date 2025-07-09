@@ -12,6 +12,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
   Optional<User> findByEmail(String email);
 
-  @Query("SELECT u FROM User u JOIN FETCH u.mainRegion WHERE u.id = :userId")
-  Optional<User> findByIdWithMainRegion(@Param("userId") Long userId);
+  @Query(value = """
+    SELECT u FROM User u 
+    JOIN FETCH u.mainRegion
+    JOIN FETCH u.interestedRegions
+    WHERE u.id = :userId
+    """)
+  Optional<User> findByIdWithRegion(@Param("userId") Long userId);
 }

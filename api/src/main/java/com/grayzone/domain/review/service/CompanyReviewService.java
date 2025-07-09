@@ -2,6 +2,7 @@ package com.grayzone.domain.review.service;
 
 import com.grayzone.domain.company.entity.Company;
 import com.grayzone.domain.company.repository.CompanyRepository;
+import com.grayzone.domain.legaldistrict.entity.LegalDistrict;
 import com.grayzone.domain.review.ReviewTitleSummarizer;
 import com.grayzone.domain.review.dto.request.CreateCompanyReviewRequestDto;
 import com.grayzone.domain.review.dto.response.AggregatedCompanyReviewsResponseDto;
@@ -14,6 +15,7 @@ import com.grayzone.domain.review.repository.ReviewLikeRepository;
 import com.grayzone.domain.review.repository.ReviewRatingRepository;
 import com.grayzone.domain.review.repository.projection.CompanyTotalRatingOnly;
 import com.grayzone.domain.review.repository.projection.ReviewTitleOnly;
+import com.grayzone.domain.user.entity.InterestedRegion;
 import com.grayzone.domain.user.entity.User;
 import com.grayzone.domain.user.repository.FollowCompanyRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -79,12 +81,34 @@ public class CompanyReviewService {
   ) {
     String mainRegionAddress = addWildCardSuffix(user.getMainRegionAddress());
 
-    log.info("Main region address: {}", mainRegionAddress);
-
     Slice<CompanyReview> mainRegionLatestCompanyReviews = companyReviewRepository
       .findCompanyReviewsByMainRegion(pageable, mainRegionAddress);
 
     return buildAggregatedCompanyReviews(mainRegionLatestCompanyReviews, latitude, longitude, user);
+  }
+
+  public AggregatedCompanyReviewsResponseDto getInterestedRegionLatestCompanyReviews(
+    Pageable pageable,
+    Double latitude,
+    Double longitude,
+    User user
+  ) {
+
+    List<String> list = user.getInterestedRegions().stream()
+      .map(InterestedRegion::getLegalDistrict)
+      .map(LegalDistrict::getAddress)
+      .map(this::addWildCardSuffix)
+      .toList();
+
+    String address1 = !list.isEmpty() ? list.get(0) : null;
+    String address2 = list.size() > 1 ? list.get(1) : null;
+    String address3 = list.size() > 2 ? list.get(2) : null;
+
+
+    Slice<CompanyReview> interestedRegionsLatestCompanyReviews = companyReviewRepository
+      .findCompanyReviewByInterestedRegions(pageable, address1, address2, address3);
+
+    return buildAggregatedCompanyReviews(interestedRegionsLatestCompanyReviews, latitude, longitude, user);
   }
 
   @Transactional
