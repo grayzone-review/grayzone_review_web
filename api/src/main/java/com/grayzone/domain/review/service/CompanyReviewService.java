@@ -77,7 +77,7 @@ public class CompanyReviewService {
     Double longitude,
     User user
   ) {
-    String mainRegionAddress = user.getMainRegion().getAddress() + "%";
+    String mainRegionAddress = addWildCardSuffix(user.getMainRegionAddress());
 
     log.info("Main region address: {}", mainRegionAddress);
 
@@ -170,5 +170,9 @@ public class CompanyReviewService {
         ReviewTitleOnly::getCompanyId,
         ReviewTitleOnly::getTitle
       ));
+  }
+
+  private String addWildCardSuffix(String target) {
+    return target + "%";
   }
 }
