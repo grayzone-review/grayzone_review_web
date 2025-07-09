@@ -18,6 +18,7 @@ import com.grayzone.domain.review.repository.projection.ReviewTitleOnly;
 import com.grayzone.domain.user.entity.InterestedRegion;
 import com.grayzone.domain.user.entity.User;
 import com.grayzone.domain.user.repository.FollowCompanyRepository;
+import com.grayzone.domain.user.repository.InterestedRegionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +46,7 @@ public class CompanyReviewService {
   private final ReviewRatingRepository reviewRatingRepository;
   private final FollowCompanyRepository followCompanyRepository;
   private final ReviewTitleSummarizer reviewTitleSummarizer;
+  private final InterestedRegionRepository interestedRegionRepository;
 
 
   public CompanyReviewsResponseDto getReviewsByCompanyId(Long companyId, Long userId, Pageable pageable) {
@@ -93,8 +95,9 @@ public class CompanyReviewService {
     Double longitude,
     User user
   ) {
+    List<InterestedRegion> interestedRegions = interestedRegionRepository.findAllByUserWithLegalDistrict(user);
 
-    List<String> list = user.getInterestedRegions().stream()
+    List<String> list = interestedRegions.stream()
       .map(InterestedRegion::getLegalDistrict)
       .map(LegalDistrict::getAddress)
       .map(this::addWildCardSuffix)
