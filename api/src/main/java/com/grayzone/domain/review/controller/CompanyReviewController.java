@@ -2,6 +2,7 @@ package com.grayzone.domain.review.controller;
 
 import com.grayzone.common.ResponseDataDto;
 import com.grayzone.domain.review.dto.request.CreateCompanyReviewRequestDto;
+import com.grayzone.domain.review.dto.response.AggregatedCompanyReviewsResponseDto;
 import com.grayzone.domain.review.dto.response.CompanyReviewResponseDto;
 import com.grayzone.domain.review.dto.response.CompanyReviewsResponseDto;
 import com.grayzone.domain.review.service.CompanyReviewService;
@@ -16,13 +17,13 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/companies")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class CompanyReviewController {
 
   private final CompanyReviewService companyReviewService;
 
-  @GetMapping("/{companyId}/reviews")
+  @GetMapping("/companies/{companyId}/reviews")
   public ResponseEntity<ResponseDataDto<CompanyReviewsResponseDto>> getCompanyReviews(
     @PathVariable Long companyId,
     @AuthenticationPrincipal User user,
@@ -35,7 +36,49 @@ public class CompanyReviewController {
     );
   }
 
-  @PostMapping("/{companyId}/reviews")
+  @GetMapping("/reviews/popular")
+  public ResponseEntity<ResponseDataDto<AggregatedCompanyReviewsResponseDto>> getPopularCompanyReviews(
+    @RequestParam("latitude") Double latitude,
+    @RequestParam("longitude") Double longitude,
+    @AuthenticationPrincipal User user,
+    Pageable pageable
+  ) {
+    return ResponseEntity.ok(
+      ResponseDataDto.from(
+        companyReviewService.getPopularCompanyReviews(pageable, latitude, longitude, user)
+      )
+    );
+  }
+
+  @GetMapping("/reviews/main-region")
+  public ResponseEntity<ResponseDataDto<AggregatedCompanyReviewsResponseDto>> getMainRegionCompanyReviews(
+    @RequestParam("latitude") Double latitude,
+    @RequestParam("longitude") Double longitude,
+    @AuthenticationPrincipal User user,
+    Pageable pageable
+  ) {
+    return ResponseEntity.ok(
+      ResponseDataDto.from(
+        companyReviewService.getMainRegionLatestCompanyReviews(pageable, latitude, longitude, user)
+      )
+    );
+  }
+
+  @GetMapping("/reviews/interested-region")
+  public ResponseEntity<ResponseDataDto<AggregatedCompanyReviewsResponseDto>> getInterestedRegionCompanyReviews(
+    @RequestParam("latitude") Double latitude,
+    @RequestParam("longitude") Double longitude,
+    @AuthenticationPrincipal User user,
+    Pageable pageable
+  ) {
+    return ResponseEntity.ok(
+      ResponseDataDto.from(
+        companyReviewService.getInterestedRegionLatestCompanyReviews(pageable, latitude, longitude, user)
+      )
+    );
+  }
+
+  @PostMapping("/companies/{companyId}/reviews")
   public ResponseEntity<ResponseDataDto<CompanyReviewResponseDto>> createCompanyReview(
     @PathVariable Long companyId,
     @Valid @RequestBody CreateCompanyReviewRequestDto requestDto,
