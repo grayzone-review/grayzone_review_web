@@ -42,6 +42,7 @@ services:
       - .env.local
     networks:
       - db-network
+      - cache-network
     depends_on:
       mysql:
         condition: service_healthy
