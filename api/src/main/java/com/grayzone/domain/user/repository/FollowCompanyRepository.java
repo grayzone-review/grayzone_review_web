@@ -3,6 +3,8 @@ package com.grayzone.domain.user.repository;
 import com.grayzone.domain.company.entity.Company;
 import com.grayzone.domain.user.entity.FollowCompany;
 import com.grayzone.domain.user.entity.User;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -25,4 +27,6 @@ public interface FollowCompanyRepository extends JpaRepository<FollowCompany, Lo
     """)
   List<Long> findFollowedCompanyIdsByUserIdAndCompanyIds(@Param("userId") Long userId,
                                                          @Param("companyIds") List<Long> companyIds);
+
+  Slice<FollowCompany> findByUser(User user, Pageable pageable);
 }

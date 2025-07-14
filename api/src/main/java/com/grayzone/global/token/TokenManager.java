@@ -9,8 +9,8 @@ import java.util.concurrent.TimeUnit;
 @Component
 @RequiredArgsConstructor
 public class TokenManager {
-  private final static long ACCESS_TOKEN_VALIDITY_TIME = 1000L * 60 * 60;
-  private final static long REFRESH_TOKEN_VALIDITY_TIME = 1000L * 60 * 60 * 24 * 7;
+  private static final long ACCESS_TOKEN_VALIDITY_TIME = 1000L * 60 * 60;
+  private static final long REFRESH_TOKEN_VALIDITY_TIME = 1000L * 60 * 60 * 24 * 7;
 
   private final JWTUtils jwtUtils;
   private final RefreshTokenUtils refreshTokenUtils;

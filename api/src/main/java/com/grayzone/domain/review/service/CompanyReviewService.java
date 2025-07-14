@@ -15,6 +15,7 @@ import com.grayzone.domain.review.repository.ReviewLikeRepository;
 import com.grayzone.domain.review.repository.ReviewRatingRepository;
 import com.grayzone.domain.review.repository.projection.CompanyTotalRatingOnly;
 import com.grayzone.domain.review.repository.projection.ReviewTitleOnly;
+import com.grayzone.domain.user.dto.response.UserRelatedReviewsResponseDto;
 import com.grayzone.domain.user.entity.InterestedRegion;
 import com.grayzone.domain.user.entity.User;
 import com.grayzone.domain.user.repository.FollowCompanyRepository;
@@ -112,6 +113,18 @@ public class CompanyReviewService {
       .findCompanyReviewByInterestedRegions(pageable, address1, address2, address3);
 
     return buildAggregatedCompanyReviews(interestedRegionsLatestCompanyReviews, latitude, longitude, user);
+  }
+
+  public UserRelatedReviewsResponseDto getReviewsByUser(User user, Pageable pageable) {
+    return UserRelatedReviewsResponseDto.from(
+      companyReviewRepository.findByUser(user, pageable)
+    );
+  }
+
+  public UserRelatedReviewsResponseDto getInteractedReviews(User user, Pageable pageable) {
+    return UserRelatedReviewsResponseDto.from(
+      companyReviewRepository.findDistinctByUserInteracted(user, pageable)
+    );
   }
 
   @Transactional

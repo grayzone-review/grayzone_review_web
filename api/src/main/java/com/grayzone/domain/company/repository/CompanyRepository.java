@@ -3,6 +3,7 @@ package com.grayzone.domain.company.repository;
 import com.grayzone.domain.company.entity.Company;
 import com.grayzone.domain.company.repository.projection.CompanySearchOnly;
 import com.grayzone.domain.company.repository.projection.CompanySuggestionOnly;
+import com.grayzone.domain.user.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -87,4 +88,19 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
     @Param("region") String region,
     Pageable pageable
   );
+
+  @Query("""
+    SELECT c FROM Company c
+    JOIN FollowCompany f ON c.id = f.company.id
+    WHERE f.user = :user
+    """)
+  Slice<Company> findFollowedCompaniesByUser(@Param("user") User user, Pageable pageable);
+
+  @Query("""
+    SELECT COUNT(c)
+    FROM Company c
+    JOIN FollowCompany f ON c.id = f.company.id
+    WHERE f.user = :user
+    """)
+  long countFollowedCompaniesByUser(@Param("user") User user);
 }
