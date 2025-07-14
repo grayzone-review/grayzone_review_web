@@ -3,8 +3,8 @@ package com.grayzone.domain.user.controller;
 import com.grayzone.common.ResponseDataDto;
 import com.grayzone.domain.review.service.CompanyReviewService;
 import com.grayzone.domain.user.dto.request.VerifyNicknameDuplicateRequestDto;
-import com.grayzone.domain.user.dto.response.MyReviewsResponseDto;
 import com.grayzone.domain.user.dto.response.UserInfoResponseDto;
+import com.grayzone.domain.user.dto.response.UserRelatedReviewsResponseDto;
 import com.grayzone.domain.user.entity.User;
 import com.grayzone.domain.user.service.UserService;
 import jakarta.validation.Valid;
@@ -42,7 +42,7 @@ public class UserController {
   }
 
   @GetMapping("/me/reviews")
-  public ResponseEntity<ResponseDataDto<MyReviewsResponseDto>> getMyReviews(
+  public ResponseEntity<ResponseDataDto<UserRelatedReviewsResponseDto>> getMyReviews(
     @AuthenticationPrincipal User user,
     Pageable pageable
   ) {

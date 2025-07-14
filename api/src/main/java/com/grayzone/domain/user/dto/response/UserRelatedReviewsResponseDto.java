@@ -13,23 +13,23 @@ import java.util.List;
 
 @Getter
 @Builder
-public class MyReviewsResponseDto {
+public class UserRelatedReviewsResponseDto {
 
-  private List<MyReviewResponseDto> reviews;
+  private List<UserRelatedReviewResponseDto> reviews;
 
-  public static MyReviewsResponseDto from(Slice<CompanyReview> companyReviews) {
-    List<MyReviewResponseDto> myReviewResponseDtos = companyReviews.getContent().stream()
-      .map(MyReviewResponseDto::from)
+  public static UserRelatedReviewsResponseDto from(Slice<CompanyReview> companyReviews) {
+    List<UserRelatedReviewResponseDto> userRelatedReviewResponseDtos = companyReviews.getContent().stream()
+      .map(UserRelatedReviewResponseDto::from)
       .toList();
 
-    return MyReviewsResponseDto.builder()
-      .reviews(myReviewResponseDtos)
+    return UserRelatedReviewsResponseDto.builder()
+      .reviews(userRelatedReviewResponseDtos)
       .build();
   }
 
   @Getter
   @Builder
-  public static class MyReviewResponseDto {
+  public static class UserRelatedReviewResponseDto {
     private Long id;
     private Double totalRating;
     private String title;
@@ -41,7 +41,7 @@ public class MyReviewsResponseDto {
     private int likeCount;
     private int commentCount;
 
-    public static MyReviewResponseDto from(CompanyReview companyReview) {
+    public static UserRelatedReviewResponseDto from(CompanyReview companyReview) {
       Double totalRating = companyReview.getRatings().stream()
         .mapToDouble(ReviewRating::getRating)
         .average()
@@ -49,7 +49,7 @@ public class MyReviewsResponseDto {
 
       Company company = companyReview.getCompany();
 
-      return MyReviewResponseDto.builder()
+      return UserRelatedReviewResponseDto.builder()
         .id(companyReview.getId())
         .title(companyReview.getTitle())
         .totalRating(totalRating)
