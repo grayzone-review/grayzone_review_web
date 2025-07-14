@@ -1,12 +1,15 @@
 package com.grayzone.domain.user.controller;
 
 import com.grayzone.common.ResponseDataDto;
+import com.grayzone.domain.review.service.CompanyReviewService;
 import com.grayzone.domain.user.dto.request.VerifyNicknameDuplicateRequestDto;
+import com.grayzone.domain.user.dto.response.MyReviewsResponseDto;
 import com.grayzone.domain.user.dto.response.UserInfoResponseDto;
 import com.grayzone.domain.user.entity.User;
 import com.grayzone.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
   private final UserService userService;
+  private final CompanyReviewService companyReviewService;
 
   @PostMapping("/nickname-verify")
   public ResponseEntity<ResponseDataDto<Void>> verifyNicknameDuplicate(
@@ -34,6 +38,18 @@ public class UserController {
   public ResponseEntity<ResponseDataDto<UserInfoResponseDto>> getUserInfo(@AuthenticationPrincipal User user) {
     return ResponseEntity.ok(
       ResponseDataDto.from(userService.getUserInfo(user))
+    );
+  }
+
+  @GetMapping("/me/reviews")
+  public ResponseEntity<ResponseDataDto<MyReviewsResponseDto>> getMyReviews(
+    @AuthenticationPrincipal User user,
+    Pageable pageable
+  ) {
+    return ResponseEntity.ok(
+      ResponseDataDto.from(
+        companyReviewService.getReviewsByUser(user, pageable)
+      )
     );
   }
 }

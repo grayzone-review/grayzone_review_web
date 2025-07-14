@@ -2,6 +2,7 @@ package com.grayzone.domain.review.repository;
 
 import com.grayzone.domain.review.entity.CompanyReview;
 import com.grayzone.domain.review.repository.projection.ReviewTitleOnly;
+import com.grayzone.domain.user.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -71,4 +72,6 @@ public interface CompanyReviewRepository extends JpaRepository<CompanyReview, Lo
     @Param("address2") String address2,
     @Param("address3") String address3
   );
+
+  Slice<CompanyReview> findByUser(User user, Pageable pageable);
 }
