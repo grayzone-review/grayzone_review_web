@@ -74,4 +74,13 @@ public interface CompanyReviewRepository extends JpaRepository<CompanyReview, Lo
   );
 
   Slice<CompanyReview> findByUser(User user, Pageable pageable);
+
+  @Query("""
+        SELECT DISTINCT r
+        FROM CompanyReview r
+        LEFT JOIN r.likes l
+        LEFT JOIN r.comments c
+        WHERE l.user = :user OR c.user = :user
+    """)
+  Page<CompanyReview> findDistinctByUserInteracted(@Param("user") User user, Pageable pageable);
 }

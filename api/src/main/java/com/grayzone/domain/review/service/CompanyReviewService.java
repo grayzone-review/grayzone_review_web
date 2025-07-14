@@ -121,6 +121,12 @@ public class CompanyReviewService {
     );
   }
 
+  public UserRelatedReviewsResponseDto getInteractedReviews(User user, Pageable pageable) {
+    return UserRelatedReviewsResponseDto.from(
+      companyReviewRepository.findDistinctByUserInteracted(user, pageable)
+    );
+  }
+
   @Transactional
   public CompanyReviewResponseDto createCompanyReview(
     Long companyId,

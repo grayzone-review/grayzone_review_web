@@ -52,4 +52,16 @@ public class UserController {
       )
     );
   }
+
+  @GetMapping("/me/interacted-reviews")
+  public ResponseEntity<ResponseDataDto<UserRelatedReviewsResponseDto>> getInteractedReviews(
+    @AuthenticationPrincipal User user,
+    Pageable pageable
+  ) {
+    return ResponseEntity.ok(
+      ResponseDataDto.from(
+        companyReviewService.getInteractedReviews(user, pageable)
+      )
+    );
+  }
 }
