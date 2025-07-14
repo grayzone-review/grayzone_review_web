@@ -12,6 +12,7 @@ import com.grayzone.domain.review.repository.CompanyReviewRepository;
 import com.grayzone.domain.review.repository.ReviewRatingRepository;
 import com.grayzone.domain.review.repository.projection.CompanyTotalRatingOnly;
 import com.grayzone.domain.review.repository.projection.ReviewTitleOnly;
+import com.grayzone.domain.user.dto.response.UserFollowedCompaniesResponseDto;
 import com.grayzone.domain.user.entity.User;
 import com.grayzone.domain.user.repository.FollowCompanyRepository;
 import lombok.RequiredArgsConstructor;
@@ -66,14 +67,7 @@ public class CompanyService {
 
     List<Long> companyIds = companies.getContent().stream().map(CompanySuggestionOnly::getId).toList();
 
-    Map<Long, Double> totalRatings = reviewRatingRepository.getAverageScoresByCompanyIds(companyIds)
-      .stream()
-      .collect(
-        Collectors.toMap(
-          CompanyTotalRatingOnly::getCompanyId,
-          CompanyTotalRatingOnly::getTotalRating
-        )
-      );
+    Map<Long, Double> totalRatings = getAverageRatings(companyIds);
 
     return CompaniesSuggestResponseDto.from(
       companies,
@@ -135,6 +129,20 @@ public class CompanyService {
 //
 //    return buildCompaniesSearchResponseDto(companies, user);
 //  }
+
+  public UserFollowedCompaniesResponseDto getCompaniesFollowedByUser(User user, Pageable pageable) {
+    Slice<Company> followedCompanies = companyRepository.findFollowedCompaniesByUser(user, pageable);
+
+    List<Long> followedCompanyIds = followedCompanies.getContent()
+      .stream()
+      .map(Company::getId)
+      .toList();
+
+    Map<Long, Double> totalRatings = getAverageRatings(followedCompanyIds);
+    Map<Long, String> topReviews = getTopReviews(followedCompanyIds);
+
+    return UserFollowedCompaniesResponseDto.from(followedCompanies, totalRatings, topReviews);
+  }
 
   private String createRegionWildCard(LegalDistrict region) {
     return region.getAddress() + "%";

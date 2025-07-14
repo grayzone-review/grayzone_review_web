@@ -1,8 +1,10 @@
 package com.grayzone.domain.user.controller;
 
 import com.grayzone.common.ResponseDataDto;
+import com.grayzone.domain.company.service.CompanyService;
 import com.grayzone.domain.review.service.CompanyReviewService;
 import com.grayzone.domain.user.dto.request.VerifyNicknameDuplicateRequestDto;
+import com.grayzone.domain.user.dto.response.UserFollowedCompaniesResponseDto;
 import com.grayzone.domain.user.dto.response.UserInfoResponseDto;
 import com.grayzone.domain.user.dto.response.UserRelatedReviewsResponseDto;
 import com.grayzone.domain.user.entity.User;
@@ -22,6 +24,7 @@ public class UserController {
 
   private final UserService userService;
   private final CompanyReviewService companyReviewService;
+  private final CompanyService companyService;
 
   @PostMapping("/nickname-verify")
   public ResponseEntity<ResponseDataDto<Void>> verifyNicknameDuplicate(
@@ -61,6 +64,18 @@ public class UserController {
     return ResponseEntity.ok(
       ResponseDataDto.from(
         companyReviewService.getInteractedReviews(user, pageable)
+      )
+    );
+  }
+
+  @GetMapping("/me/followed-companies")
+  public ResponseEntity<ResponseDataDto<UserFollowedCompaniesResponseDto>> getFollowedCompanies(
+    @AuthenticationPrincipal User user,
+    Pageable pageable
+  ) {
+    return ResponseEntity.ok(
+      ResponseDataDto.from(
+        companyService.getCompaniesFollowedByUser(user, pageable)
       )
     );
   }
