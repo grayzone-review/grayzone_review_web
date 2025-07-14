@@ -83,4 +83,15 @@ public interface CompanyReviewRepository extends JpaRepository<CompanyReview, Lo
         WHERE l.user = :user OR c.user = :user
     """)
   Page<CompanyReview> findDistinctByUserInteracted(@Param("user") User user, Pageable pageable);
+
+  long countByUser(User user);
+
+  @Query("""
+        SELECT COUNT(DISTINCT r.id)
+        FROM CompanyReview r
+        LEFT JOIN r.likes l
+        LEFT JOIN r.comments c
+        WHERE l.user = :user OR c.user = :user
+    """)
+  long countByUserInteracted(@Param("user") User user);
 }

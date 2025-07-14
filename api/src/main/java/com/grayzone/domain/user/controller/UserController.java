@@ -6,6 +6,7 @@ import com.grayzone.domain.review.service.CompanyReviewService;
 import com.grayzone.domain.user.dto.request.VerifyNicknameDuplicateRequestDto;
 import com.grayzone.domain.user.dto.response.UserFollowedCompaniesResponseDto;
 import com.grayzone.domain.user.dto.response.UserInfoResponseDto;
+import com.grayzone.domain.user.dto.response.UserInteractionCountsResponseDto;
 import com.grayzone.domain.user.dto.response.UserRelatedReviewsResponseDto;
 import com.grayzone.domain.user.entity.User;
 import com.grayzone.domain.user.service.UserService;
@@ -76,6 +77,17 @@ public class UserController {
     return ResponseEntity.ok(
       ResponseDataDto.from(
         companyService.getCompaniesFollowedByUser(user, pageable)
+      )
+    );
+  }
+
+  @GetMapping("/me/interaction-counts")
+  public ResponseEntity<ResponseDataDto<UserInteractionCountsResponseDto>> getInteractionCounts(
+    @AuthenticationPrincipal User user
+  ) {
+    return ResponseEntity.ok(
+      ResponseDataDto.from(
+        userService.getUserInteractionCounts(user)
       )
     );
   }

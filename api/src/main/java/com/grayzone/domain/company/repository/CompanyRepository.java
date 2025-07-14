@@ -96,4 +96,11 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
     """)
   Slice<Company> findFollowedCompaniesByUser(@Param("user") User user, Pageable pageable);
 
+  @Query("""
+    SELECT COUNT(c)
+    FROM Company c
+    JOIN FollowCompany f ON c.id = f.company.id
+    WHERE f.user = :user
+    """)
+  long countFollowedCompaniesByUser(@Param("user") User user);
 }

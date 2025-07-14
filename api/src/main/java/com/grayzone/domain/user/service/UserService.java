@@ -1,6 +1,9 @@
 package com.grayzone.domain.user.service;
 
+import com.grayzone.domain.company.repository.CompanyRepository;
+import com.grayzone.domain.review.repository.CompanyReviewRepository;
 import com.grayzone.domain.user.dto.response.UserInfoResponseDto;
+import com.grayzone.domain.user.dto.response.UserInteractionCountsResponseDto;
 import com.grayzone.domain.user.entity.User;
 import com.grayzone.domain.user.repository.InterestedRegionRepository;
 import com.grayzone.domain.user.repository.UserRepository;
@@ -19,6 +22,8 @@ public class UserService {
 
   private final UserRepository userRepository;
   private final InterestedRegionRepository interestedRegionRepository;
+  private final CompanyReviewRepository companyReviewRepository;
+  private final CompanyRepository companyRepository;
 
   public void verifyNicknameDuplicate(String nickname) {
     if (userRepository.existsByNickname(nickname)) {
@@ -32,5 +37,13 @@ public class UserService {
       .toList();
 
     return new UserInfoResponseDto(user.getNickname(), user.getMainRegionAddress(), interestedRegionAddresses);
+  }
+
+  public UserInteractionCountsResponseDto getUserInteractionCounts(User user) {
+    return UserInteractionCountsResponseDto.builder()
+      .myReviewCount(companyReviewRepository.countByUser(user))
+      .likeOrCommentReviewCount(companyReviewRepository.countByUserInteracted(user))
+      .followCompanyCount(companyRepository.countFollowedCompaniesByUser(user))
+      .build();
   }
 }
