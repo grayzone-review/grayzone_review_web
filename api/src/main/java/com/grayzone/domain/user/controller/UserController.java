@@ -3,6 +3,7 @@ package com.grayzone.domain.user.controller;
 import com.grayzone.common.ResponseDataDto;
 import com.grayzone.domain.company.service.CompanyService;
 import com.grayzone.domain.review.service.CompanyReviewService;
+import com.grayzone.domain.user.dto.request.UpdateUserInfoRequestDto;
 import com.grayzone.domain.user.dto.request.VerifyNicknameDuplicateRequestDto;
 import com.grayzone.domain.user.dto.response.UserFollowedCompaniesResponseDto;
 import com.grayzone.domain.user.dto.response.UserInfoResponseDto;
@@ -90,5 +91,17 @@ public class UserController {
         userService.getUserInteractionCounts(user)
       )
     );
+  }
+
+  @PutMapping("/me")
+  public ResponseEntity<ResponseDataDto<Void>> updateUserInfo(
+    @Valid @RequestBody UpdateUserInfoRequestDto requestDto,
+    @AuthenticationPrincipal User user
+  ) {
+    userService.updateUserInfo(user, requestDto);
+
+    return ResponseEntity
+      .status(HttpStatus.OK)
+      .body(ResponseDataDto.from(null));
   }
 }

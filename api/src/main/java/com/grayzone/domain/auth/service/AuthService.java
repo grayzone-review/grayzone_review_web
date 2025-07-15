@@ -10,7 +10,6 @@ import com.grayzone.domain.user.entity.InterestedRegion;
 import com.grayzone.domain.user.entity.User;
 import com.grayzone.domain.user.repository.InterestedRegionRepository;
 import com.grayzone.domain.user.repository.UserRepository;
-import com.grayzone.global.oauth.OAuthProvider;
 import com.grayzone.global.oauth.OAuthUserInfo;
 import com.grayzone.global.oauth.OAuthUserInfoDispatcher;
 import com.grayzone.global.token.TokenManager;
@@ -44,8 +43,7 @@ public class AuthService {
     LegalDistrict mainRegion = legalDistrictRepository.findById(mainRegionId)
       .orElseThrow(() -> new IllegalArgumentException("메인 동네 지정을 필수입니다."));
 
-//    OAuthUserInfo userInfo = oAuthUserInfoDispatcher.dispatch(requestDto.getOauthProvider(), requestDto.getOauthToken());
-    OAuthUserInfo userInfo = new OAuthUserInfo(OAuthProvider.KAKAO, "test2123@test.com");
+    OAuthUserInfo userInfo = oAuthUserInfoDispatcher.dispatch(requestDto.getOauthProvider(), requestDto.getOauthToken());
 
     User user = requestDto.toEntity(userInfo.getEmail(), mainRegion);
     List<InterestedRegion> interestedRegions = new ArrayList<>();

@@ -78,4 +78,9 @@ public class User implements UserDetails {
   public String getMainRegionAddress() {
     return mainRegion.getAddress();
   }
+
+  public void setInterestedRegions(List<InterestedRegion> interestedRegions) {
+    this.interestedRegions.clear();
+    this.interestedRegions.addAll(interestedRegions);
+  }
 }
