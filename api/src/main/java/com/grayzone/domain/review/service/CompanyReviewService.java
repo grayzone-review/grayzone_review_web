@@ -98,15 +98,15 @@ public class CompanyReviewService {
   ) {
     List<InterestedRegion> interestedRegions = interestedRegionRepository.findAllByUserWithLegalDistrict(user);
 
-    List<String> list = interestedRegions.stream()
+    List<String> interestedRegionAddresses = interestedRegions.stream()
       .map(InterestedRegion::getLegalDistrict)
       .map(LegalDistrict::getAddress)
       .map(this::addWildCardSuffix)
       .toList();
 
-    String address1 = !list.isEmpty() ? list.get(0) : null;
-    String address2 = list.size() > 1 ? list.get(1) : null;
-    String address3 = list.size() > 2 ? list.get(2) : null;
+    String address1 = !interestedRegionAddresses.isEmpty() ? interestedRegionAddresses.get(0) : null;
+    String address2 = interestedRegionAddresses.size() > 1 ? interestedRegionAddresses.get(1) : null;
+    String address3 = interestedRegionAddresses.size() > 2 ? interestedRegionAddresses.get(2) : null;
 
 
     Slice<CompanyReview> interestedRegionsLatestCompanyReviews = companyReviewRepository
