@@ -13,8 +13,10 @@ import com.grayzone.domain.review.repository.ReviewRatingRepository;
 import com.grayzone.domain.review.repository.projection.CompanyTotalRatingOnly;
 import com.grayzone.domain.review.repository.projection.ReviewTitleOnly;
 import com.grayzone.domain.user.dto.response.UserFollowedCompaniesResponseDto;
+import com.grayzone.domain.user.entity.InterestedRegion;
 import com.grayzone.domain.user.entity.User;
 import com.grayzone.domain.user.repository.FollowCompanyRepository;
+import com.grayzone.domain.user.repository.InterestedRegionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -36,6 +38,7 @@ public class CompanyService {
   private final ReviewRatingRepository reviewRatingRepository;
   private final FollowCompanyRepository followCompanyRepository;
   private final CompanyReviewRepository companyReviewRepository;
+  private final InterestedRegionRepository interestedRegionRepository;
 
   public CompanyDetailResponseDto getCompanyById(Long companyId, Long userId) {
     Double companyRating = Optional.ofNullable(reviewRatingRepository.getAverageScoreByCompanyId(companyId))
@@ -112,23 +115,48 @@ public class CompanyService {
     User user,
     Pageable pageable
   ) {
-    String region = createRegionWildCard(user.getMainRegion());
-    Page<CompanySearchOnly> companies = companyRepository.findCompaniesByRegion(latitude, longitude, region, pageable);
+    String address = createRegionWildCard(user.getMainRegion());
+    Page<CompanySearchOnly> companies = companyRepository.findCompaniesByRegion(
+      latitude,
+      longitude,
+      address,
+      null,
+      null,
+      pageable
+    );
 
     return buildCompaniesSearchResponseDto(companies, user);
   }
 
-//  public CompaniesSearchResponseDto getCompaniesByInterestedRegion(
-//    Double latitude,
-//    Double longitude,
-//    User user,
-//    Pageable pageable
-//  ) {
-//    String region = createRegionWildCard(user.getInterestedRegion());
-//    Page<CompanySearchOnly> companies = companyRepository.findCompaniesByRegion(latitude, longitude, region, pageable);
-//
-//    return buildCompaniesSearchResponseDto(companies, user);
-//  }
+  public CompaniesSearchResponseDto getCompaniesByInterestedRegion(
+    Double latitude,
+    Double longitude,
+    User user,
+    Pageable pageable
+  ) {
+
+    List<InterestedRegion> interestedRegions = interestedRegionRepository.findAllByUserWithLegalDistrict(user);
+
+    List<String> interestedRegionAddresses = interestedRegions.stream()
+      .map(InterestedRegion::getLegalDistrict)
+      .map(this::createRegionWildCard)
+      .toList();
+
+    String address1 = !interestedRegionAddresses.isEmpty() ? interestedRegionAddresses.get(0) : null;
+    String address2 = interestedRegionAddresses.size() > 1 ? interestedRegionAddresses.get(1) : null;
+    String address3 = interestedRegionAddresses.size() > 2 ? interestedRegionAddresses.get(2) : null;
+
+    Page<CompanySearchOnly> companies = companyRepository.findCompaniesByRegion(
+      latitude,
+      longitude,
+      address1,
+      address2,
+      address3,
+      pageable
+    );
+
+    return buildCompaniesSearchResponseDto(companies, user);
+  }
 
   public UserFollowedCompaniesResponseDto getCompaniesFollowedByUser(User user, Pageable pageable) {
     Slice<Company> followedCompanies = companyRepository.findFollowedCompaniesByUser(user, pageable);

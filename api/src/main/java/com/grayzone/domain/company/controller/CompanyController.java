@@ -91,17 +91,17 @@ public class CompanyController {
     );
   }
 
-//  @GetMapping("/interested-region")
-//  public ResponseEntity<ResponseDataDto<CompaniesSearchResponseDto>> getInterestedRegionCompanies(
-//    @RequestParam Double latitude,
-//    @RequestParam Double longitude,
-//    @AuthenticationPrincipal User user,
-//    Pageable pageable
-//  ) {
-//    return ResponseEntity.ok(
-//      ResponseDataDto.from(
-//        companyService.getCompaniesByInterestedRegion(latitude, longitude, user, pageable)
-//      )
-//    );
-//  }
+  @GetMapping("/interested-region")
+  public ResponseEntity<ResponseDataDto<CompaniesSearchResponseDto>> getInterestedRegionCompanies(
+    @RequestParam Double latitude,
+    @RequestParam Double longitude,
+    @AuthenticationPrincipal User user,
+    Pageable pageable
+  ) {
+    return ResponseEntity.ok(
+      ResponseDataDto.from(
+        companyService.getCompaniesByInterestedRegion(latitude, longitude, user, pageable)
+      )
+    );
+  }
 }
