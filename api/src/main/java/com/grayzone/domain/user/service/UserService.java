@@ -1,9 +1,11 @@
 package com.grayzone.domain.user.service;
 
 import com.grayzone.domain.company.repository.CompanyRepository;
+import com.grayzone.domain.legaldistrict.entity.LegalDistrict;
 import com.grayzone.domain.review.repository.CompanyReviewRepository;
 import com.grayzone.domain.user.dto.response.UserInfoResponseDto;
 import com.grayzone.domain.user.dto.response.UserInteractionCountsResponseDto;
+import com.grayzone.domain.user.entity.InterestedRegion;
 import com.grayzone.domain.user.entity.User;
 import com.grayzone.domain.user.repository.InterestedRegionRepository;
 import com.grayzone.domain.user.repository.UserRepository;
@@ -32,11 +34,11 @@ public class UserService {
   }
 
   public UserInfoResponseDto getUserInfo(User user) {
-    List<String> interestedRegionAddresses = interestedRegionRepository.findAllByUserWithLegalDistrict(user).stream()
-      .map(interestedRegion -> interestedRegion.getLegalDistrict().getAddress())
+    List<LegalDistrict> interestedRegions = interestedRegionRepository.findAllByUserWithLegalDistrict(user).stream()
+      .map(InterestedRegion::getLegalDistrict)
       .toList();
 
-    return new UserInfoResponseDto(user.getNickname(), user.getMainRegionAddress(), interestedRegionAddresses);
+    return new UserInfoResponseDto(user, interestedRegions);
   }
 
   public UserInteractionCountsResponseDto getUserInteractionCounts(User user) {
