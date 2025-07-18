@@ -34,8 +34,11 @@ public class User implements UserDetails {
   @JoinColumn(name = "main_region_id")
   private LegalDistrict mainRegion;
 
-  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<InterestedRegion> interestedRegions;
+
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<FollowCompany> followCompanies;
 
   private boolean agreedServiceUse;
   private boolean agreedPrivacy;

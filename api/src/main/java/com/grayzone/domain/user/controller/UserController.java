@@ -5,6 +5,7 @@ import com.grayzone.domain.company.service.CompanyService;
 import com.grayzone.domain.review.service.CompanyReviewService;
 import com.grayzone.domain.user.dto.request.UpdateUserInfoRequestDto;
 import com.grayzone.domain.user.dto.request.VerifyNicknameDuplicateRequestDto;
+import com.grayzone.domain.user.dto.request.WithdrawRequestDto;
 import com.grayzone.domain.user.dto.response.UserFollowedCompaniesResponseDto;
 import com.grayzone.domain.user.dto.response.UserInfoResponseDto;
 import com.grayzone.domain.user.dto.response.UserInteractionCountsResponseDto;
@@ -100,6 +101,18 @@ public class UserController {
   ) {
     userService.updateUserInfo(user, requestDto);
 
+    return ResponseEntity
+      .status(HttpStatus.OK)
+      .body(ResponseDataDto.from(null));
+  }
+
+  @DeleteMapping("/me")
+  public ResponseEntity<ResponseDataDto<Void>> deleteUser(
+    @Valid @RequestBody WithdrawRequestDto requestDto,
+    @AuthenticationPrincipal User user
+  ) {
+    userService.withdraw(user, requestDto);
+    
     return ResponseEntity
       .status(HttpStatus.OK)
       .body(ResponseDataDto.from(null));

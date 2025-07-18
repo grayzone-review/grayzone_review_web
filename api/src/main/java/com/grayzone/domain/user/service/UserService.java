@@ -5,12 +5,14 @@ import com.grayzone.domain.legaldistrict.entity.LegalDistrict;
 import com.grayzone.domain.legaldistrict.repository.LegalDistrictRepository;
 import com.grayzone.domain.review.repository.CompanyReviewRepository;
 import com.grayzone.domain.user.dto.request.UpdateUserInfoRequestDto;
+import com.grayzone.domain.user.dto.request.WithdrawRequestDto;
 import com.grayzone.domain.user.dto.response.UserInfoResponseDto;
 import com.grayzone.domain.user.dto.response.UserInteractionCountsResponseDto;
 import com.grayzone.domain.user.entity.InterestedRegion;
 import com.grayzone.domain.user.entity.User;
 import com.grayzone.domain.user.repository.InterestedRegionRepository;
 import com.grayzone.domain.user.repository.UserRepository;
+import com.grayzone.global.token.TokenManager;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +32,7 @@ public class UserService {
   private final CompanyReviewRepository companyReviewRepository;
   private final CompanyRepository companyRepository;
   private final LegalDistrictRepository legalDistrictRepository;
+  private final TokenManager tokenManager;
 
   public void verifyNicknameDuplicate(String nickname) {
     if (userRepository.existsByNickname(nickname)) {
@@ -77,5 +80,19 @@ public class UserService {
 
     updatedUser.setInterestedRegions(interestedRegions);
     userRepository.save(updatedUser);
+  }
+
+  @Transactional
+  public void withdraw(User user, WithdrawRequestDto requestDto) {
+    User deletedUser = userRepository.findById(user.getId())
+      .orElseThrow(() -> new EntityNotFoundException("user not found"));
+
+    try {
+      tokenManager.invalidateRefreshToken(requestDto.getRefreshToken());
+    } catch (Exception e) {
+      log.warn("Refresh token invalidation failed", e);
+    }
+
+    userRepository.delete(deletedUser);
   }
 }
