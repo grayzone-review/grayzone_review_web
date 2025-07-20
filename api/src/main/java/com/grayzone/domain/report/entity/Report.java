@@ -24,4 +24,16 @@ public class Report extends BaseTimeEntity {
 
   @Column(nullable = false)
   private String description;
+
+  public Report(
+    String reporterName,
+    String targetName,
+    String reportType,
+    String description
+  ) {
+    this.reporterName = reporterName;
+    this.targetName = targetName;
+    this.reportType = reportType;
+    this.description = description;
+  }
 }
