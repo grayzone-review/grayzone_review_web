@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ReportService {
   private final ReportRepository reportRepository;
 
+  @Transactional
   public void report(ReportRequestDto requestDto) {
     Report report = requestDto.toEntity();
     reportRepository.save(report);
