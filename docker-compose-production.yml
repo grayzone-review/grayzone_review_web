@@ -43,6 +43,7 @@ services:
         - type=local,dest=/tmp/.build-cache/api,mode=max
       cache_from:
         - type=local,src=/tmp/.build-cache/api
+    platform: linux/amd64
     image: ${DOCKER_REGISTRY}/up-api-image:latest
     env_file:
       - .env
@@ -67,6 +68,8 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    env_file:
+     - .env
     networks:
       - webserver-network
     depends_on:
