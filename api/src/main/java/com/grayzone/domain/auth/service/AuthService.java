@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -45,16 +46,16 @@ public class AuthService {
     OAuthUserInfo userInfo = oAuthUserInfoDispatcher.dispatch(requestDto.getOauthProvider(), requestDto.getOauthToken());
 
     User user = requestDto.toEntity(userInfo.getEmail(), mainRegion);
-    userRepository.save(user);
+    List<InterestedRegion> interestedRegions = new ArrayList<>();
 
     if (!requestDto.getInterestedRegionIds().isEmpty()) {
-      List<InterestedRegion> interestedRegions = legalDistrictRepository.findAllById(requestDto.getInterestedRegionIds())
+      interestedRegions = legalDistrictRepository.findAllById(requestDto.getInterestedRegionIds())
         .stream()
         .map(legalDistrict -> new InterestedRegion(user, legalDistrict))
         .toList();
-
-      interestedRegionRepository.saveAll(interestedRegions);
     }
+    user.setInterestedRegions(interestedRegions);
+    userRepository.save(user);
   }
 
   public LoginResponseDto login(LoginRequestDto requestDto) {
@@ -69,6 +70,10 @@ public class AuthService {
       .accessToken(tokenPair.getAccessToken())
       .refreshToken(tokenPair.getRefreshToken())
       .build();
+  }
+
+  public void logout(String refreshToken) {
+    tokenManager.invalidateRefreshToken(refreshToken);
   }
 
   public ReissueResponseDto reissue(String token) {

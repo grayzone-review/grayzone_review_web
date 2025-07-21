@@ -37,7 +37,7 @@ public class CompanyReview extends BaseTimeEntity {
   private Company company;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id")
+  @JoinColumn(name = "user_id", nullable = true)
   private User user;
 
   @OneToMany(mappedBy = "companyReview", fetch = FetchType.LAZY)

@@ -3,10 +3,7 @@ package com.grayzone.domain.user.entity;
 import com.grayzone.domain.legaldistrict.entity.LegalDistrict;
 import com.grayzone.global.oauth.OAuthProvider;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -16,6 +13,7 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User implements UserDetails {
 
@@ -36,8 +34,11 @@ public class User implements UserDetails {
   @JoinColumn(name = "main_region_id")
   private LegalDistrict mainRegion;
 
-  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<InterestedRegion> interestedRegions;
+
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<FollowCompany> followCompanies;
 
   private boolean agreedServiceUse;
   private boolean agreedPrivacy;
@@ -79,5 +80,10 @@ public class User implements UserDetails {
 
   public String getMainRegionAddress() {
     return mainRegion.getAddress();
+  }
+
+  public void setInterestedRegions(List<InterestedRegion> interestedRegions) {
+    this.interestedRegions.clear();
+    this.interestedRegions.addAll(interestedRegions);
   }
 }

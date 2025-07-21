@@ -13,6 +13,8 @@ import java.util.Map;
 @Builder
 public class UserFollowedCompaniesResponseDto {
   private List<UserFollowedCompanyDto> companies;
+  private boolean hasNext;
+  private int currentPage;
 
   public static UserFollowedCompaniesResponseDto from(
     Slice<Company> companies,
@@ -31,6 +33,8 @@ public class UserFollowedCompaniesResponseDto {
 
     return UserFollowedCompaniesResponseDto.builder()
       .companies(userFollowedCompanyDtos)
+      .hasNext(companies.hasNext())
+      .currentPage(companies.getNumber())
       .build();
   }
 

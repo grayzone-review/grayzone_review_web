@@ -16,6 +16,8 @@ import java.util.List;
 public class UserRelatedReviewsResponseDto {
 
   private List<UserRelatedReviewResponseDto> reviews;
+  private boolean hasNext;
+  private int currentPage;
 
   public static UserRelatedReviewsResponseDto from(Slice<CompanyReview> companyReviews) {
     List<UserRelatedReviewResponseDto> userRelatedReviewResponseDtos = companyReviews.getContent().stream()
@@ -24,6 +26,8 @@ public class UserRelatedReviewsResponseDto {
 
     return UserRelatedReviewsResponseDto.builder()
       .reviews(userRelatedReviewResponseDtos)
+      .hasNext(companyReviews.hasNext())
+      .currentPage(companyReviews.getNumber())
       .build();
   }
 
