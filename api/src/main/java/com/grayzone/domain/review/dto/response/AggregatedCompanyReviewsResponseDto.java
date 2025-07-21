@@ -15,6 +15,8 @@ import java.util.Set;
 @Builder
 public class AggregatedCompanyReviewsResponseDto {
   List<AggregatedCompanyReviewResponseDto> reviews;
+  private boolean hasNext;
+  private int currentPage;
 
   public static AggregatedCompanyReviewsResponseDto from(
     Slice<CompanyReview> reviews,
@@ -44,6 +46,8 @@ public class AggregatedCompanyReviewsResponseDto {
 
     return AggregatedCompanyReviewsResponseDto.builder()
       .reviews(dtos)
+      .hasNext(reviews.hasNext())
+      .currentPage(reviews.getNumber())
       .build();
   }
 
