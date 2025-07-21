@@ -2,6 +2,7 @@ package com.grayzone.domain.auth.controller;
 
 import com.grayzone.common.ResponseDataDto;
 import com.grayzone.domain.auth.dto.request.LoginRequestDto;
+import com.grayzone.domain.auth.dto.request.LogoutRequestDto;
 import com.grayzone.domain.auth.dto.request.ReissueRequestDto;
 import com.grayzone.domain.auth.dto.request.SignUpRequestDto;
 import com.grayzone.domain.auth.dto.response.LoginResponseDto;
@@ -43,6 +44,19 @@ public class AuthController {
     return ResponseEntity.ok(
       ResponseDataDto.from(
         authService.login(requestDto)
+      )
+    );
+  }
+
+  @PostMapping("/logout")
+  public ResponseEntity<ResponseDataDto<Void>> logout(
+    @RequestBody LogoutRequestDto requestDto
+  ) {
+    authService.logout(requestDto.getRefreshToken());
+    
+    return ResponseEntity.ok(
+      ResponseDataDto.from(
+        null
       )
     );
   }

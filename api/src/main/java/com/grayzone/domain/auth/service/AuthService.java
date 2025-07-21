@@ -72,6 +72,10 @@ public class AuthService {
       .build();
   }
 
+  public void logout(String refreshToken) {
+    tokenManager.invalidateRefreshToken(refreshToken);
+  }
+
   public ReissueResponseDto reissue(String token) {
     if (!tokenManager.validateRefreshToken(token)) {
       throw new IllegalArgumentException("Invalid refresh token.");
