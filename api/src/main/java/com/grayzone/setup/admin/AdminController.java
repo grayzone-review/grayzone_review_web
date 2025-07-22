@@ -11,6 +11,7 @@ import com.grayzone.global.token.TokenPair;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,8 +38,11 @@ public class AdminController {
     if (userRepository.existsByNickname(adminNickname)) {
       throw new IllegalArgumentException("server error");
     }
+
     LegalDistrict mainRegion = legalDistrictRepository
-      .findById(1L)
+      .findAll(PageRequest.of(0, 1))
+      .stream()
+      .findFirst()
       .orElseThrow(() -> new IllegalArgumentException("server error"));
 
     User admin = User.builder()
