@@ -1,5 +1,6 @@
 package com.grayzone.global.filter;
 
+import com.grayzone.global.config.AdminEndpoints;
 import com.grayzone.global.config.PublicEndpoints;
 import com.grayzone.global.token.TokenManager;
 import jakarta.servlet.FilterChain;
@@ -78,10 +79,24 @@ public class JWTAuthenticateFilter extends OncePerRequestFilter {
   protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
     String path = request.getRequestURI();
 
-    List<String> whitelist = Stream.concat(
+    Stream<String> publicEndpoints = Stream.concat(
       Arrays.stream(PublicEndpoints.GET),
       Arrays.stream(PublicEndpoints.POST)
+    );
+
+    Stream<String> adminEndpoints = Stream.concat(
+      Arrays.stream(AdminEndpoints.GET),
+      Arrays.stream(AdminEndpoints.POST)
+    );
+
+    List<String> whitelist = Stream.concat(
+      publicEndpoints,
+      adminEndpoints
     ).toList();
+
+    for (String endpoint : whitelist) {
+      log.info(endpoint);
+    }
 
     return whitelist.stream().anyMatch(pattern -> pathMatcher.match(pattern, path));
   }
