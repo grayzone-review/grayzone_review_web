@@ -59,12 +59,16 @@ services:
 
   client:
     container_name: webserver-container
-    image: nginx:mainline-alpine-slim
+    build:
+      context: ./webserver
+      cache_to:
+        - type=local,dest=/tmp/.build-cache/webserver,mode=max
+      cache_from:
+        - type=local,src=/tmp/.build-cache/webserver
+    image: ${DOCKER_REGISTRY}/up-webserver-image:latest
     volumes:
       - /etc/letsencrypt/live/${DOMAIN}/privkey.pem:/etc/letsencrypt/live/${DOMAIN}/privkey.pem:ro
       - /etc/letsencrypt/live/${DOMAIN}/fullchain.pem:/etc/letsencrypt/live/${DOMAIN}/fullchain.pem:ro
-      - ./webserver/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./webserver/templates:/etc/nginx/templates
     ports:
       - "80:80"
       - "443:443"
