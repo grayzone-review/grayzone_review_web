@@ -1,0 +1,89 @@
+services:
+  mysql:
+    container_name: mysql-container
+    image: mysql:8.0
+    volumes:
+      - db-volume:/var/lib/mysql
+      - ./basedata:/var/lib/mysql-files/basedata
+    env_file:
+      - .env
+    networks:
+      - db-network
+    ports:
+      - "${DATABASE_PORT}:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+  redis:
+    container_name: redis-container
+    image: redis:latest
+    volumes:
+      - redis-volume:/data
+    command: ["redis-server", "--appendonly", "yes"]
+    env_file:
+      - .env
+    networks:
+      - cache-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  api:
+    container_name: api-container
+    build:
+      context: ./api
+      cache_to:
+        - type=local,dest=/tmp/.build-cache/api,mode=max
+      cache_from:
+        - type=local,src=/tmp/.build-cache/api
+    platform: linux/amd64
+    image: ${DOCKER_REGISTRY}/up-api-image:latest
+    env_file:
+      - .env
+    networks:
+      - db-network
+      - cache-network
+      - webserver-network
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  client:
+    container_name: webserver-container
+    build:
+      context: ./webserver
+      cache_to:
+        - type=local,dest=/tmp/.build-cache/webserver,mode=max
+      cache_from:
+        - type=local,src=/tmp/.build-cache/webserver
+    image: ${DOCKER_REGISTRY}/up-webserver-image:latest
+    volumes:
+      - /etc/letsencrypt/live/${DOMAIN}/privkey.pem:/etc/letsencrypt/live/${DOMAIN}/privkey.pem:ro
+      - /etc/letsencrypt/live/${DOMAIN}/fullchain.pem:/etc/letsencrypt/live/${DOMAIN}/fullchain.pem:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    env_file:
+     - .env
+    networks:
+      - webserver-network
+    depends_on:
+      - api
+
+volumes:
+  db-volume:
+  redis-volume:
+
+networks:
+  db-network:
+  cache-network:
+  webserver-network:
