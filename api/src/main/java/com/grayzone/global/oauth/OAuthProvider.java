@@ -6,7 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public enum OAuthProvider {
   KAKAO,
-  APPLE;
+  APPLE,
+  ADMIN;
 
   @JsonCreator
   public static OAuthProvider from(String name) {

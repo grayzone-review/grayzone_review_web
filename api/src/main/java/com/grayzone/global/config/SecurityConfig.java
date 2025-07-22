@@ -1,5 +1,6 @@
 package com.grayzone.global.config;
 
+import com.grayzone.global.filter.AdminAuthenticateFilter;
 import com.grayzone.global.filter.JWTAuthenticateFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
   private final JWTAuthenticateFilter jwtAuthenticateFilter;
+  private final AdminAuthenticateFilter adminAuthenticateFilter;
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -25,10 +27,13 @@ public class SecurityConfig {
       .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
       .authorizeHttpRequests(auth -> auth
         .requestMatchers(HttpMethod.GET, PublicEndpoints.GET).permitAll()
+        .requestMatchers(HttpMethod.GET, AdminEndpoints.GET).permitAll()
+        .requestMatchers(HttpMethod.POST, AdminEndpoints.POST).permitAll()
         .requestMatchers(HttpMethod.POST, PublicEndpoints.POST).permitAll()
         .anyRequest().authenticated()
       )
-      .addFilterBefore(jwtAuthenticateFilter, UsernamePasswordAuthenticationFilter.class);
+      .addFilterBefore(jwtAuthenticateFilter, UsernamePasswordAuthenticationFilter.class)
+      .addFilterBefore(adminAuthenticateFilter, UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
   }
