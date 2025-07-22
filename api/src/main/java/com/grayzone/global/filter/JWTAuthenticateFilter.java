@@ -94,10 +94,6 @@ public class JWTAuthenticateFilter extends OncePerRequestFilter {
       adminEndpoints
     ).toList();
 
-    for (String endpoint : whitelist) {
-      log.info(endpoint);
-    }
-
     return whitelist.stream().anyMatch(pattern -> pathMatcher.match(pattern, path));
   }
 }

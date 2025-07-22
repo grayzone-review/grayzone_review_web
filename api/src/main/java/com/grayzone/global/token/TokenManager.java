@@ -16,8 +16,8 @@ public class TokenManager {
   private final RefreshTokenUtils refreshTokenUtils;
   private final RedisTemplate<String, Object> redisTemplate;
 
-  public String createAccessToken(long userId) {
-    return jwtUtils.createToken(userId, ACCESS_TOKEN_VALIDITY_TIME);
+  public String createAccessToken(long userId, long validityTime) {
+    return jwtUtils.createToken(userId, validityTime);
   }
 
   public String createRefreshToken(long userId) {
@@ -33,7 +33,11 @@ public class TokenManager {
   }
 
   public TokenPair createTokenPair(long userId) {
-    return new TokenPair(createAccessToken(userId), createRefreshToken(userId));
+    return new TokenPair(createAccessToken(userId, ACCESS_TOKEN_VALIDITY_TIME), createRefreshToken(userId));
+  }
+
+  public TokenPair createTokenPair(long userId, long validityTime) {
+    return new TokenPair(createAccessToken(userId, validityTime), createRefreshToken(userId));
   }
 
   public boolean validateAccessToken(String token) {
