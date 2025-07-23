@@ -12,8 +12,8 @@ import com.grayzone.domain.review.repository.CompanyReviewRepository;
 import com.grayzone.domain.review.repository.ReviewCommentRepository;
 import com.grayzone.domain.review.repository.projection.ReplyCountOnly;
 import com.grayzone.domain.user.entity.User;
-import com.grayzone.domain.user.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
+import com.grayzone.global.exception.UpError;
+import com.grayzone.global.exception.UpException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -32,7 +32,6 @@ public class ReviewCommentService {
 
   private final ReviewCommentRepository reviewCommentRepository;
   private final CompanyReviewRepository companyReviewRepository;
-  private final UserRepository userRepository;
 
   public ReviewCommentsResponseDto getCommentsByReviewId(
     Long reviewId,
@@ -41,7 +40,7 @@ public class ReviewCommentService {
   ) {
 
     if (!companyReviewRepository.existsById(reviewId)) {
-      throw new EntityNotFoundException("Review not found");
+      throw new UpException(UpError.REVIEW_NOT_FOUND);
     }
 
     Page<ReviewComment> commentsPage = reviewCommentRepository.findByCompanyReviewIdAndParentIsNull(
@@ -68,7 +67,7 @@ public class ReviewCommentService {
     Pageable pageable
   ) {
     if (!reviewCommentRepository.existsById(parentId)) {
-      throw new EntityNotFoundException("Review not found");
+      throw new UpException(UpError.REVIEW_NOT_FOUND);
     }
 
     Page<ReviewComment> replies = reviewCommentRepository.findByParentId(parentId, pageable);
@@ -83,7 +82,7 @@ public class ReviewCommentService {
     CreateReviewCommentRequestDto requestDto
   ) {
     CompanyReview companyReview = companyReviewRepository.findById(reviewId)
-      .orElseThrow(() -> new EntityNotFoundException("Review not found"));
+      .orElseThrow(() -> new UpException(UpError.REVIEW_NOT_FOUND));
 
     ReviewComment comment = requestDto.toEntity(companyReview, user);
 
@@ -97,10 +96,10 @@ public class ReviewCommentService {
     CreateReplyRequestDto requestDto
   ) {
     ReviewComment parentComment = reviewCommentRepository.findById(parentCommentId)
-      .orElseThrow(() -> new EntityNotFoundException("Comment not found"));
+      .orElseThrow(() -> new UpException(UpError.COMMENT_NOT_FOUND));
 
     if (!parentComment.canReply(user.getId())) {
-      throw new EntityNotFoundException("답글을 작성할 수 없습니다.");
+      throw new UpException(UpError.COMMENT_NO_PERMISSION);
     }
 
     ReviewComment comment = requestDto

@@ -1,5 +1,7 @@
 package com.grayzone.global.oauth.apple;
 
+import com.grayzone.global.exception.UpError;
+import com.grayzone.global.exception.UpException;
 import lombok.Getter;
 
 import java.math.BigInteger;
@@ -15,13 +17,13 @@ public class ApplePublicKeys {
 
   public PublicKey getMatchedPublicKey(String alg, String kid) {
     if (keys == null) {
-      throw new IllegalStateException("Server Error");
+      throw new UpException(UpError.SERVER_ERROR);
     }
 
     JWKSet jwkSet = keys.stream()
       .filter(key -> key.isMatched(alg, kid))
       .findFirst()
-      .orElseThrow(() -> new IllegalArgumentException("Invalid Token"));
+      .orElseThrow(() -> new UpException(UpError.OAUTH_INVALID_TOKEN));
 
     return jwkSet.getPublicKey();
   }
@@ -53,7 +55,7 @@ public class ApplePublicKeys {
 
         return keyFactory.generatePublic(keySpec);
       } catch (Exception e) {
-        throw new IllegalArgumentException("Invalid Token");
+        throw new UpException(UpError.OAUTH_INVALID_TOKEN);
       }
     }
   }

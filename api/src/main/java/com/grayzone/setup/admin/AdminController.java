@@ -6,6 +6,8 @@ import com.grayzone.domain.legaldistrict.entity.LegalDistrict;
 import com.grayzone.domain.legaldistrict.repository.LegalDistrictRepository;
 import com.grayzone.domain.user.entity.User;
 import com.grayzone.domain.user.repository.UserRepository;
+import com.grayzone.global.exception.UpError;
+import com.grayzone.global.exception.UpException;
 import com.grayzone.global.token.TokenManager;
 import com.grayzone.global.token.TokenPair;
 import lombok.RequiredArgsConstructor;
@@ -36,14 +38,14 @@ public class AdminController {
   public ResponseEntity<ResponseDataDto<Void>> createAdmin() {
 
     if (userRepository.existsByNickname(adminNickname)) {
-      throw new IllegalArgumentException("server error");
+      throw new UpException(UpError.SERVER_ERROR);
     }
 
     LegalDistrict mainRegion = legalDistrictRepository
       .findAll(PageRequest.of(0, 1))
       .stream()
       .findFirst()
-      .orElseThrow(() -> new IllegalArgumentException("server error"));
+      .orElseThrow(() -> new UpException(UpError.SERVER_ERROR));
 
     User admin = User.builder()
       .email(adminEmail)

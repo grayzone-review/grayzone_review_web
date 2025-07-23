@@ -1,6 +1,8 @@
 package com.grayzone.global.filter;
 
 import com.grayzone.global.config.AdminEndpoints;
+import com.grayzone.global.exception.UpError;
+import com.grayzone.global.exception.UpException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,11 +36,11 @@ public class AdminAuthenticateFilter extends OncePerRequestFilter {
     String keyFromRequest = getKeyFromRequest(request);
 
     if (!StringUtils.hasText(keyFromRequest)) {
-      throw new ServletException("Missing Key");
+      throw new UpException(UpError.ADMIN_PERMISSION_DENIED);
     }
 
     if (!apiKey.equals(keyFromRequest)) {
-      throw new ServletException("Invalid Key");
+      throw new UpException(UpError.ADMIN_PERMISSION_DENIED);
     }
 
     filterChain.doFilter(request, response);

@@ -1,5 +1,7 @@
 package com.grayzone.global.token;
 
+import com.grayzone.global.exception.UpError;
+import com.grayzone.global.exception.UpException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -56,7 +58,7 @@ public class TokenManager {
     Object userId = redisTemplate.opsForValue().get(token);
 
     if (!(userId instanceof Integer)) {
-      throw new IllegalArgumentException("Invalid token");
+      throw new UpException(UpError.REFRESH_TOKEN_INVALID);
     }
 
     return ((Integer) userId).longValue();
