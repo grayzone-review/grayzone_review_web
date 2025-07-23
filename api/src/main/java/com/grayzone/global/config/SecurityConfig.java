@@ -1,7 +1,9 @@
 package com.grayzone.global.config;
 
+import com.grayzone.global.exception.CustomAuthenticationEntryPoint;
 import com.grayzone.global.filter.AdminAuthenticateFilter;
 import com.grayzone.global.filter.JWTAuthenticateFilter;
+import com.grayzone.global.filter.UpExceptionHandlerFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +22,8 @@ public class SecurityConfig {
 
   private final JWTAuthenticateFilter jwtAuthenticateFilter;
   private final AdminAuthenticateFilter adminAuthenticateFilter;
+  private final CustomAuthenticationEntryPoint authenticationEntryPoint;
+  private final UpExceptionHandlerFilter upExceptionHandlerFilter;
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -32,8 +36,11 @@ public class SecurityConfig {
         .requestMatchers(HttpMethod.POST, PublicEndpoints.POST).permitAll()
         .anyRequest().authenticated()
       )
+      .addFilterBefore(upExceptionHandlerFilter, UsernamePasswordAuthenticationFilter.class)
       .addFilterBefore(jwtAuthenticateFilter, UsernamePasswordAuthenticationFilter.class)
-      .addFilterBefore(adminAuthenticateFilter, UsernamePasswordAuthenticationFilter.class);
+      .addFilterBefore(adminAuthenticateFilter, UsernamePasswordAuthenticationFilter.class)
+      .exceptionHandling(exception -> exception
+        .authenticationEntryPoint(authenticationEntryPoint));
 
     return http.build();
   }

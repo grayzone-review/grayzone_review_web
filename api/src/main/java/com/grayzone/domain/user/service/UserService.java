@@ -12,8 +12,9 @@ import com.grayzone.domain.user.entity.InterestedRegion;
 import com.grayzone.domain.user.entity.User;
 import com.grayzone.domain.user.repository.InterestedRegionRepository;
 import com.grayzone.domain.user.repository.UserRepository;
+import com.grayzone.global.exception.UpError;
+import com.grayzone.global.exception.UpException;
 import com.grayzone.global.token.TokenManager;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -59,17 +60,18 @@ public class UserService {
   @Transactional
   public void updateUserInfo(User user, UpdateUserInfoRequestDto requestDto) {
     User updatedUser = userRepository.findById(user.getId())
-      .orElseThrow(() -> new EntityNotFoundException("user not found"));
+      .orElseThrow(() -> new UpException(UpError.USER_NOT_FOUND));
 
-    if (userRepository.existsByNickname(requestDto.getNickname())) {
-      throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
+    boolean isNicknameChanged = requestDto.getNickname().equals(updatedUser.getNickname());
+    if (!isNicknameChanged && userRepository.existsByNickname(requestDto.getNickname())) {
+      throw new UpException(UpError.NICKNAME_DUPLICATE);
     }
 
     updatedUser.setNickname(requestDto.getNickname());
 
     if (!updatedUser.getMainRegion().getId().equals(requestDto.getMainRegionId())) {
       LegalDistrict mainRegion = legalDistrictRepository.findById(requestDto.getMainRegionId())
-        .orElseThrow(() -> new IllegalArgumentException("메인 동네 지정을 필수입니다."));
+        .orElseThrow(() -> new UpException(UpError.REGION_NOT_FOUND));
       updatedUser.setMainRegion(mainRegion);
     }
 
@@ -85,7 +87,7 @@ public class UserService {
   @Transactional
   public void withdraw(User user, WithdrawRequestDto requestDto) {
     User deletedUser = userRepository.findById(user.getId())
-      .orElseThrow(() -> new EntityNotFoundException("user not found"));
+      .orElseThrow(() -> new UpException(UpError.USER_NOT_FOUND));
 
     try {
       tokenManager.invalidateRefreshToken(requestDto.getRefreshToken());

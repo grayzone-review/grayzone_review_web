@@ -8,13 +8,13 @@ import com.grayzone.domain.legaldistrict.entity.LegalDistrict;
 import com.grayzone.domain.legaldistrict.repository.LegalDistrictRepository;
 import com.grayzone.domain.user.entity.InterestedRegion;
 import com.grayzone.domain.user.entity.User;
-import com.grayzone.domain.user.repository.InterestedRegionRepository;
 import com.grayzone.domain.user.repository.UserRepository;
+import com.grayzone.global.exception.UpError;
+import com.grayzone.global.exception.UpException;
 import com.grayzone.global.oauth.OAuthUserInfo;
 import com.grayzone.global.oauth.OAuthUserInfoDispatcher;
 import com.grayzone.global.token.TokenManager;
 import com.grayzone.global.token.TokenPair;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,19 +29,18 @@ public class AuthService {
 
   private final UserRepository userRepository;
   private final LegalDistrictRepository legalDistrictRepository;
-  private final InterestedRegionRepository interestedRegionRepository;
   private final OAuthUserInfoDispatcher oAuthUserInfoDispatcher;
   private final TokenManager tokenManager;
 
   @Transactional
   public void signUp(SignUpRequestDto requestDto) {
     if (userRepository.existsByNickname(requestDto.getNickname())) {
-      throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
+      throw new UpException(UpError.NICKNAME_DUPLICATE);
     }
 
     Long mainRegionId = requestDto.getMainRegionId();
     LegalDistrict mainRegion = legalDistrictRepository.findById(mainRegionId)
-      .orElseThrow(() -> new IllegalArgumentException("메인 동네 지정을 필수입니다."));
+      .orElseThrow(() -> new UpException(UpError.REGION_NOT_FOUND));
 
     OAuthUserInfo userInfo = oAuthUserInfoDispatcher.dispatch(requestDto.getOauthProvider(), requestDto.getOauthToken());
 
@@ -62,7 +61,7 @@ public class AuthService {
     OAuthUserInfo userInfo = oAuthUserInfoDispatcher.dispatch(requestDto.getOauthProvider(), requestDto.getOauthToken());
 
     User user = userRepository.findByEmail(userInfo.getEmail())
-      .orElseThrow(() -> new EntityNotFoundException("비회원입니다."));
+      .orElseThrow(() -> new UpException(UpError.UNAUTHORIZED_USER));
 
     TokenPair tokenPair = tokenManager.createTokenPair(user.getId());
 
@@ -78,7 +77,7 @@ public class AuthService {
 
   public ReissueResponseDto reissue(String token) {
     if (!tokenManager.validateRefreshToken(token)) {
-      throw new IllegalArgumentException("Invalid refresh token.");
+      throw new UpException(UpError.REFRESH_TOKEN_INVALID);
     }
 
     long userId = tokenManager.parseUserIdFromRefreshToken(token);

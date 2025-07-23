@@ -1,5 +1,7 @@
 package com.grayzone.global.oauth;
 
+import com.grayzone.global.exception.UpError;
+import com.grayzone.global.exception.UpException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +16,7 @@ public class OAuthUserInfoDispatcher {
     return oAuthUserInfoProviders.stream()
       .filter(oAuthUserInfoProvider -> oAuthUserInfoProvider.support(provider))
       .findFirst()
-      .orElseThrow(() -> new IllegalArgumentException("Not Support Provider"))
+      .orElseThrow(() -> new UpException(UpError.OAUTH_UNSUPPORTED_PROVIDER))
       .parse(token);
   }
 }

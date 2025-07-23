@@ -2,6 +2,8 @@ package com.grayzone.global.filter;
 
 import com.grayzone.global.config.AdminEndpoints;
 import com.grayzone.global.config.PublicEndpoints;
+import com.grayzone.global.exception.UpError;
+import com.grayzone.global.exception.UpException;
 import com.grayzone.global.token.TokenManager;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -43,11 +45,11 @@ public class JWTAuthenticateFilter extends OncePerRequestFilter {
     String token = getTokenFromRequest(request);
 
     if (!StringUtils.hasText(token)) {
-      throw new ServletException("Missing JWT token");
+      throw new UpException(UpError.ACCESS_TOKEN_INVALID);
     }
 
     if (!tokenManager.validateAccessToken(token)) {
-      throw new ServletException("Invalid JWT token");
+      throw new UpException(UpError.ACCESS_TOKEN_INVALID);
     }
 
     String subject = tokenManager.parseSubject(token);

@@ -20,7 +20,8 @@ import com.grayzone.domain.user.entity.InterestedRegion;
 import com.grayzone.domain.user.entity.User;
 import com.grayzone.domain.user.repository.FollowCompanyRepository;
 import com.grayzone.domain.user.repository.InterestedRegionRepository;
-import jakarta.persistence.EntityNotFoundException;
+import com.grayzone.global.exception.UpError;
+import com.grayzone.global.exception.UpException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -52,7 +53,7 @@ public class CompanyReviewService {
 
   public CompanyReviewsResponseDto getReviewsByCompanyId(Long companyId, Long userId, Pageable pageable) {
     if (!companyRepository.existsById(companyId)) {
-      throw new EntityNotFoundException("Company not found");
+      throw new UpException(UpError.COMPANY_NOT_FOUND);
     }
 
     Page<CompanyReview> reviewPage = companyReviewRepository.findByCompanyId(companyId, pageable);
@@ -134,7 +135,7 @@ public class CompanyReviewService {
     User user
   ) {
     Company company = companyRepository.findById(companyId)
-      .orElseThrow(() -> new EntityNotFoundException("Company not found"));
+      .orElseThrow(() -> new UpException(UpError.COMPANY_NOT_FOUND));
 
     String title = reviewTitleSummarizer.summarize(requestDto.getSummarizeSourceText());
 

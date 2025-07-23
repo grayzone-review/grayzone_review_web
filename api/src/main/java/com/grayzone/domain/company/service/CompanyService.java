@@ -17,6 +17,8 @@ import com.grayzone.domain.user.entity.InterestedRegion;
 import com.grayzone.domain.user.entity.User;
 import com.grayzone.domain.user.repository.FollowCompanyRepository;
 import com.grayzone.domain.user.repository.InterestedRegionRepository;
+import com.grayzone.global.exception.UpError;
+import com.grayzone.global.exception.UpException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -45,7 +47,7 @@ public class CompanyService {
       .orElse(0.0);
 
     Company company = companyRepository.findById(companyId)
-      .orElseThrow(() -> new IllegalArgumentException("Company not found"));
+      .orElseThrow(() -> new UpException(UpError.COMPANY_NOT_FOUND));
 
     boolean isFollowing = followCompanyRepository.existsByUserIdAndCompanyId(userId, companyId);
 

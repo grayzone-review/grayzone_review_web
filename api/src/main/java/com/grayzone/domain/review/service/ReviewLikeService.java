@@ -5,7 +5,8 @@ import com.grayzone.domain.review.entity.ReviewLike;
 import com.grayzone.domain.review.repository.CompanyReviewRepository;
 import com.grayzone.domain.review.repository.ReviewLikeRepository;
 import com.grayzone.domain.user.entity.User;
-import jakarta.persistence.EntityNotFoundException;
+import com.grayzone.global.exception.UpError;
+import com.grayzone.global.exception.UpException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,10 +22,10 @@ public class ReviewLikeService {
   @Transactional
   public void createReviewLike(Long companyReviewId, User user) {
     CompanyReview companyReview = companyReviewRepository.findById(companyReviewId)
-      .orElseThrow(() -> new EntityNotFoundException("Company Review Not Found"));
+      .orElseThrow(() -> new UpException(UpError.REVIEW_NOT_FOUND));
 
     if (reviewLikeRepository.existsReviewLikesByCompanyReviewAndUser(companyReview, user)) {
-      throw new IllegalArgumentException("Review Like Already Exists");
+      throw new UpException(UpError.REVIEW_ALREADY_LIKED);
     }
 
     ReviewLike reviewLike = ReviewLike.builder()
@@ -38,10 +39,10 @@ public class ReviewLikeService {
   @Transactional
   public void deleteReviewLike(Long companyReviewId, User user) {
     CompanyReview companyReview = companyReviewRepository.findById(companyReviewId)
-      .orElseThrow(() -> new EntityNotFoundException("Company Review Not Found"));
+      .orElseThrow(() -> new UpException(UpError.REVIEW_NOT_FOUND));
 
     ReviewLike reviewLike = reviewLikeRepository.findByCompanyReviewAndUser(companyReview, user)
-      .orElseThrow(() -> new EntityNotFoundException("Review Like Not Found"));
+      .orElseThrow(() -> new UpException(UpError.REVIEW_NOT_LIKED));
 
     reviewLikeRepository.delete(reviewLike);
   }

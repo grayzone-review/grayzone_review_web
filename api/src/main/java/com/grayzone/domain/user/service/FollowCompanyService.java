@@ -5,7 +5,8 @@ import com.grayzone.domain.company.repository.CompanyRepository;
 import com.grayzone.domain.user.entity.FollowCompany;
 import com.grayzone.domain.user.entity.User;
 import com.grayzone.domain.user.repository.FollowCompanyRepository;
-import jakarta.persistence.EntityNotFoundException;
+import com.grayzone.global.exception.UpError;
+import com.grayzone.global.exception.UpException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,10 +22,10 @@ public class FollowCompanyService {
   @Transactional
   public void createFollowCompany(Long companyId, User user) {
     Company company = companyRepository.findById(companyId)
-      .orElseThrow(() -> new EntityNotFoundException("Company not found"));
+      .orElseThrow(() -> new UpException(UpError.COMPANY_NOT_FOUND));
 
     if (followCompanyRepository.existsByCompanyAndUser(company, user)) {
-      throw new IllegalArgumentException("User request already followed company");
+      throw new UpException(UpError.FOLLOW_ALREADY);
     }
 
     FollowCompany followCompany = FollowCompany.builder()
@@ -38,10 +39,10 @@ public class FollowCompanyService {
   @Transactional
   public void deleteFollowCompany(Long companyId, User user) {
     Company company = companyRepository.findById(companyId)
-      .orElseThrow(() -> new EntityNotFoundException("Company not found"));
+      .orElseThrow(() -> new UpException(UpError.COMPANY_NOT_FOUND));
 
     FollowCompany followCompany = followCompanyRepository.findByCompanyAndUser(company, user)
-      .orElseThrow(() -> new EntityNotFoundException("User request to not followed company"));
+      .orElseThrow(() -> new UpException(UpError.FOLLOW_NOT_EXIST));
 
     followCompanyRepository.delete(followCompany);
   }

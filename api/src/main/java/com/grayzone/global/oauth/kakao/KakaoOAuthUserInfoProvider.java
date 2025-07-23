@@ -1,5 +1,7 @@
 package com.grayzone.global.oauth.kakao;
 
+import com.grayzone.global.exception.UpError;
+import com.grayzone.global.exception.UpException;
 import com.grayzone.global.oauth.OAuthProvider;
 import com.grayzone.global.oauth.OAuthUserInfo;
 import com.grayzone.global.oauth.OAuthUserInfoProvider;
@@ -28,7 +30,7 @@ public class KakaoOAuthUserInfoProvider implements OAuthUserInfoProvider {
       .body(KakaoUserInfoResponse.class);
 
     if (!kakaoUserInfo.isEmailVerified() && !kakaoUserInfo.isEmailValid()) {
-      throw new IllegalArgumentException("Invalid Token");
+      throw new UpException(UpError.OAUTH_INVALID_TOKEN);
     }
 
     return new OAuthUserInfo(OAuthProvider.KAKAO, kakaoUserInfo.getEmail());
