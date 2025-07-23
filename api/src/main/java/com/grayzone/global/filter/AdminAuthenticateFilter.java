@@ -66,3 +66,4 @@ public class AdminAuthenticateFilter extends OncePerRequestFilter {
     return blackList.stream().noneMatch(pattern -> pathMatcher.match(pattern, path));
   }
 }
+

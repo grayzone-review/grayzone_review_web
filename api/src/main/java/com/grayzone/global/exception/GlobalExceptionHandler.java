@@ -32,11 +32,11 @@ public class GlobalExceptionHandler {
       .toList();
 
     String errorMessage = errorMessages.isEmpty()
-      ? UpError.INVALID_INPUT.getMessage()
+      ? UpError.INVALID_REQUEST.getMessage()
       : errorMessages.getFirst();
 
     return ResponseEntity
       .status(HttpStatus.BAD_REQUEST)
-      .body(ResponseErrorDto.from(errorMessage, UpError.INVALID_INPUT.getCode()));
+      .body(ResponseErrorDto.from(errorMessage, UpError.INVALID_REQUEST.getCode()));
   }
 }

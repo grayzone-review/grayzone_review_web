@@ -1,5 +1,8 @@
 package com.grayzone.common;
 
+import lombok.Getter;
+
+@Getter
 public class ResponseErrorDto extends ResponseDto {
   private final int code;
 

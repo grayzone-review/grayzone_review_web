@@ -39,6 +39,8 @@ public enum UpError {
   FOLLOW_ALREADY(HttpStatus.CONFLICT, "이미 팔로우한 회사입니다.", 4301),
   FOLLOW_NOT_EXIST(HttpStatus.CONFLICT, "팔로우하지 않은 회사입니다.", 4302),
 
+  INVALID_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다.", 4400),
+
   // 서버 및 파일 관련 오류 (5000번대)
   SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류가 발생했습니다.", 5000);
 
