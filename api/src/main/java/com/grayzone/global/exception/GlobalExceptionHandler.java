@@ -15,15 +15,13 @@ import java.util.List;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-  @ExceptionHandler(Exception.class)
-  public ResponseEntity<ResponseErrorDto> handleGlobalException(Exception exception) {
-    String errorMessage = exception.getMessage();
-
-    log.error(exception.getClass().getName());
+  @ExceptionHandler(UpException.class)
+  public ResponseEntity<ResponseErrorDto> handleGlobalException(UpException exception) {
+    UpError error = exception.getError();
 
     return ResponseEntity
-      .status(HttpStatus.NOT_FOUND)
-      .body(ResponseErrorDto.from(errorMessage));
+      .status(error.getStatus())
+      .body(ResponseErrorDto.from(error.getMessage(), error.getCode()));
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -34,11 +32,11 @@ public class GlobalExceptionHandler {
       .toList();
 
     String errorMessage = errorMessages.isEmpty()
-      ? "입력이 잘못되었습니다."
+      ? UpError.INVALID_INPUT.getMessage()
       : errorMessages.getFirst();
 
     return ResponseEntity
       .status(HttpStatus.BAD_REQUEST)
-      .body(ResponseErrorDto.from(errorMessage));
+      .body(ResponseErrorDto.from(errorMessage, UpError.INVALID_INPUT.getCode()));
   }
 }
