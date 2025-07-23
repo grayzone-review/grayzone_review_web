@@ -52,6 +52,7 @@ filtered_msg=$(echo "$commit_msg" | grep -v '^#')
 
 # 패턴: [#1] feat: 메시지
 if ! echo "$filtered_msg" | grep -qE '^\[#([0-9]+)\]\s+(feat|fix|docs|refactor|test|config|design): .+'; then
+    echo "$filtered_msg"
     echo "❌ 잘못된 커밋 메세지 형식입니다."
     echo "
 올바른 커밋 메세지 예시:
