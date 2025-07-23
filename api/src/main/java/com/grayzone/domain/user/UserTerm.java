@@ -7,9 +7,9 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum UserTerm {
-  SERVICE("serviceUse", "[필수] 서비스 이용 약관", true, ""),
-  PRIVACY("privacy", "[필수] 개인정보 수집 및 이용 동의", true, ""),
-  LOCATION("location", "[필수] 위치기반 서비스 동의", true, "");
+  SERVICE("serviceUse", "서비스 이용 약관", true, ""),
+  PRIVACY("privacy", "개인정보 수집 및 이용 동의", true, ""),
+  LOCATION("location", "위치기반 서비스 동의", true, "");
 
   private final String code;
   private final String title;
