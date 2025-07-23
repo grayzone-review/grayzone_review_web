@@ -13,6 +13,7 @@ public enum UpError {
   NICKNAME_DUPLICATE(HttpStatus.CONFLICT, "이미 존재하는 닉네임입니다.", 2011),
 
   // 인증 관련 오류 (3000번대)
+  UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증이 필요합니다.", 3000),
   UNAUTHORIZED_USER(HttpStatus.UNAUTHORIZED, "비회원입니다.", 3001),
   ACCESS_TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "토큰이 유효하지 않습니다.", 3002),
   REFRESH_TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "토큰이 유효하지 않습니다.", 3003),
