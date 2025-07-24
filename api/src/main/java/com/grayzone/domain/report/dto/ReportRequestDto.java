@@ -9,8 +9,7 @@ public class ReportRequestDto {
 
   @NotBlank
   private String reporterName;
-
-  @NotBlank
+  
   private String targetName;
 
   @NotBlank
