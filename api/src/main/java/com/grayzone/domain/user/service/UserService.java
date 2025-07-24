@@ -37,7 +37,7 @@ public class UserService {
 
   public void verifyNicknameDuplicate(String nickname) {
     if (userRepository.existsByNickname(nickname)) {
-      throw new IllegalArgumentException("중복된 닉네임입니다.");
+      throw new UpException(UpError.NICKNAME_DUPLICATE);
     }
   }
 
