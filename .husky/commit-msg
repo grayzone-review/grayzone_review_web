@@ -26,7 +26,11 @@ fi
 branch_name=$(git symbolic-ref --short HEAD 2>/dev/null || echo "")
 
 # 이슈 ID 추출 (예: #1)
-issue_id=$(echo "$branch_name" | grep -oE '#[0-9]+' || echo "")
+issue_id=$(echo "$branch_name" | LANG=C grep -oE '#[0-9]+' || echo "")
+echo "🔍 추출된 이슈 ID: $issue_id"
+
+branch_name=$(git symbolic-ref --short HEAD 2>/dev/null || echo "")
+
 
 # 주석 제외한 커밋 메시지
 filtered_msg=$(echo "$commit_msg" | grep -v '^#')
