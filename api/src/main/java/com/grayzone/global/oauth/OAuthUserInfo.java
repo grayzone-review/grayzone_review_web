@@ -9,4 +9,5 @@ public class OAuthUserInfo {
 
   private OAuthProvider provider;
   private String email;
+  private String oAuthId;
 }
