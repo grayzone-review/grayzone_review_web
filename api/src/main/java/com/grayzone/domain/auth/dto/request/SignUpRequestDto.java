@@ -4,6 +4,7 @@ import com.grayzone.domain.legaldistrict.entity.LegalDistrict;
 import com.grayzone.domain.user.UserTerm;
 import com.grayzone.domain.user.entity.User;
 import com.grayzone.global.oauth.OAuthProvider;
+import com.grayzone.global.oauth.OAuthUserInfo;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -36,13 +37,14 @@ public class SignUpRequestDto {
 
   private List<UserTerm> agreements;
 
-  public User toEntity(String email, LegalDistrict mainRegion) {
+  public User toEntity(OAuthUserInfo oAuthUserInfo, LegalDistrict mainRegion) {
     validateAgreements(agreements);
 
     return User.builder()
-      .email(email)
+      .email(oAuthUserInfo.getEmail())
       .nickname(nickname)
-      .oAuthProvider(oauthProvider)
+      .oAuthProvider(oAuthUserInfo.getProvider())
+      .oAuthId(oAuthUserInfo.getOAuthId())
       .mainRegion(mainRegion)
       .agreedServiceUse(true)
       .agreedPrivacy(true)

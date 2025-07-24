@@ -12,6 +12,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
   Optional<User> findByEmail(String email);
 
+  Optional<User> findByoAuthId(String oAuthId);
+
   @Query(value = """
     SELECT u FROM User u 
     JOIN FETCH u.mainRegion

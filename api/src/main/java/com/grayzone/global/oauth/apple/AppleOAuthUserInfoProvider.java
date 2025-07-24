@@ -57,9 +57,9 @@ public class AppleOAuthUserInfoProvider implements OAuthUserInfoProvider {
 
       verifyAppleIdTokenClaims(payload);
       String email = payload.get("email", String.class);
-      String id = payload.get("sub", String.class);
+      String oAuthid = payload.get("sub", String.class);
 
-      return new OAuthUserInfo(OAuthProvider.APPLE, email, id);
+      return new OAuthUserInfo(OAuthProvider.APPLE, email, oAuthid);
     } catch (Exception e) {
       throw new UpException(UpError.OAUTH_INVALID_TOKEN);
     }

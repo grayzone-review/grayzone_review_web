@@ -51,6 +51,7 @@ public class User implements UserDetails {
     String email,
     String nickname,
     OAuthProvider oAuthProvider,
+    String oAuthId,
     LegalDistrict mainRegion,
     boolean agreedServiceUse,
     boolean agreedPrivacy,
@@ -59,6 +60,7 @@ public class User implements UserDetails {
     this.email = email;
     this.nickname = nickname;
     this.oAuthProvider = oAuthProvider;
+    this.oAuthId = oAuthId;
     this.mainRegion = mainRegion;
     this.agreedServiceUse = agreedServiceUse;
     this.agreedPrivacy = agreedPrivacy;

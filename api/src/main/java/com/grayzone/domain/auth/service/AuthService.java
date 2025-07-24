@@ -44,7 +44,7 @@ public class AuthService {
 
     OAuthUserInfo userInfo = oAuthUserInfoDispatcher.dispatch(requestDto.getOauthProvider(), requestDto.getOauthToken());
 
-    User user = requestDto.toEntity(userInfo.getEmail(), mainRegion);
+    User user = requestDto.toEntity(userInfo, mainRegion);
     List<InterestedRegion> interestedRegions = new ArrayList<>();
 
     if (!requestDto.getInterestedRegionIds().isEmpty()) {
@@ -60,7 +60,7 @@ public class AuthService {
   public LoginResponseDto login(LoginRequestDto requestDto) {
     OAuthUserInfo userInfo = oAuthUserInfoDispatcher.dispatch(requestDto.getOauthProvider(), requestDto.getOauthToken());
 
-    User user = userRepository.findByEmail(userInfo.getEmail())
+    User user = userRepository.findByoAuthId(userInfo.getOAuthId())
       .orElseThrow(() -> new UpException(UpError.UNAUTHORIZED_USER));
 
     TokenPair tokenPair = tokenManager.createTokenPair(user.getId());
