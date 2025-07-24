@@ -31,6 +31,8 @@ public class User implements UserDetails {
   @Enumerated(EnumType.STRING)
   private OAuthProvider oAuthProvider;
 
+  private String oAuthId;
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "main_region_id")
   private LegalDistrict mainRegion;
