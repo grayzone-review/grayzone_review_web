@@ -31,6 +31,7 @@ public class User implements UserDetails {
   private OAuthProvider oAuthProvider;
 
   private String oAuthId;
+  private String oAuthRefreshToken;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "main_region_id")
@@ -89,5 +90,9 @@ public class User implements UserDetails {
   public void setInterestedRegions(List<InterestedRegion> interestedRegions) {
     this.interestedRegions.clear();
     this.interestedRegions.addAll(interestedRegions);
+  }
+
+  public boolean requiresAppleRefreshToken() {
+    return this.oAuthProvider == OAuthProvider.APPLE && this.oAuthRefreshToken == null;
   }
 }
