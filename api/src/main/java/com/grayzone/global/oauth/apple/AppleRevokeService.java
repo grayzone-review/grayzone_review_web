@@ -6,6 +6,7 @@ import com.grayzone.global.oauth.OAuthRevokeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -40,11 +41,11 @@ public class AppleRevokeService implements OAuthRevokeService {
     body.add("token", refreshToken);
     body.add("token_type_hint", "refresh_token");
 
-    restClient.post()
+    ResponseEntity<Void> bodilessEntity = restClient.post()
       .uri(appleRevokeTokenUri)
       .header("Content-Type", MediaType.APPLICATION_FORM_URLENCODED_VALUE)
       .body(body)
       .retrieve()
-      .body(String.class);
+      .toBodilessEntity();
   }
 }

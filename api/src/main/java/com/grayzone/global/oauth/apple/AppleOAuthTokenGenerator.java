@@ -30,12 +30,16 @@ public class AppleOAuthTokenGenerator {
     body.add("client_secret", appleUtils.createClientSecret());
     body.add("code", code);
 
-    return restClient.post()
+    AppleTokenResponse response = restClient.post()
       .uri(appleGenerateTokenUri)
       .header("Content-Type", MediaType.APPLICATION_FORM_URLENCODED_VALUE)
       .body(body)
       .retrieve()
       .body(AppleTokenResponse.class);
+
+    log.info(response.toString());
+
+    return response;
   }
 
 }
