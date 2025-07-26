@@ -64,7 +64,7 @@ public class AuthService {
   @Transactional
   public LoginResponseDto login(Map<String, String> requestMap) {
     String oAuthToken = requestMap.get("oauthToken");
-    String provider = requestMap.get("provider");
+    String provider = requestMap.get("oauthProvider");
     String authorizationCode = requestMap.get("authorizationCode");
 
     if (oAuthToken == null || provider == null) {
