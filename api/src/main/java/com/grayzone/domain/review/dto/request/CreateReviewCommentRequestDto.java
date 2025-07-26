@@ -19,7 +19,6 @@ public class CreateReviewCommentRequestDto {
   private boolean isSecret;
 
   public ReviewComment toEntity(CompanyReview companyReview, User user) {
-    System.out.println(isSecret);
     return ReviewComment.builder()
       .comment(comment)
       .isSecret(isSecret)

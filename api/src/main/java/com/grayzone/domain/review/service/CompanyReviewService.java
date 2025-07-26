@@ -139,8 +139,6 @@ public class CompanyReviewService {
 
     String title = reviewTitleSummarizer.summarize(requestDto.getSummarizeSourceText());
 
-    log.info("gemini summarized title: {}", title);
-
     CompanyReview companyReview = requestDto.toCompanyReview(company, user, title);
     companyReviewRepository.save(companyReview);
 
