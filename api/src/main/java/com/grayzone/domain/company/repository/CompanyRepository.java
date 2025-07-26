@@ -98,9 +98,9 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
         )) AS distance
     FROM companies c
     LEFT JOIN company_reviews r ON r.company_id = c.id
-    WHERE (:address1 IS NULL OR c.site_full_address LIKE :address1)
-        OR (:address2 IS NULL OR c.site_full_address LIKE :address2)
-        OR (:address3 IS NULL OR c.site_full_address LIKE :address3)
+    WHERE (:address1 IS NOT NULL AND c.site_full_address LIKE :address1)
+        OR (:address2 IS NOT NULL AND c.site_full_address LIKE :address2)
+        OR (:address3 IS NOT NULL AND c.site_full_address LIKE :address3)
     GROUP BY c.id, c.business_name, c.site_full_address, c.road_name_address
     ORDER BY (c.latitude IS NULL OR c.longitude IS NULL) ASC, distance ASC, COUNT(r.id) DESC, c.id ASC
     """, nativeQuery = true)

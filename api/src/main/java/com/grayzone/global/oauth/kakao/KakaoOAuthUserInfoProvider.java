@@ -35,8 +35,6 @@ public class KakaoOAuthUserInfoProvider implements OAuthUserInfoProvider {
       throw new UpException(UpError.OAUTH_INVALID_TOKEN);
     }
 
-    log.info("kakao user id {}", kakaoUserInfo.getId());
-
     return new OAuthUserInfo(OAuthProvider.KAKAO, kakaoUserInfo.getEmail(), kakaoUserInfo.getId().toString());
   }
 }

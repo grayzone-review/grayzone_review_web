@@ -148,14 +148,18 @@ public class CompanyService {
     String address2 = interestedRegionAddresses.size() > 1 ? interestedRegionAddresses.get(1) : null;
     String address3 = interestedRegionAddresses.size() > 2 ? interestedRegionAddresses.get(2) : null;
 
-    Page<CompanySearchOnly> companies = companyRepository.findCompaniesByRegion(
-      latitude,
-      longitude,
-      address1,
-      address2,
-      address3,
-      pageable
-    );
+    Page<CompanySearchOnly> companies = Page.empty(pageable);
+
+    if (!interestedRegionAddresses.isEmpty()) {
+      companies = companyRepository.findCompaniesByRegion(
+        latitude,
+        longitude,
+        address1,
+        address2,
+        address3,
+        pageable
+      );
+    }
 
     return buildCompaniesSearchResponseDto(companies, user);
   }
