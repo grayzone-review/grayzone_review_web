@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - config/*
 
 jobs:
   ssh-agent:
@@ -37,6 +38,7 @@ jobs:
       - name: Create BuildKit 빌더
         run: |
           docker buildx create --use --name buildkit
+          docker buildx use buildkit
       
       - name: Docker Image Build
         run: docker compose -f docker-compose-production.yml build --build-arg BUILDKIT_INLINE_CACHE=1
