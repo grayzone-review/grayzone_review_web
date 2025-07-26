@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AppleGenerateTokenResponseDto {
+public class AppleTokenResponse {
   @JsonProperty("refresh_token")
   private String refreshToken;
 }

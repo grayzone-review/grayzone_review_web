@@ -13,8 +13,8 @@ import com.grayzone.global.exception.UpException;
 import com.grayzone.global.oauth.OAuthProvider;
 import com.grayzone.global.oauth.OAuthUserInfo;
 import com.grayzone.global.oauth.OAuthUserInfoDispatcher;
-import com.grayzone.global.oauth.apple.AppleGenerateTokenResponseDto;
 import com.grayzone.global.oauth.apple.AppleOAuthTokenGenerator;
+import com.grayzone.global.oauth.apple.AppleTokenResponse;
 import com.grayzone.global.token.TokenManager;
 import com.grayzone.global.token.TokenPair;
 import lombok.RequiredArgsConstructor;
@@ -83,7 +83,7 @@ public class AuthService {
       .orElseThrow(() -> new UpException(UpError.UNAUTHORIZED_USER));
 
     if (user.requiresAppleRefreshToken()) {
-      AppleGenerateTokenResponseDto appleToken = oAuthTokenGenerator.generateAppleToken(authorizationCode);
+      AppleTokenResponse appleToken = oAuthTokenGenerator.generateAppleToken(authorizationCode);
       user.setOAuthRefreshToken(appleToken.getRefreshToken());
       userRepository.save(user);
     }
