@@ -22,7 +22,6 @@ public class User implements UserDetails {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(unique = true, nullable = false)
   private String email;
 
   @Column(unique = true, nullable = false)
@@ -30,6 +29,9 @@ public class User implements UserDetails {
 
   @Enumerated(EnumType.STRING)
   private OAuthProvider oAuthProvider;
+
+  private String oAuthId;
+  private String oAuthRefreshToken;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "main_region_id")
@@ -50,6 +52,7 @@ public class User implements UserDetails {
     String email,
     String nickname,
     OAuthProvider oAuthProvider,
+    String oAuthId,
     LegalDistrict mainRegion,
     boolean agreedServiceUse,
     boolean agreedPrivacy,
@@ -58,6 +61,7 @@ public class User implements UserDetails {
     this.email = email;
     this.nickname = nickname;
     this.oAuthProvider = oAuthProvider;
+    this.oAuthId = oAuthId;
     this.mainRegion = mainRegion;
     this.agreedServiceUse = agreedServiceUse;
     this.agreedPrivacy = agreedPrivacy;
@@ -86,5 +90,9 @@ public class User implements UserDetails {
   public void setInterestedRegions(List<InterestedRegion> interestedRegions) {
     this.interestedRegions.clear();
     this.interestedRegions.addAll(interestedRegions);
+  }
+
+  public boolean requiresAppleRefreshToken() {
+    return this.oAuthProvider == OAuthProvider.APPLE && this.oAuthRefreshToken == null;
   }
 }

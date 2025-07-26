@@ -1,6 +1,5 @@
 package com.grayzone.domain.auth.service;
 
-import com.grayzone.domain.auth.dto.request.LoginRequestDto;
 import com.grayzone.domain.auth.dto.request.SignUpRequestDto;
 import com.grayzone.domain.auth.dto.response.LoginResponseDto;
 import com.grayzone.domain.auth.dto.response.ReissueResponseDto;
@@ -11,8 +10,11 @@ import com.grayzone.domain.user.entity.User;
 import com.grayzone.domain.user.repository.UserRepository;
 import com.grayzone.global.exception.UpError;
 import com.grayzone.global.exception.UpException;
+import com.grayzone.global.oauth.OAuthProvider;
 import com.grayzone.global.oauth.OAuthUserInfo;
 import com.grayzone.global.oauth.OAuthUserInfoDispatcher;
+import com.grayzone.global.oauth.apple.AppleOAuthTokenGenerator;
+import com.grayzone.global.oauth.apple.AppleTokenResponse;
 import com.grayzone.global.token.TokenManager;
 import com.grayzone.global.token.TokenPair;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +34,7 @@ public class AuthService {
   private final LegalDistrictRepository legalDistrictRepository;
   private final OAuthUserInfoDispatcher oAuthUserInfoDispatcher;
   private final TokenManager tokenManager;
+  private final AppleOAuthTokenGenerator oAuthTokenGenerator;
 
   @Transactional
   public void signUp(SignUpRequestDto requestDto) {
@@ -44,7 +48,7 @@ public class AuthService {
 
     OAuthUserInfo userInfo = oAuthUserInfoDispatcher.dispatch(requestDto.getOauthProvider(), requestDto.getOauthToken());
 
-    User user = requestDto.toEntity(userInfo.getEmail(), mainRegion);
+    User user = requestDto.toEntity(userInfo, mainRegion);
     List<InterestedRegion> interestedRegions = new ArrayList<>();
 
     if (!requestDto.getInterestedRegionIds().isEmpty()) {
@@ -57,11 +61,32 @@ public class AuthService {
     userRepository.save(user);
   }
 
-  public LoginResponseDto login(LoginRequestDto requestDto) {
-    OAuthUserInfo userInfo = oAuthUserInfoDispatcher.dispatch(requestDto.getOauthProvider(), requestDto.getOauthToken());
+  @Transactional
+  public LoginResponseDto login(Map<String, String> requestMap) {
+    String oAuthToken = requestMap.get("oauthToken");
+    String provider = requestMap.get("provider");
+    String authorizationCode = requestMap.get("authorizationCode");
 
-    User user = userRepository.findByEmail(userInfo.getEmail())
+    if (oAuthToken == null || provider == null) {
+      throw new UpException(UpError.INVALID_REQUEST);
+    }
+
+    OAuthProvider oAuthProvider = OAuthProvider.from(provider);
+
+    if (oAuthProvider == OAuthProvider.APPLE && authorizationCode == null) {
+      throw new UpException(UpError.INVALID_REQUEST);
+    }
+
+    OAuthUserInfo userInfo = oAuthUserInfoDispatcher.dispatch(oAuthProvider, oAuthToken);
+
+    User user = userRepository.findByoAuthId(userInfo.getOAuthId())
       .orElseThrow(() -> new UpException(UpError.UNAUTHORIZED_USER));
+
+    if (user.requiresAppleRefreshToken()) {
+      AppleTokenResponse appleToken = oAuthTokenGenerator.generateAppleToken(authorizationCode);
+      user.setOAuthRefreshToken(appleToken.getRefreshToken());
+      userRepository.save(user);
+    }
 
     TokenPair tokenPair = tokenManager.createTokenPair(user.getId());
 

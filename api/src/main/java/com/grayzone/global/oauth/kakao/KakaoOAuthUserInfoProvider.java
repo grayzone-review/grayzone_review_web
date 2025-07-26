@@ -5,10 +5,12 @@ import com.grayzone.global.exception.UpException;
 import com.grayzone.global.oauth.OAuthProvider;
 import com.grayzone.global.oauth.OAuthUserInfo;
 import com.grayzone.global.oauth.OAuthUserInfoProvider;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
+@Slf4j
 @Component
 public class KakaoOAuthUserInfoProvider implements OAuthUserInfoProvider {
   private final RestClient restClient = RestClient.create();
@@ -33,6 +35,6 @@ public class KakaoOAuthUserInfoProvider implements OAuthUserInfoProvider {
       throw new UpException(UpError.OAUTH_INVALID_TOKEN);
     }
 
-    return new OAuthUserInfo(OAuthProvider.KAKAO, kakaoUserInfo.getEmail());
+    return new OAuthUserInfo(OAuthProvider.KAKAO, kakaoUserInfo.getEmail(), kakaoUserInfo.getId().toString());
   }
 }

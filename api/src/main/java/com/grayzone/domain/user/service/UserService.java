@@ -14,6 +14,7 @@ import com.grayzone.domain.user.repository.InterestedRegionRepository;
 import com.grayzone.domain.user.repository.UserRepository;
 import com.grayzone.global.exception.UpError;
 import com.grayzone.global.exception.UpException;
+import com.grayzone.global.oauth.OAuthRevokeDispatcher;
 import com.grayzone.global.token.TokenManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,7 @@ public class UserService {
   private final CompanyRepository companyRepository;
   private final LegalDistrictRepository legalDistrictRepository;
   private final TokenManager tokenManager;
+  private final OAuthRevokeDispatcher oAuthRevokeDispatcher;
 
   public void verifyNicknameDuplicate(String nickname) {
     if (userRepository.existsByNickname(nickname)) {
@@ -93,6 +95,12 @@ public class UserService {
       tokenManager.invalidateRefreshToken(requestDto.getRefreshToken());
     } catch (Exception e) {
       log.warn("Refresh token invalidation failed", e);
+    }
+
+    try {
+      oAuthRevokeDispatcher.dispatch(user);
+    } catch (Exception e) {
+      log.warn("OAuth revoke dispatch failed", e);
     }
 
     userRepository.delete(deletedUser);

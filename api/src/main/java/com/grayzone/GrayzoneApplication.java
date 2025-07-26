@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @SpringBootApplication
 public class GrayzoneApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(GrayzoneApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(GrayzoneApplication.class, args);
+  }
 
 }
