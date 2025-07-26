@@ -28,7 +28,7 @@ jobs:
       - name: Cache Docker Image Layer
         uses: actions/cache@v4.2.0
         with:
-          path: /tmp/.buildx-cache # 캐시로 관리할 경로
+          path: /tmp/.build-cache # 캐시로 관리할 경로
           key: docker-image-layer-cache-${{ github.sha }} # 저장 & 불러올 캐시 이름(식별자)
           restore-keys: docker-image-layer-cache- # 만약 캐시 key를 찾지 못하면 대체할 캐시 이름
       
