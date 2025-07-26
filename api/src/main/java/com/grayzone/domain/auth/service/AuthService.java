@@ -13,6 +13,8 @@ import com.grayzone.global.exception.UpException;
 import com.grayzone.global.oauth.OAuthProvider;
 import com.grayzone.global.oauth.OAuthUserInfo;
 import com.grayzone.global.oauth.OAuthUserInfoDispatcher;
+import com.grayzone.global.oauth.apple.AppleGenerateTokenResponseDto;
+import com.grayzone.global.oauth.apple.AppleOAuthTokenGenerator;
 import com.grayzone.global.token.TokenManager;
 import com.grayzone.global.token.TokenPair;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +34,7 @@ public class AuthService {
   private final LegalDistrictRepository legalDistrictRepository;
   private final OAuthUserInfoDispatcher oAuthUserInfoDispatcher;
   private final TokenManager tokenManager;
+  private final AppleOAuthTokenGenerator oAuthTokenGenerator;
 
   @Transactional
   public void signUp(SignUpRequestDto requestDto) {
@@ -58,6 +61,7 @@ public class AuthService {
     userRepository.save(user);
   }
 
+  @Transactional
   public LoginResponseDto login(Map<String, String> requestMap) {
     String oAuthToken = requestMap.get("oauthToken");
     String provider = requestMap.get("provider");
@@ -79,7 +83,9 @@ public class AuthService {
       .orElseThrow(() -> new UpException(UpError.UNAUTHORIZED_USER));
 
     if (user.requiresAppleRefreshToken()) {
-      // TODO 리프레쉬 토큰 발급 로직 추가
+      AppleGenerateTokenResponseDto appleToken = oAuthTokenGenerator.generateAppleToken(authorizationCode);
+      user.setOAuthRefreshToken(appleToken.getRefreshToken());
+      userRepository.save(user);
     }
 
     TokenPair tokenPair = tokenManager.createTokenPair(user.getId());

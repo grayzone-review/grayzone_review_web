@@ -4,7 +4,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -36,9 +35,7 @@ public class AppleOAuthTokenGenerator {
   @Value("${apple.jwt-secret}")
   private String appleJwtSecret;
 
-  public void generateAppleToken(String code) {
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+  public AppleGenerateTokenResponseDto generateAppleToken(String code) {
 
     MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
     body.add("grant_type", "authorization_code");
@@ -46,12 +43,12 @@ public class AppleOAuthTokenGenerator {
     body.add("client_secret", createClientSecret());
     body.add("code", code);
 
-    restClient.post()
+    return restClient.post()
       .uri(appleGenerateTokenUri)
       .header("Content-Type", MediaType.APPLICATION_FORM_URLENCODED_VALUE)
       .body(body)
       .retrieve()
-      .body(String.class);
+      .body(AppleGenerateTokenResponseDto.class);
   }
 
   private String createClientSecret() {
