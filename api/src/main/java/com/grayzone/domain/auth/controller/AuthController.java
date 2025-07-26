@@ -1,7 +1,6 @@
 package com.grayzone.domain.auth.controller;
 
 import com.grayzone.common.ResponseDataDto;
-import com.grayzone.domain.auth.dto.request.LoginRequestDto;
 import com.grayzone.domain.auth.dto.request.LogoutRequestDto;
 import com.grayzone.domain.auth.dto.request.ReissueRequestDto;
 import com.grayzone.domain.auth.dto.request.SignUpRequestDto;
@@ -15,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.stream.Stream;
 
 @RestController
@@ -39,11 +39,11 @@ public class AuthController {
 
   @PostMapping("/login")
   public ResponseEntity<ResponseDataDto<LoginResponseDto>> login(
-    @Valid @RequestBody LoginRequestDto requestDto
+    @RequestBody Map<String, String> requestMap
   ) {
     return ResponseEntity.ok(
       ResponseDataDto.from(
-        authService.login(requestDto)
+        authService.login(requestMap)
       )
     );
   }
@@ -53,7 +53,7 @@ public class AuthController {
     @RequestBody LogoutRequestDto requestDto
   ) {
     authService.logout(requestDto.getRefreshToken());
-    
+
     return ResponseEntity.ok(
       ResponseDataDto.from(
         null

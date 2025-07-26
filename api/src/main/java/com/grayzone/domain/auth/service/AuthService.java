@@ -1,6 +1,5 @@
 package com.grayzone.domain.auth.service;
 
-import com.grayzone.domain.auth.dto.request.LoginRequestDto;
 import com.grayzone.domain.auth.dto.request.SignUpRequestDto;
 import com.grayzone.domain.auth.dto.response.LoginResponseDto;
 import com.grayzone.domain.auth.dto.response.ReissueResponseDto;
@@ -11,6 +10,7 @@ import com.grayzone.domain.user.entity.User;
 import com.grayzone.domain.user.repository.UserRepository;
 import com.grayzone.global.exception.UpError;
 import com.grayzone.global.exception.UpException;
+import com.grayzone.global.oauth.OAuthProvider;
 import com.grayzone.global.oauth.OAuthUserInfo;
 import com.grayzone.global.oauth.OAuthUserInfoDispatcher;
 import com.grayzone.global.token.TokenManager;
@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -57,11 +58,29 @@ public class AuthService {
     userRepository.save(user);
   }
 
-  public LoginResponseDto login(LoginRequestDto requestDto) {
-    OAuthUserInfo userInfo = oAuthUserInfoDispatcher.dispatch(requestDto.getOauthProvider(), requestDto.getOauthToken());
+  public LoginResponseDto login(Map<String, String> requestMap) {
+    String oAuthToken = requestMap.get("oauthToken");
+    String provider = requestMap.get("provider");
+    String authorizationCode = requestMap.get("authorizationCode");
+
+    if (oAuthToken == null || provider == null) {
+      throw new UpException(UpError.INVALID_REQUEST);
+    }
+
+    OAuthProvider oAuthProvider = OAuthProvider.from(provider);
+
+    if (oAuthProvider == OAuthProvider.APPLE && authorizationCode == null) {
+      throw new UpException(UpError.INVALID_REQUEST);
+    }
+
+    OAuthUserInfo userInfo = oAuthUserInfoDispatcher.dispatch(oAuthProvider, oAuthToken);
 
     User user = userRepository.findByoAuthId(userInfo.getOAuthId())
       .orElseThrow(() -> new UpException(UpError.UNAUTHORIZED_USER));
+
+    if (user.requiresAppleRefreshToken()) {
+      // TODO 리프레쉬 토큰 발급 로직 추가
+    }
 
     TokenPair tokenPair = tokenManager.createTokenPair(user.getId());
 
