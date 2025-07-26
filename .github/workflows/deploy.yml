@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - config/*
 
 jobs:
   ssh-agent:
