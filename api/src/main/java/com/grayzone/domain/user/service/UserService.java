@@ -103,6 +103,7 @@ public class UserService {
       log.warn("OAuth revoke dispatch failed", e);
     }
 
-    userRepository.delete(deletedUser);
+    deletedUser.inactive();
+    userRepository.save(deletedUser);
   }
 }

@@ -41,7 +41,7 @@ public class User implements UserDetails {
   private List<InterestedRegion> interestedRegions = new ArrayList<>();
 
   @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<FollowCompany> followCompanies;
+  private List<FollowCompany> followCompanies = new ArrayList<>();
 
   private boolean agreedServiceUse;
   private boolean agreedPrivacy;
@@ -94,5 +94,16 @@ public class User implements UserDetails {
 
   public boolean requiresAppleRefreshToken() {
     return this.oAuthProvider == OAuthProvider.APPLE && this.oAuthRefreshToken == null;
+  }
+
+  public void inactive() {
+    setNickname("deleted_user_" + this.id);
+    setEmail(null);
+    setOAuthId(null);
+    setOAuthRefreshToken(null);
+    setMainRegion(null);
+    setOAuthProvider(OAuthProvider.INACTIVE);
+    this.interestedRegions.clear();
+    this.followCompanies.clear();
   }
 }
