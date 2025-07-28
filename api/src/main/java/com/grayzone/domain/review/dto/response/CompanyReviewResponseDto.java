@@ -38,7 +38,7 @@ public class CompanyReviewResponseDto {
 
     return CompanyReviewResponseDto.builder()
       .id(companyReview.getId())
-      .author(companyReview.getUser().getUsername())
+      .author(companyReview.getUser().getNickname())
       .title(companyReview.getTitle())
       .advantagePoint(companyReview.getAdvantagePoint())
       .disadvantagePoint(companyReview.getDisadvantagePoint())

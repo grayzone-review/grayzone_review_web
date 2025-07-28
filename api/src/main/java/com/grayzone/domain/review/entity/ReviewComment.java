@@ -53,7 +53,7 @@ public class ReviewComment extends BaseTimeEntity {
 
 
   public String getAuthorName() {
-    return user.getUsername();
+    return user.getNickname();
   }
 
   private boolean isAuthor(Long userId) {
