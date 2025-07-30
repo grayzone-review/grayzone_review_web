@@ -39,7 +39,7 @@ public class LegalDistrictSetupRepository {
 
         preparedStatement.clearParameters();
 
-        if (++count % 500 == 0) {
+        if (++count % 1000 == 0) {
           preparedStatement.executeBatch();
           preparedStatement.clearBatch();
         }
