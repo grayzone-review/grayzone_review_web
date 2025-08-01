@@ -60,4 +60,8 @@ public class Company {
     return EARTH_RADIUS_KM * c;
   }
 
+  public void setLegalDistrict(LegalDistrict legalDistrict) {
+    this.legalDistrict = legalDistrict;
+  }
+
 }

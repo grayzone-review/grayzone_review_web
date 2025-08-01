@@ -131,4 +131,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
   long countFollowedCompaniesByUser(@Param("user") User user);
 
   List<Company> findByLegalDistrictIsNull(Pageable pageable);
+
+  List<Company> findByLegalDistrictIdIsNullAndIdGreaterThanOrderByIdAsc(Long lastId, Pageable pageable);
+
 }
