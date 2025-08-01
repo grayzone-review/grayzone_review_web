@@ -1,8 +1,10 @@
 package com.grayzone.setup.legaldistrict;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
+@Slf4j
 @Component
 public class LegalDistrictApiClient {
   private final RestClient restClient;
@@ -25,6 +27,13 @@ public class LegalDistrictApiClient {
       )
       .header("Authorization", properties.getKey())
       .retrieve()
+      .onStatus(
+        status -> status.is4xxClientError() || status.is5xxServerError(),
+        (request, response) -> {
+          String errorBody = response.getBody().toString();
+          log.error("API Error Body: {}", errorBody);
+        }
+      )
       .body(LegalDistrictsApiResponse.class);
   }
 }
