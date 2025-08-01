@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -39,38 +40,35 @@ public interface CompanyReviewRepository extends JpaRepository<CompanyReview, Lo
   @Query(value = """
     SELECT cr FROM CompanyReview cr
     LEFT JOIN cr.likes l
+    WHERE cr.createdAt >= :sinceDate
     GROUP BY cr.id
     ORDER BY COUNT(l) DESC, cr.createdAt DESC
     """
   )
-  Slice<CompanyReview> findCompanyReviewsOrderByLikeCountDesc(Pageable pageable);
+  Slice<CompanyReview> findCompanyReviewsOrderByLikeCountDesc(@Param("sinceDate") LocalDate sinceDate, Pageable pageable);
 
   @EntityGraph(attributePaths = {"company"})
   @Query(value = """
     SELECT cr FROM CompanyReview cr
     LEFT JOIN cr.company c
-    WHERE c.siteFullAddress LIKE :mainRegionAddress
+    WHERE c.legalDistrict = :mainRegionId
     ORDER BY cr.createdAt DESC
     """
   )
   Slice<CompanyReview> findCompanyReviewsByMainRegion(
     Pageable pageable,
-    @Param("mainRegionAddress") String mainRegionAddress
+    @Param("mainRegionId") Long mainRegionId
   );
 
   @Query("""
     SELECT cr FROM CompanyReview cr
     LEFT JOIN cr.company c
-    WHERE (:address1 IS NOT NULL AND c.siteFullAddress LIKE :address1)
-        OR (:address2 IS NOT NULL AND c.siteFullAddress LIKE :address2)
-        OR (:address3 IS NOT NULL AND c.siteFullAddress LIKE :address3)
+    WHERE c.legalDistrict IN (:interestedRegionIds)
     ORDER BY cr.createdAt DESC
     """)
   Slice<CompanyReview> findCompanyReviewByInterestedRegions(
     Pageable pageable,
-    @Param("address1") String address1,
-    @Param("address2") String address2,
-    @Param("address3") String address3
+    @Param("interestedRegionIds") List<Long> interestedRegionIds
   );
 
   Slice<CompanyReview> findByUser(User user, Pageable pageable);

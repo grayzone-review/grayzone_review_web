@@ -1,5 +1,6 @@
 package com.grayzone.domain.company.entity;
 
+import com.grayzone.domain.legaldistrict.entity.LegalDistrict;
 import com.grayzone.domain.review.entity.CompanyReview;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -35,6 +36,10 @@ public class Company {
   @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
   private List<CompanyReview> companyReviews = new ArrayList<>();
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "legal_district_id")
+  private LegalDistrict legalDistrict;
+
   public Double calculateDistanceFrom(
     Double targetLatitude,
     Double targetLongitude
@@ -53,6 +58,10 @@ public class Company {
     double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
     return EARTH_RADIUS_KM * c;
+  }
+
+  public void setLegalDistrict(LegalDistrict legalDistrict) {
+    this.legalDistrict = legalDistrict;
   }
 
 }

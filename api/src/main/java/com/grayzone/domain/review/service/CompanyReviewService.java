@@ -30,6 +30,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -71,8 +72,10 @@ public class CompanyReviewService {
     Double longitude,
     User user
   ) {
+    LocalDate sinceDate = LocalDate.now().minusDays(50);
+
     Slice<CompanyReview> popularCompanyReviews = companyReviewRepository
-      .findCompanyReviewsOrderByLikeCountDesc(pageable);
+      .findCompanyReviewsOrderByLikeCountDesc(sinceDate, pageable);
 
     return buildAggregatedCompanyReviews(popularCompanyReviews, latitude, longitude, user);
   }
@@ -83,10 +86,10 @@ public class CompanyReviewService {
     Double longitude,
     User user
   ) {
-    String mainRegionAddress = addWildCardSuffix(user.getMainRegionAddress());
+    Long mainRegionId = user.getMainRegion().getId();
 
     Slice<CompanyReview> mainRegionLatestCompanyReviews = companyReviewRepository
-      .findCompanyReviewsByMainRegion(pageable, mainRegionAddress);
+      .findCompanyReviewsByMainRegion(pageable, mainRegionId);
 
     return buildAggregatedCompanyReviews(mainRegionLatestCompanyReviews, latitude, longitude, user);
   }
@@ -99,19 +102,13 @@ public class CompanyReviewService {
   ) {
     List<InterestedRegion> interestedRegions = interestedRegionRepository.findAllByUserWithLegalDistrict(user);
 
-    List<String> interestedRegionAddresses = interestedRegions.stream()
+    List<Long> interestedRegionIds = interestedRegions.stream()
       .map(InterestedRegion::getLegalDistrict)
-      .map(LegalDistrict::getAddress)
-      .map(this::addWildCardSuffix)
+      .map(LegalDistrict::getId)
       .toList();
 
-    String address1 = !interestedRegionAddresses.isEmpty() ? interestedRegionAddresses.get(0) : null;
-    String address2 = interestedRegionAddresses.size() > 1 ? interestedRegionAddresses.get(1) : null;
-    String address3 = interestedRegionAddresses.size() > 2 ? interestedRegionAddresses.get(2) : null;
-
-
     Slice<CompanyReview> interestedRegionsLatestCompanyReviews = companyReviewRepository
-      .findCompanyReviewByInterestedRegions(pageable, address1, address2, address3);
+      .findCompanyReviewByInterestedRegions(pageable, interestedRegionIds);
 
     return buildAggregatedCompanyReviews(interestedRegionsLatestCompanyReviews, latitude, longitude, user);
   }
@@ -209,9 +206,5 @@ public class CompanyReviewService {
         ReviewTitleOnly::getCompanyId,
         ReviewTitleOnly::getTitle
       ));
-  }
-
-  private String addWildCardSuffix(String target) {
-    return target + "%";
   }
 }

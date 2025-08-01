@@ -117,13 +117,11 @@ public class CompanyService {
     User user,
     Pageable pageable
   ) {
-    String address = createRegionWildCard(user.getMainRegion());
+    Long mainRegionId = user.getMainRegion().getId();
     Page<CompanySearchOnly> companies = companyRepository.findCompaniesByRegion(
       latitude,
       longitude,
-      address,
-      null,
-      null,
+      List.of(mainRegionId),
       pageable
     );
 
@@ -139,24 +137,17 @@ public class CompanyService {
 
     List<InterestedRegion> interestedRegions = interestedRegionRepository.findAllByUserWithLegalDistrict(user);
 
-    List<String> interestedRegionAddresses = interestedRegions.stream()
-      .map(InterestedRegion::getLegalDistrict)
-      .map(this::createRegionWildCard)
+    List<Long> interestedRegionIds = interestedRegions.stream()
+      .map(InterestedRegion::getId)
       .toList();
-
-    String address1 = !interestedRegionAddresses.isEmpty() ? interestedRegionAddresses.get(0) : null;
-    String address2 = interestedRegionAddresses.size() > 1 ? interestedRegionAddresses.get(1) : null;
-    String address3 = interestedRegionAddresses.size() > 2 ? interestedRegionAddresses.get(2) : null;
 
     Page<CompanySearchOnly> companies = Page.empty(pageable);
 
-    if (!interestedRegionAddresses.isEmpty()) {
+    if (!interestedRegionIds.isEmpty()) {
       companies = companyRepository.findCompaniesByRegion(
         latitude,
         longitude,
-        address1,
-        address2,
-        address3,
+        interestedRegionIds,
         pageable
       );
     }
