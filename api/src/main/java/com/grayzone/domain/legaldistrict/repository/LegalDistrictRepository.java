@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface LegalDistrictRepository extends JpaRepository<LegalDistrict, Long> {
   @Query(value = """
         SELECT ld.id, ld.address AS legal_district
@@ -19,4 +21,6 @@ public interface LegalDistrictRepository extends JpaRepository<LegalDistrict, Lo
     @Param("keyword") String keyword,
     Pageable pageable
   );
+
+  Optional<LegalDistrict> findByAddress(String address);
 }
