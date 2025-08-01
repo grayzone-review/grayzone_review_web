@@ -30,6 +30,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -71,8 +72,10 @@ public class CompanyReviewService {
     Double longitude,
     User user
   ) {
+    LocalDate sinceDate = LocalDate.now().minusDays(50);
+
     Slice<CompanyReview> popularCompanyReviews = companyReviewRepository
-      .findCompanyReviewsOrderByLikeCountDesc(pageable);
+      .findCompanyReviewsOrderByLikeCountDesc(sinceDate, pageable);
 
     return buildAggregatedCompanyReviews(popularCompanyReviews, latitude, longitude, user);
   }

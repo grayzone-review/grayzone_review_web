@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -39,11 +40,12 @@ public interface CompanyReviewRepository extends JpaRepository<CompanyReview, Lo
   @Query(value = """
     SELECT cr FROM CompanyReview cr
     LEFT JOIN cr.likes l
+    WHERE cr.createdAt >= :sinceDate
     GROUP BY cr.id
     ORDER BY COUNT(l) DESC, cr.createdAt DESC
     """
   )
-  Slice<CompanyReview> findCompanyReviewsOrderByLikeCountDesc(Pageable pageable);
+  Slice<CompanyReview> findCompanyReviewsOrderByLikeCountDesc(@Param("sinceDate") LocalDate sinceDate, Pageable pageable);
 
   @EntityGraph(attributePaths = {"company"})
   @Query(value = """
