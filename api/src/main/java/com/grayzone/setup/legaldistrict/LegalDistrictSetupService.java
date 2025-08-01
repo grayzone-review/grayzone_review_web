@@ -23,14 +23,14 @@ public class LegalDistrictSetupService {
   public void setupLegalDistricts() {
     int perPage = 3000;
 
-    LegalDistrictsApiResponse firstResponse = legalDistrictApiClient.getAllLegalDistricts(1, perPage);
+    LegalDistrictsApiResponse firstResponse = legalDistrictApiClient.getAllLegalDistricts(0, perPage);
     int totalCount = firstResponse.getTotalCount();
     int totalPage = (int) Math.ceil((double) totalCount / perPage);
 
     List<LegalDistrict> legalDistricts = new ArrayList<>(mappingLegalDistricts(firstResponse));
     List<CompletableFuture<List<LegalDistrict>>> futures = new ArrayList<>();
 
-    for (int currentPage = 2; currentPage <= totalPage; currentPage++) {
+    for (int currentPage = 1; currentPage <= totalPage; currentPage++) {
       int page = currentPage;
       CompletableFuture<List<LegalDistrict>> future = CompletableFuture.supplyAsync(() -> {
         LegalDistrictsApiResponse response = legalDistrictApiClient.getAllLegalDistricts(page, perPage);
@@ -47,7 +47,7 @@ public class LegalDistrictSetupService {
 
     legalDistricts.addAll(results);
     legalDistricts = removeDuplicateAddresses(legalDistricts);
-    
+
     try {
       legalDistrictSetupRepository.save(legalDistricts);
     } catch (Exception e) {
@@ -65,9 +65,6 @@ public class LegalDistrictSetupService {
       .filter(legalDistrict -> legalDistrict.getDeletedDate() == null)
       .filter(ld -> ld.getProvince() != null && ld.getCity() != null && ld.getTown() != null && ld.getVillage() == null)
       .map(legalDistrict -> {
-        if (legalDistrict.getProvince().equals("강원도")) {
-          legalDistrict.setProvince("강원특별자치도");
-        }
         String city = legalDistrict.getCity();
         if (city.length() >= 5) {
           int siIndex = city.indexOf("시");
@@ -77,8 +74,7 @@ public class LegalDistrictSetupService {
             String beforeSi = city.substring(0, siIndex + 1);
             String afterSi = city.substring(siIndex + 1);
 
-            legalDistrict.setCity(beforeSi);
-            legalDistrict.setTown(afterSi);
+            legalDistrict.setCity(String.join(" ", beforeSi, afterSi));
           }
         }
 
