@@ -91,6 +91,30 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
 //    Pageable pageable
 //  );
 
+//  @Query(value = """
+//    SELECT c.id, c.business_name AS company_name, c.site_full_address, c.road_name_address,
+//        (6371 * acos(
+//            cos(radians(:latitude)) * cos(radians(c.latitude)) *
+//            cos(radians(c.longitude) - radians(:longitude)) +
+//            sin(radians(:latitude)) * sin(radians(c.latitude))
+//        )) AS distance
+//    FROM companies c
+//    LEFT JOIN company_reviews r ON r.company_id = c.id
+//    WHERE (:address1 IS NOT NULL AND c.site_full_address LIKE :address1)
+//        OR (:address2 IS NOT NULL AND c.site_full_address LIKE :address2)
+//        OR (:address3 IS NOT NULL AND c.site_full_address LIKE :address3)
+//    GROUP BY c.id, c.business_name, c.site_full_address, c.road_name_address
+//    ORDER BY (c.latitude IS NULL OR c.longitude IS NULL) ASC, distance ASC, COUNT(r.id) DESC, c.id ASC
+//    """, nativeQuery = true)
+//  Page<CompanySearchOnly> findCompaniesByRegion(
+//    @Param("latitude") Double latitude,
+//    @Param("longitude") Double longitude,
+//    @Param("address1") String address1,
+//    @Param("address2") String address2,
+//    @Param("address3") String address3,
+//    Pageable pageable
+//  );
+
   @Query(value = """
     SELECT c.id, c.business_name AS company_name, c.site_full_address, c.road_name_address,
         (6371 * acos(
@@ -100,18 +124,14 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
         )) AS distance
     FROM companies c
     LEFT JOIN company_reviews r ON r.company_id = c.id
-    WHERE (:address1 IS NOT NULL AND c.site_full_address LIKE :address1)
-        OR (:address2 IS NOT NULL AND c.site_full_address LIKE :address2)
-        OR (:address3 IS NOT NULL AND c.site_full_address LIKE :address3)
+    WHERE c.legal_district_id IN (:regionIds)
     GROUP BY c.id, c.business_name, c.site_full_address, c.road_name_address
     ORDER BY (c.latitude IS NULL OR c.longitude IS NULL) ASC, distance ASC, COUNT(r.id) DESC, c.id ASC
     """, nativeQuery = true)
   Page<CompanySearchOnly> findCompaniesByRegion(
     @Param("latitude") Double latitude,
     @Param("longitude") Double longitude,
-    @Param("address1") String address1,
-    @Param("address2") String address2,
-    @Param("address3") String address3,
+    @Param("regionIds") List<Long> regionIds,
     Pageable pageable
   );
 
