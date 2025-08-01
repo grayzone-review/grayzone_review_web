@@ -138,7 +138,8 @@ public class CompanyService {
     List<InterestedRegion> interestedRegions = interestedRegionRepository.findAllByUserWithLegalDistrict(user);
 
     List<Long> interestedRegionIds = interestedRegions.stream()
-      .map(InterestedRegion::getId)
+      .map(InterestedRegion::getLegalDistrict)
+      .map(LegalDistrict::getId)
       .toList();
 
     Page<CompanySearchOnly> companies = Page.empty(pageable);
