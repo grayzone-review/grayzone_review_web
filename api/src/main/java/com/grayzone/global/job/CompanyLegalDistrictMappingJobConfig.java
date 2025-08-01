@@ -1,5 +1,6 @@
 package com.grayzone.global.job;
 
+import com.grayzone.common.AddressUtils;
 import com.grayzone.domain.company.entity.Company;
 import com.grayzone.domain.company.repository.CompanyRepository;
 import com.grayzone.domain.legaldistrict.entity.LegalDistrict;
@@ -96,12 +97,13 @@ public class CompanyLegalDistrictMappingJobConfig {
   @Bean
   public ItemProcessor<Company, CompanyUpdateDto> companyItemProcessor() {
     return company -> {
-      if (company.getSiteFullAddress() == null) return null;
+      if (company.getSiteFullAddress().isEmpty()) return null;
 
-      String[] parts = company.getSiteFullAddress().split(" ");
-      if (parts.length < 3) return null;
+      String keyAddress = AddressUtils.extractKeyAddress(company.getSiteFullAddress());
 
-      String keyAddress = String.join(" ", parts[0], parts[1], parts[2]);
+      if (keyAddress == null) {
+        return null;
+      }
 
       LegalDistrict legalDistrict = legalDistrictCache.get(keyAddress);
 
@@ -121,4 +123,6 @@ public class CompanyLegalDistrictMappingJobConfig {
       .itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
       .build();
   }
+
+
 }
