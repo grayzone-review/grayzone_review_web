@@ -51,7 +51,7 @@ public interface CompanyReviewRepository extends JpaRepository<CompanyReview, Lo
   @Query(value = """
     SELECT cr FROM CompanyReview cr
     LEFT JOIN cr.company c
-    WHERE c.legalDistrict = :mainRegionId
+    WHERE c.legalDistrict.id = :mainRegionId
     ORDER BY cr.createdAt DESC
     """
   )
@@ -63,7 +63,7 @@ public interface CompanyReviewRepository extends JpaRepository<CompanyReview, Lo
   @Query("""
     SELECT cr FROM CompanyReview cr
     LEFT JOIN cr.company c
-    WHERE c.legalDistrict IN (:interestedRegionIds)
+    WHERE c.legalDistrict.id IN (:interestedRegionIds)
     ORDER BY cr.createdAt DESC
     """)
   Slice<CompanyReview> findCompanyReviewByInterestedRegions(
